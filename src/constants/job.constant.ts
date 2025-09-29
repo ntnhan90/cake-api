@@ -1,11 +1,12 @@
 export enum QueueName {
-  EMAIL = 'email',
+    EMAIL = 'email',
 }
-
+  
 export enum QueuePrefix {
-  AUTH = 'auth',
+    AUTH = 'auth',
 }
-
+  
 export enum JobName {
-  EMAIL_VERIFICATION = 'email-verification',
+    EMAIL_VERIFICATION = 'email-verification',
 }
+  

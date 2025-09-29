@@ -1,14 +1,14 @@
-import { AllConfigType } from 'src/config/config.type';
-import { MailerModule } from '@nestjs-modules/mailer';
+import { AllConfigType } from "@/config/config.type";
+import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import { Global, Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { join } from 'path';
-import { MailService } from './mail.service';
+import { Global, Module } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { join } from 'path'
+import { MailService } from "./mail.service";
 
 @Global()
 @Module({
-    imports:[
+    imports: [
         MailerModule.forRootAsync({
             useFactory: async(config: ConfigService<AllConfigType>) => ({
                 transport: {
@@ -34,11 +34,10 @@ import { MailService } from './mail.service';
                     },
                 },
             }),
-            inject: [ConfigService]
-        })
+            inject: [ConfigService],
+        }),
     ],
     providers: [MailService],
-    exports: [MailService]
+    exports: [MailService],
 })
-
 export class MailModule {}
