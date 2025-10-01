@@ -1,6 +1,8 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column,DeleteDateColumn,ManyToOne, Relation,JoinColumn} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column,DeleteDateColumn,ManyToOne, Relation,JoinColumn,ManyToMany, JoinTable} from "typeorm";
 import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { TagEntity } from './tag.entity';
+import { CategoryEntity } from './category.entity';
 
 export enum STATUS {
     PUBLISHED = "published",
@@ -57,10 +59,18 @@ export class PostEntity extends AbstractEntity{
     @ManyToOne(() => UserEntity, (user) => user.posts)
     user: Relation<UserEntity>;
 
+    @ManyToMany(() => TagEntity)
+    @JoinTable()
+    tag: TagEntity[];
+
+    @ManyToMany(() => CategoryEntity)
+    @JoinTable()
+    cate: CategoryEntity[]
+
     @DeleteDateColumn({
         name: 'deleted_at',
         type: 'timestamp',
         default: null,
-    })
+    }) 
     deletedAt: Date;
 }
