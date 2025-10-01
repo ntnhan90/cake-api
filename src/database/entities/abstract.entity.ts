@@ -1,47 +1,28 @@
 import { plainToInstance } from 'class-transformer';
 import {
   BaseEntity,
-  Column,
+ // Column,
   CreateDateColumn,
   DataSource,
   UpdateDateColumn,
 } from 'typeorm';
-import { getOrder, Order } from '../decorators/order.decorator';
+import { getOrder } from '../decorators/order.decorator';
 
 export abstract class AbstractEntity extends BaseEntity {
-  @Order(9999)
   @CreateDateColumn({
     name: 'created_at',
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-    nullable: false,
+    type: 'timestamp',
+   // default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
-  @Order(9999)
-  @Column({
-    name: 'created_by',
-    type: 'varchar',
-    nullable: false,
-  })
-  createdBy: string;
-
-  @Order(9999)
   @UpdateDateColumn({
     name: 'updated_at',
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-    nullable: false,
+    type: 'timestamp',
+  //  default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
 
-  @Order(9999)
-  @Column({
-    name: 'updated_by',
-    type: 'varchar',
-    nullable: false,
-  })
-  updatedBy: string;
 
   toDto<Dto>(dtoClass: new () => Dto): Dto {
     return plainToInstance(dtoClass, this);

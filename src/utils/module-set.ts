@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApiModule } from 'src/modules/api.module';
 // authconfig
-// BackgroundModule
+import { BackgroundModule } from '@/background/background.module';
 import appConfig from 'src/config/app.config';
 import { AllConfigType } from 'src/config/config.type';
 import { Environment } from 'src/constants/app.constant';
-//database config
-// typeorm
-// mail Config
-// mail Module
+import databaseConfig from '@/database/config/database.config';
+import { TypeOrmConfigService } from '@/database/typeorm-config.service';
+import mailConfig from '@/mail/config/mail.config';
+import { MailModule } from '@/mail/mail.module';
 // redis
 import { BullModule } from '@nestjs/bullmq';
 // cache module
 import { ModuleMetadata } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-//typeormmodule
+import { TypeOrmModule } from '@nestjs/typeorm';
 // redis store
 import {
   AcceptLanguageResolver,
@@ -24,41 +24,65 @@ import {
 } from 'nestjs-i18n';
 import { LoggerModule } from 'nestjs-pino';
 import path from 'path';
-//  import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 import loggerFactory from './logger-factory';
 
 function generateModulesSet() {
-  const imports: ModuleMetadata['imports'] = [
+  	const imports: ModuleMetadata['imports'] = [
     ConfigModule.forRoot({
       isGlobal: true,
       //load: [appConfig, databaseConfig, redisConfig, authConfig, mailConfig],
-      load: [appConfig],
+      load: [appConfig, databaseConfig, mailConfig],
       envFilePath: ['.env'],
     }),
   ];
   let customModules: ModuleMetadata['imports'] = [];
 
-  const loggerModule = LoggerModule.forRootAsync({
-    imports: [ConfigModule],
-    inject: [ConfigService],
-    useFactory: loggerFactory,
-  });
+  	const dbModule = TypeOrmModule.forRootAsync({
+		useClass: TypeOrmConfigService,
+		dataSourceFactory: async (options: DataSourceOptions) => {
+			if (!options) {
+				throw new Error('Invalid options passed');
+			}
 
-  const modulesSet = process.env.MODULES_SET || 'monolith';
+			return new DataSource(options).initialize();
+		},
+	});
 
-  switch (modulesSet) {
-    case 'monolith':
-      customModules = [ApiModule, loggerModule];
-      break;
-    case 'api':
-      customModules = [ApiModule, loggerModule];
-      break;
-    case 'background':
-      customModules = [loggerModule];
-      break;
-    default:
-      console.error(`Unsupported modules set: ${modulesSet}`);
-      break;
+  	const loggerModule = LoggerModule.forRootAsync({
+		imports: [ConfigModule],
+		inject: [ConfigService],
+		useFactory: loggerFactory,
+  	});
+
+  	const modulesSet = process.env.MODULES_SET || 'monolith';
+
+  	switch (modulesSet) {
+		case 'monolith':
+			customModules = [
+				ApiModule,
+				BackgroundModule,
+				dbModule,
+				loggerModule
+			];
+			break;
+		case 'api':
+      		customModules = [
+				ApiModule,
+				BackgroundModule,
+				dbModule,
+				loggerModule
+			];
+      		break;
+    	case 'background':
+      		customModules = [
+				BackgroundModule,
+				loggerModule
+			];
+      	break;
+    	default:
+      		console.error(`Unsupported modules set: ${modulesSet}`);
+      		break;
   }
   return imports.concat(customModules);
 }
