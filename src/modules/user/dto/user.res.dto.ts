@@ -1,6 +1,4 @@
-//import { PostResDto } from '@/api/post/dto/post.res.dto';
-//import { WrapperType } from '@/common/types/types';
-import {StringField,} from '@/decorators/field.decorators';
+import {StringField,NumberField} from '@/decorators/field.decorators';
 import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
@@ -19,6 +17,21 @@ export class UserResDto {
 
 	@StringField()
 	@Expose()
-	image: string;
+	password: string;
 
+	@StringField()
+	@Expose()
+	avatar_id: string;
+	
+	@StringField()
+	@Expose()
+	first_name: string;
+
+	@StringField()
+	@Expose()
+	last_name: string;
+
+	@NumberField()
+	@Expose()
+	isActive: number;
 }

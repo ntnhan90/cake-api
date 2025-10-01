@@ -10,36 +10,35 @@ import { ApiAuth } from '@/decorators/http.decorators';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  	constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
+  	@Post()
+  	create(@Body() createUserDto: CreateUserDto) {
+    	return this.userService.create(createUserDto);
+  	}
 
-  @Get()
-  @ApiAuth({
-    type: UserResDto,
-    summary: 'List users',
-    isPaginated: true,
-  })
+  	@Get()
+  	@ApiAuth({
+		type: UserResDto,
+		summary: 'List users',
+		isPaginated: true,
+ 	 })
+  	findAll(@Query() reqDto: ListUserReqDto,): Promise<OffsetPaginatedDto<UserResDto>> {
+    	return this.userService.findAll(reqDto);
+  	}
 
-  findAll(@Query() reqDto: ListUserReqDto,): Promise<OffsetPaginatedDto<UserResDto>> {
-    return this.userService.findAll(reqDto);
-  }
+  	@Get(':id')
+  	findOne(@Param('id') id: string) {
+    	return this.userService.findOne(+id);
+  	}
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
+  	@Patch(':id')
+  	update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    	return this.userService.update(+id, updateUserDto);
+  	}
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
+  	@Delete(':id')
+  	remove(@Param('id') id: string) {
+    	return this.userService.remove(+id);
+  	}
 }

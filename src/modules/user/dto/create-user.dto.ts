@@ -19,8 +19,11 @@ export class CreateUserDto {
     password: string;
 
     @StringFieldOptional()
-    bio?: string;
+    first_name?: string;
 
     @StringFieldOptional()
-    image?: string;
+    last_name?: string;
+
+    @StringFieldOptional()
+    avatar_id?: string;
 }

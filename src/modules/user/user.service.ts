@@ -13,6 +13,7 @@ import { Repository } from 'typeorm';
 import { ListUserReqDto } from './dto/list-user.req.dto';
 import { UserResDto } from './dto/user.res.dto';
 import { paginate } from '@/utils/offset-pagination';
+import assert from 'assert';
 
 @Injectable()
 export class UserService {
@@ -62,9 +63,12 @@ export class UserService {
     	return new OffsetPaginatedDto(plainToInstance(UserResDto, users), metaDto);
  	}
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+ 	async findOne(id: number) : Promise<UserResDto>{
+		assert(id, 'id is required');
+    	const user = await this.userRepository.findOneByOrFail({ id });
+
+    	return user.toDto(UserResDto);
+ 	}
 
   	async update(id: number, updateUserDto: UpdateUserDto) {
 		const user = await this.userRepository.findOneByOrFail({ id });

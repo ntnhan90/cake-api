@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApiModule } from 'src/modules/api.module';
-// authconfig
+import authConfig from 'src/modules/auth/config/auth.config';
 import { BackgroundModule } from '@/background/background.module';
 import appConfig from 'src/config/app.config';
 import { AllConfigType } from 'src/config/config.type';
@@ -32,7 +32,7 @@ function generateModulesSet() {
     ConfigModule.forRoot({
       isGlobal: true,
       //load: [appConfig, databaseConfig, redisConfig, authConfig, mailConfig],
-      load: [appConfig, databaseConfig, mailConfig],
+      load: [appConfig, databaseConfig, authConfig, mailConfig],
       envFilePath: ['.env'],
     }),
   ];

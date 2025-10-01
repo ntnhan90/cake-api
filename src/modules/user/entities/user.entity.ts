@@ -28,13 +28,13 @@ export class UserEntity extends AbstractEntity {
     @Column()
     last_name:string		
     
-    @Column()
+    @Column({default:1})
     isActive:number	
     
     @Column()
     avatar_id:string	
     
-    @Column()
+    @Column({nullable:true})
     refresh_token:string	
     
     @OneToMany(() => PostEntity, (post) => post.user)
