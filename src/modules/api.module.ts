@@ -6,9 +6,20 @@ import { AuthModule } from './auth/auth.module';
 import { PostModule } from './post/post.module';
 import { ContactModule } from './contact/contact.module';
 import { PaymentModule } from './payment/payment.module';
-import { EcommerceModule } from './ecommerce/ecommerce.module';
+import { CustomersModule } from './customers/customers.module';
+import { LoginModule } from './login/login.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
-  imports: [HealthModule, HomeModule, UserModule, AuthModule, PostModule, ContactModule, PaymentModule, EcommerceModule],
+  	imports: [
+   	 	HealthModule, 
+		HomeModule, 
+		UserModule, 
+		AuthModule, 
+		PostModule, 
+		ContactModule, 
+		PaymentModule, 
+		CustomersModule, LoginModule, ProductsModule,
+	],
 })
 export class ApiModule {}

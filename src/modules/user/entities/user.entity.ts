@@ -2,6 +2,7 @@ import { AbstractEntity } from '@/database/entities/abstract.entity';
 //import { hashPassword as hashPass } from '@/utils/password.util';
 import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany,Relation} from "typeorm";
 import { PostEntity } from 'src/modules/post/entities/post.entity';
+import { SessionEntity } from './session.entity';
 @Entity('users')
 export class UserEntity extends AbstractEntity {
     constructor(data?: Partial<UserEntity>){
@@ -37,6 +38,9 @@ export class UserEntity extends AbstractEntity {
     @Column({nullable:true})
     refresh_token:string	
     
+    @OneToMany(() => SessionEntity, (session) => session.user)
+    sessions?: SessionEntity[];
+
     @OneToMany(() => PostEntity, (post) => post.user)
     posts: Relation<PostEntity[]>;
 }
