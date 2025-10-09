@@ -7,9 +7,9 @@ export enum STATUS {
     PENDING = "pending"
 }
 
-@Entity('products_category')
-export class ProductCategoryEntity extends AbstractEntity {
-    constructor(data?: Partial<ProductCategoryEntity>){
+@Entity('products_colections')
+export class ProductColectionEntity extends AbstractEntity {
+    constructor(data?: Partial<ProductColectionEntity>){
         super();
         Object.assign(this, data)
     }
@@ -20,11 +20,18 @@ export class ProductCategoryEntity extends AbstractEntity {
     @Column()
     name:string
 
-    @Column({default:0})
-    parent_id:number
+    @Column()
+    slug:string
 
     @Column('text',{nullable:true})
     description:string
+
+    @Column({nullable:true})
+    image:string
+
+
+    @Column({default:0})
+    is_featured:number
 
     @Column({
         type: "enum",
@@ -32,14 +39,4 @@ export class ProductCategoryEntity extends AbstractEntity {
         default: STATUS.DRAFT,
     })
     status:string
-
-    @Column({default:0})
-    order:string
-
-    @Column({nullable:true})
-    image:string
-
-    @Column({default:0})
-    is_featured:number
-
 }

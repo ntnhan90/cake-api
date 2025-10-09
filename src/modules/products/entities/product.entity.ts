@@ -1,6 +1,9 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany,JoinTable} from "typeorm";
-import { ProductCategoryEntity } from './product_categories.entity';
+import { ProductCategoryEntity } from './product_category.entity';
+import { ProductTagEntity } from './product_tag.entity';
+import { ProductColectionEntity } from './product_collection.entity';
+
 
 export enum STATUS {
     PUBLISHED = "published",
@@ -85,4 +88,12 @@ export class ProductEntity extends AbstractEntity {
     @ManyToMany(() => ProductCategoryEntity)
     @JoinTable()
     cate: ProductCategoryEntity[]
+
+    @ManyToMany(() => ProductTagEntity)
+    @JoinTable()
+    tag: ProductTagEntity[]
+
+    @ManyToMany(() => ProductColectionEntity)
+    @JoinTable()
+    col: ProductColectionEntity[]
 }

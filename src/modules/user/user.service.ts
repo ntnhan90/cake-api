@@ -7,25 +7,26 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { ErrorCode } from '@/constants/error-code.constant';
 import { ValidationException } from '@/exceptions/validation.exception';
-import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
-import { Repository } from 'typeorm';
 import { ListUserReqDto } from './dto/list-user.req.dto';
 import { UserResDto } from './dto/user.res.dto';
 import { paginate } from '@/utils/offset-pagination';
 import assert from 'assert';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
 	private readonly logger = new Logger(UserService.name);
-	
+	/*
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepository:Repository<UserEntity>,
 	){}
-
+*/
+	constructor(private readonly userRepository: UserRepository) {}
+	
 	async create(dto: CreateUserDto) :Promise<UserResDto> {
-		const { username, email, password } = dto;
+		const { username, email, password, first_name, last_name } = dto;
 
 		// check uniqueness of username/email
 		const user = await this.userRepository.findOne({
@@ -40,6 +41,7 @@ export class UserService {
 		});
 
 		if (user) {
+			console.log("da ton tai")
 			throw new ValidationException(ErrorCode.E001);
 		}
 
@@ -47,6 +49,8 @@ export class UserService {
 			username,
 			email,
 			password,
+			first_name,
+			last_name
 		});
 
 		const savedUser = await this.userRepository.save(newUser);
@@ -72,7 +76,10 @@ export class UserService {
 
   	async update(id: number, updateUserDto: UpdateUserDto) {
 		const user = await this.userRepository.findOneByOrFail({ id });
+		console.log(user);
 		user.password = updateUserDto.password;
+		user.first_name = updateUserDto.first_name;
+		user.last_name = updateUserDto.last_name;
 
     	await this.userRepository.save(user);;
   	}

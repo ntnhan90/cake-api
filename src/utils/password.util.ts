@@ -1,22 +1,14 @@
-import argon2 from 'argon2';
-
-export const hashPassword = async (password: string): Promise<string> => {
+import { compare, hash } from 'bcrypt';
+const saltRounds = 10
+export const hashPassword =  (password: string) => {
     try {
-        return await argon2.hash(password);
+        return  hash(password, saltRounds);
     } catch (err) {
         console.error(err);
         throw new Error('Can not hash password.');
     }
 };
 
-export const verifyPassword = async (
-    password: string,
-     hashedPassword: string,
-): Promise<boolean> => {
-    try {
-        return await argon2.verify(hashedPassword, password);
-    } catch (err) {
-        console.error(err);
-        return false;
-    }
+export const verifyPassword =  (password: string,hash: string)=> {
+   return compare(password, hash)
 };
