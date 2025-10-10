@@ -13,15 +13,26 @@ import { ApiParam, ApiTags } from '@nestjs/swagger';
 export class UserController {
   	constructor(private readonly userService: UserService) {}
 
+	/*
   	@Post()
 	@ApiAuth({
 		type: UserResDto,
 		summary: 'Create user',
 		statusCode: HttpStatus.CREATED,
 	})
-  	async create(@Body() createUserDto: CreateUserDto) : Promise<UserResDto>{
+  	async create(@Body() createUserDto: CreateUserDto) {
 		return this.userService.create(createUserDto);
   	}
+	*/
+	@Post()
+	@ApiAuth({
+		type: UserResDto,
+		summary: 'Create user',
+	})
+	async create(@Body() createUserDto: CreateUserDto){
+		return "123";
+	}
+
 
   	@Get()
   	@ApiAuth({
