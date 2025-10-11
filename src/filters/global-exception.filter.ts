@@ -79,7 +79,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       statusCode,
       error: STATUS_CODES[statusCode],
-      message: 'Validation failed',
+      message: 'Validation failed 12',
       details: this.extractValidationErrorDetails(r.message),
     };
 

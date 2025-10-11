@@ -13,6 +13,7 @@ import { UserResDto } from './dto/user.res.dto';
 import { paginate } from '@/utils/offset-pagination';
 import assert from 'assert';
 import { UserRepository } from './user.repository';
+import { UserAlreadyExistsException } from './user.error';
 
 @Injectable()
 export class UserService {
@@ -41,8 +42,9 @@ export class UserService {
 		});
 
 		if (user) {
-			console.log("da ton tai")
-			throw new ValidationException(ErrorCode.E001);
+			console.log(ErrorCode.E001)
+			throw UserAlreadyExistsException
+			//throw new ValidationException(ErrorCode.E001);
 		}
 
 		const newUser = new UserEntity({

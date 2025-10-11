@@ -15,10 +15,11 @@ export class UserResDto {
 	@Expose()
 	username: string;
 
+	/*
 	@StringField()
 	@Expose()
 	password: string;
-
+*/
 	@StringField()
 	@Expose()
 	avatar_id: string;

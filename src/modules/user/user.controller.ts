@@ -28,9 +28,10 @@ export class UserController {
 	@ApiAuth({
 		type: UserResDto,
 		summary: 'Create user',
+		statusCode: HttpStatus.CREATED,
 	})
-	async create(@Body() createUserDto: CreateUserDto){
-		return "123";
+	async create(@Body() createUserDto: CreateUserDto): Promise<UserResDto>{
+		return await this.userService.create(createUserDto);
 	}
 
 

@@ -30,13 +30,13 @@ import loggerFactory from './logger-factory';
 function generateModulesSet() {
   	const imports: ModuleMetadata['imports'] = [
     ConfigModule.forRoot({
-      isGlobal: true,
-      //load: [appConfig, databaseConfig, redisConfig, authConfig, mailConfig],
-      load: [appConfig, databaseConfig, authConfig, mailConfig],
-      envFilePath: ['.env'],
-    }),
-  ];
-  let customModules: ModuleMetadata['imports'] = [];
+		isGlobal: true,
+		//load: [appConfig, databaseConfig, redisConfig, authConfig, mailConfig],
+		load: [appConfig, databaseConfig, authConfig, mailConfig],
+		envFilePath: ['.env'],
+		}),
+	];
+  	let customModules: ModuleMetadata['imports'] = [];
 
   	const dbModule = TypeOrmModule.forRootAsync({
 		useClass: TypeOrmConfigService,
@@ -49,6 +49,33 @@ function generateModulesSet() {
 		},
 	});
 
+	const i18nModule = I18nModule.forRootAsync({
+		resolvers: [
+			{ use: QueryResolver, options: ['lang'] },
+			AcceptLanguageResolver,
+			new HeaderResolver(['x-lang']),
+		],
+		useFactory: (configService: ConfigService<AllConfigType>) => {
+			const env = configService.get('app.nodeEnv', { infer: true });
+			const isLocal = env === Environment.LOCAL;
+			const isDevelopment = env === Environment.DEVELOPMENT;
+			return {
+				fallbackLanguage: configService.getOrThrow('app.fallbackLanguage', {
+					infer: true,
+				}),
+				loaderOptions: {
+					path: path.join(__dirname, '/../i18n/'),
+					watch: isLocal,
+				},
+				typesOutputPath: path.join(
+					__dirname,
+					'../../src/generated/i18n.generated.ts',
+				),
+				logging: isLocal || isDevelopment, // log info on missing keys
+			};
+		},
+		inject: [ConfigService],
+	});
   	const loggerModule = LoggerModule.forRootAsync({
 		imports: [ConfigModule],
 		inject: [ConfigService],
@@ -63,6 +90,7 @@ function generateModulesSet() {
 				ApiModule,
 				BackgroundModule,
 				dbModule,
+				//i18nModule,
 				loggerModule
 			];
 			break;
@@ -71,20 +99,23 @@ function generateModulesSet() {
 				ApiModule,
 				BackgroundModule,
 				dbModule,
+			//	i18nModule,
 				loggerModule
 			];
       		break;
     	case 'background':
       		customModules = [
 				BackgroundModule,
+			//	i18nModule,
+				dbModule,
 				loggerModule
 			];
       	break;
     	default:
       		console.error(`Unsupported modules set: ${modulesSet}`);
       		break;
-  }
-  return imports.concat(customModules);
+  	}
+  	return imports.concat(customModules);
 }
 
 export default generateModulesSet;
