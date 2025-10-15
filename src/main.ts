@@ -64,7 +64,7 @@ async function bootstrap() {
   });
 
   //app.useGlobalGuards(new AuthGuard(reflector, app.get(AuthService)));
-  app.useGlobalFilters(new GlobalExceptionFilter(configService));
+  // app.useGlobalFilters(new GlobalExceptionFilter(configService));
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

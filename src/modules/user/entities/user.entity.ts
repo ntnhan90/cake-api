@@ -2,7 +2,7 @@ import { AbstractEntity } from '@/database/entities/abstract.entity';
 import { hashPassword as hashPass } from '@/utils/password.util';
 import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany,Relation, BeforeInsert, BeforeUpdate,DeleteDateColumn} from "typeorm";
 import { PostEntity } from 'src/modules/post/entities/post.entity';
-import { SessionEntity } from './session.entity';
+import { DeviceEntity } from './device.entity';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
@@ -37,10 +37,10 @@ export class UserEntity extends AbstractEntity {
     avatar_id:string	
     
     @Column({nullable:true})
-    refresh_token:string	
-    
-    @OneToMany(() => SessionEntity, (session) => session.user)
-    sessions?: SessionEntity[];
+    refresh_token: string
+
+    @OneToMany(() => DeviceEntity, (device) => device.userId)
+    device?: DeviceEntity[];
 
     @OneToMany(() => PostEntity, (post) => post.user)
     posts: Relation<PostEntity[]>;

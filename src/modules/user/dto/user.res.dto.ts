@@ -15,11 +15,10 @@ export class UserResDto {
 	@Expose()
 	username: string;
 
-	/*
 	@StringField()
 	@Expose()
 	password: string;
-*/
+	
 	@StringField()
 	@Expose()
 	avatar_id: string;
@@ -31,6 +30,10 @@ export class UserResDto {
 	@StringField()
 	@Expose()
 	last_name: string;
+
+	@StringField()
+	@Expose()
+	refresh_token: string;
 
 	@NumberField()
 	@Expose()

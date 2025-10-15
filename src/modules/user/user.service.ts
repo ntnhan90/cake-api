@@ -14,16 +14,12 @@ import { paginate } from '@/utils/offset-pagination';
 import assert from 'assert';
 import { UserRepository } from './user.repository';
 import { UserAlreadyExistsException } from './user.error';
+import { compareSync } from 'bcrypt';
 
 @Injectable()
 export class UserService {
 	private readonly logger = new Logger(UserService.name);
-	/*
-	constructor(
-		@InjectRepository(UserEntity)
-		private readonly userRepository:Repository<UserEntity>,
-	){}
-*/
+
 	constructor(private readonly userRepository: UserRepository) {}
 	
 	async create(dto: CreateUserDto) :Promise<UserResDto> {
@@ -77,12 +73,12 @@ export class UserService {
  	}
 
   	async update(id: number, updateUserDto: UpdateUserDto) {
+  		console.log(updateUserDto);
 		const user = await this.userRepository.findOneByOrFail({ id });
-		console.log(user);
 		user.password = updateUserDto.password;
 		user.first_name = updateUserDto.first_name;
 		user.last_name = updateUserDto.last_name;
-
+		user.refresh_token = updateUserDto.refresh_token;
     	await this.userRepository.save(user);;
   	}
 
@@ -90,4 +86,12 @@ export class UserService {
 		await this.userRepository.findOneByOrFail({id});
 		await this.userRepository.softDelete(id);
   	}
+
+	findOneByEmail(email: string) {
+		return  this.userRepository.findOneBy({ email:email });
+	}
+
+	isValidPassword(password:string, hash:string){
+		return compareSync(password, hash)
+	}
 }

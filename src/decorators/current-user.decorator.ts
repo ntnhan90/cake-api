@@ -1,6 +1,15 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
 import { Request } from 'express';
+import { REQUEST_USER_KEY } from '@/constants/app.constant';
+import { AccessTokenPayload } from 'src/types/jwt.type';
+
+export const ActiveUser = createParamDecorator(
+  (field: keyof AccessTokenPayload | undefined, context: ExecutionContext) => {
+    const request = context.switchToHttp().getRequest()
+    const user: AccessTokenPayload | undefined = request[REQUEST_USER_KEY]
+    return field ? user?.[field] : user
+  },
+)
 
 export const CurrentUser = createParamDecorator(
     (data:string, ctx: ExecutionContext) =>{
@@ -10,3 +19,4 @@ export const CurrentUser = createParamDecorator(
         return data ? user?.[data] : user;
     }
 )
+

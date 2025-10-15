@@ -26,4 +26,7 @@ export class CreateUserDto {
 
     @StringFieldOptional()
     avatar_id?: string;
+
+    @StringFieldOptional()
+    refresh_token?: string;
 }

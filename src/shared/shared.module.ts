@@ -5,4 +5,3 @@ import { Global, Module } from '@nestjs/common';
   imports: [],
 })
 export class SharedModule {}
-

@@ -7,8 +7,9 @@ import { PostModule } from './post/post.module';
 import { ContactModule } from './contact/contact.module';
 import { PaymentModule } from './payment/payment.module';
 import { CustomersModule } from './customers/customers.module';
-import { LoginModule } from './login/login.module';
 import { ProductsModule } from './products/products.module';
+import { AdminModule } from './admin/admin.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   	imports: [
@@ -19,7 +20,9 @@ import { ProductsModule } from './products/products.module';
 		PostModule, 
 		ContactModule, 
 		PaymentModule, 
-		CustomersModule, LoginModule, ProductsModule,
+		CustomersModule, 
+		ProductsModule, 
+		AdminModule, RolesModule,
 	],
 })
 export class ApiModule {}

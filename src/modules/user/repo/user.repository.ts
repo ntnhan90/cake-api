@@ -8,10 +8,10 @@ export class UserRepository extends Repository<UserEntity> {
         super(UserEntity, dataSource.createEntityManager());
     }
 
-    // Add custom methods for user-specific data access
-    /*
-    async findActiveUsers(): Promise<User[]> {
-        return this.find({ where: { isActive: true } });
+    async updateRefreshTokenInUser(refreshToken, userId) {
+        await this.update({ id: userId }, {
+            refresh_token:refreshToken
+        })
     }
-        */
+    
 }
