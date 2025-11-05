@@ -7,7 +7,7 @@ export enum STATUS {
     PENDING = "pending"
 }
 
-@Entity('products_tags')
+@Entity('product_tags')
 export class ProductTagEntity extends AbstractEntity {
     constructor(data?: Partial<ProductTagEntity>){
         super();

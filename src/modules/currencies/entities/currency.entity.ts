@@ -2,8 +2,8 @@ import { AbstractEntity } from '@/database/entities/abstract.entity';
 import { Entity, PrimaryGeneratedColumn, Column,} from "typeorm";
 
 @Entity('currencies')
-export class ColumnurrencyEntity extends AbstractEntity {
-    constructor(data?: Partial<ColumnurrencyEntity>){
+export class CurrencyEntity extends AbstractEntity {
+    constructor(data?: Partial<CurrencyEntity>){
         super();
         Object.assign(this, data)
     }
