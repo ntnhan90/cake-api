@@ -41,14 +41,14 @@ export class UserController {
 		summary: 'List users',
 		isPaginated: true,
  	 })
-  	findAll(@Query() reqDto: ListUserReqDto,): Promise<OffsetPaginatedDto<UserResDto>> {
+  	findAll(@Query() reqDto: ListUserReqDto): Promise<OffsetPaginatedDto<UserResDto>> {
     	return this.userService.findAll(reqDto);
   	}
 
   	@Get(':id')
 	@ApiAuth({ type: UserResDto, summary: 'Find user by id' })
   	@ApiParam({ name: 'id', type: 'String' })
-  	findOne(@Param('id') id: string) {
+  	findOne(@Param('id') id: number) {
     	return this.userService.findOne(+id);
   	}
 

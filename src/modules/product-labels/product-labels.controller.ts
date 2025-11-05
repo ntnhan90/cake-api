@@ -11,24 +11,22 @@ export class ProductLabelsController {
   constructor(private readonly productLabelsService: ProductLabelsService) {}
 
   @Post()
-  create(@Body() createProductLabelDto: CreateProductLabelDto) {
-      return this.productLabelsService.create(createProductLabelDto);
+  async create(@Body() createProductLabelDto: CreateProductLabelDto):Promise<LabelsResDto> {
+      return await this.productLabelsService.create(createProductLabelDto);
   }
 
   @Get()
-  findAll(
-    @Query() reqDto: ListLabelsReqDto
-  ):Promise<OffsetPaginatedDto<LabelsResDto>> {
+  findAll(@Query() reqDto: ListLabelsReqDto):Promise<OffsetPaginatedDto<LabelsResDto>> {
       return this.productLabelsService.findAll(reqDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: number) {
     return this.productLabelsService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductLabelDto: UpdateProductLabelDto) {
+  update(@Param('id') id: number, @Body() updateProductLabelDto: UpdateProductLabelDto) {
     return this.productLabelsService.update(+id, updateProductLabelDto);
   }
 

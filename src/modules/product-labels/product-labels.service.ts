@@ -7,36 +7,48 @@ import { ProductLabelsEntity } from './entities/product-label.entity';
 import { ListLabelsReqDto } from './dto/list-labels.req.dto';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
+import { LabelsResDto } from './dto/label.res.dto';
 @Injectable()
 export class ProductLabelsService {
     constructor(private readonly proLabelsRepository: ProductLabelsRepository) {}
 
     create(createProductLabelDto: CreateProductLabelDto) {
-        return 'This action adds a new productLabel';
+        const newUser = this.proLabelsRepository.create(createProductLabelDto);
+        return this.proLabelsRepository.save(newUser);
     }
     
-    async findAll(
-        reqDto: ListLabelsReqDto
-    ):Promise<OffsetPaginatedDto<ListLabelsReqDto>> {
+    async findAll(reqDto: ListLabelsReqDto):Promise<OffsetPaginatedDto<LabelsResDto>> {
         const query = this.proLabelsRepository.createQueryBuilder('product_labels');
         const [posts, metaDto] = await paginate<ProductLabelsEntity>(query, reqDto, {
             skipCount: false,
             takeAll: false,
         });
 
-        return new OffsetPaginatedDto(plainToInstance(ListLabelsReqDto, posts), metaDto);;
+        return new OffsetPaginatedDto(plainToInstance(LabelsResDto, posts), metaDto);;
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} productLabel`;
+    async findOne(id: number) :Promise<LabelsResDto>{
+        const label = await this.proLabelsRepository.findOneByOrFail({id})
+
+        return label.toDto(LabelsResDto);
     }
 
-    update(id: number, updateProductLabelDto: UpdateProductLabelDto) {
-        return `This action updates a #${id} productLabel`;
+    async update(id: number, updateProductLabelDto: UpdateProductLabelDto) {
+        const label = await this.proLabelsRepository.findOneByOrFail({id});
+        if (label) {
+            
+            return this.proLabelsRepository.save(label);
+            console.log("User updated successfully:", label);
+        } else {
+            console.log("User not found.");
+        }
+        
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} productLabel`;
+    async remove(id: number) {
+        await this.proLabelsRepository.findOneByOrFail({id});
+        await this.proLabelsRepository.softDelete({id});
+        //return `This action removes a #${id} productLabel`;
     }
 
     

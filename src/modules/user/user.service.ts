@@ -73,7 +73,6 @@ export class UserService {
  	}
 
   	async update(id: number, updateUserDto: UpdateUserDto) {
-  		console.log(updateUserDto);
 		const user = await this.userRepository.findOneByOrFail({ id });
 		user.password = updateUserDto.password;
 		user.first_name = updateUserDto.first_name;
