@@ -13,11 +13,11 @@ export class ProductCategoryEntity extends AbstractEntity {
         super();
         Object.assign(this, data)
     }
-
+   
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column()   
     name:string
 
     @Column({default:0})

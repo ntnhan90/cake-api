@@ -12,7 +12,7 @@ import { ListUserReqDto } from './dto/list-user.req.dto';
 import { UserResDto } from './dto/user.res.dto';
 import { paginate } from '@/utils/offset-pagination';
 import assert from 'assert';
-import { UserRepository } from './repo/user.repository';
+import { UserRepository } from './repo/user.repo';
 import { UserAlreadyExistsException } from './user.error';
 import { compareSync } from 'bcrypt';
 

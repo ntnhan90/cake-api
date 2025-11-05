@@ -21,14 +21,21 @@ import { CurrenciesModule } from './currencies/currencies.module';
   	imports: [
    	 	HealthModule, 
 		HomeModule, 
-		UserModule, 
+		UserModule,
+		RolesModule,  
 		AuthModule, 
 		PostModule, 
 		ContactModule, 
 		PaymentModule, 
 		CustomersModule, 
 		ProductsModule, 
-		AdminModule, RolesModule, ProductCategoriesModule, ProductTagsModule, ProductCollectionsModule, ProductLabelsModule, ProductAttributesModule, CurrenciesModule,
+		AdminModule, 
+		ProductCategoriesModule, 
+		ProductTagsModule, 
+		ProductCollectionsModule, 
+		ProductLabelsModule, 
+		ProductAttributesModule, 
+		CurrenciesModule,
 	],
 })
 export class ApiModule {}

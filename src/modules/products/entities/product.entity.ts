@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany,Jo
 import { ProductCategoryEntity } from 'src/modules/product-categories/entities/product-category.entity';
 import { ProductTagEntity } from 'src/modules/product-tags/entities/product-tag.entity';
 import { ProductColectionEntity } from 'src/modules/product-collections/entities/product-collection.entity';
-
+import { ProductLabelsEntity } from 'src/modules/product-labels/entities/product-label.entity';
 
 export enum STATUS {
     PUBLISHED = "published",
@@ -53,7 +53,7 @@ export class ProductEntity extends AbstractEntity {
     is_featured:number
 
     @Column('decimal', { precision: 6, scale: 2,nullable:true},)
-    price:number
+    price:number 
 
     @Column('decimal', { precision: 6, scale: 2,nullable:true},)
     sale_price:number
@@ -96,4 +96,8 @@ export class ProductEntity extends AbstractEntity {
     @ManyToMany(() => ProductColectionEntity)
     @JoinTable()
     col: ProductColectionEntity[]
+    
+    @ManyToMany(() => ProductLabelsEntity)
+    @JoinTable()
+    label: ProductLabelsEntity[] 
 }

@@ -2,7 +2,7 @@ import { Injectable,UnauthorizedException, UnprocessableEntityException } from '
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from '@/config/config.type';
-import { UserRepository } from '../user/repo/user.repository';
+import { UserRepository } from '../user/repo/user.repo';
 import { 
     EmailAlreadyExistsException,
     EmailNotFoundException,
