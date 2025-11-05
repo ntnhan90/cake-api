@@ -29,6 +29,9 @@ export class UserEntity extends AbstractEntity {
     
     @Column()
     last_name:string		
+
+    @Column({nullable:true})
+    phone:string	
     
     @Column({default:1})
     isActive:number	

@@ -1,8 +1,8 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany,JoinTable} from "typeorm";
-import { ProductCategoryEntity } from './product_category.entity';
-import { ProductTagEntity } from './product_tag.entity';
-import { ProductColectionEntity } from './product_collection.entity';
+import { ProductCategoryEntity } from 'src/modules/product-categories/entities/product-category.entity';
+import { ProductTagEntity } from 'src/modules/product-tags/entities/product-tag.entity';
+import { ProductColectionEntity } from 'src/modules/product-collections/entities/product-collection.entity';
 
 
 export enum STATUS {

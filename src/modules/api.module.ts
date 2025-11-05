@@ -10,6 +10,12 @@ import { CustomersModule } from './customers/customers.module';
 import { ProductsModule } from './products/products.module';
 import { AdminModule } from './admin/admin.module';
 import { RolesModule } from './roles/roles.module';
+import { ProductCategoriesModule } from './product-categories/product-categories.module';
+import { ProductTagsModule } from './product-tags/product-tags.module';
+import { ProductCollectionsModule } from './product-collections/product-collections.module';
+import { ProductLabelsModule } from './product-labels/product-labels.module';
+import { ProductAttributesModule } from './product-attributes/product-attributes.module';
+import { CurrenciesModule } from './currencies/currencies.module';
 
 @Module({
   	imports: [
@@ -22,7 +28,7 @@ import { RolesModule } from './roles/roles.module';
 		PaymentModule, 
 		CustomersModule, 
 		ProductsModule, 
-		AdminModule, RolesModule,
+		AdminModule, RolesModule, ProductCategoriesModule, ProductTagsModule, ProductCollectionsModule, ProductLabelsModule, ProductAttributesModule, CurrenciesModule,
 	],
 })
 export class ApiModule {}

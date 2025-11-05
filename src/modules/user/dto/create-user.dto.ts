@@ -22,6 +22,9 @@ export class CreateUserDto {
     first_name?: string;
 
     @StringFieldOptional()
+    phone?: string;
+
+    @StringFieldOptional()
     last_name?: string;
 
     @StringFieldOptional()

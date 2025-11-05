@@ -2,7 +2,7 @@ import { Injectable,UnauthorizedException, UnprocessableEntityException } from '
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from '@/config/config.type';
-import { UserRepository } from '../user/user.repository';
+import { UserRepository } from '../user/repo/user.repository';
 import { 
     EmailAlreadyExistsException,
     EmailNotFoundException,
@@ -87,10 +87,7 @@ export class AdminService {
         ])
 
         const decodedRefreshToken = await this.verifyRefreshToken(refreshToken);
-
-        
         const user = this.userRepository.updateRefreshTokenInUser(refreshToken, userId)	
-
 
         return { userId,accessToken, refreshToken }
     }
