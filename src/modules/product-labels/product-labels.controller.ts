@@ -16,18 +16,18 @@ export class ProductLabelsController {
   }
 
   @Get()
-  findAll(@Query() reqDto: ListLabelsReqDto):Promise<OffsetPaginatedDto<LabelsResDto>> {
-      return this.productLabelsService.findAll(reqDto);
+  async findAll(@Query() reqDto: ListLabelsReqDto):Promise<OffsetPaginatedDto<LabelsResDto>> {
+      return await this.productLabelsService.findAll(reqDto);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return this.productLabelsService.findOne(+id);
+    return await this.productLabelsService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateProductLabelDto: UpdateProductLabelDto) {
-    return this.productLabelsService.update(+id, updateProductLabelDto);
+  async update(@Param('id') id: number, @Body() updateProductLabelDto: UpdateProductLabelDto) {
+    return await this.productLabelsService.update(+id, updateProductLabelDto);
   }
 
   @Delete(':id')

@@ -12,7 +12,7 @@ import { LabelsResDto } from './dto/label.res.dto';
 export class ProductLabelsService {
     constructor(private readonly proLabelsRepository: ProductLabelsRepository) {}
 
-    create(createProductLabelDto: CreateProductLabelDto) {
+    async create(createProductLabelDto: CreateProductLabelDto) {
         const newUser = this.proLabelsRepository.create(createProductLabelDto);
         return this.proLabelsRepository.save(newUser);
     }

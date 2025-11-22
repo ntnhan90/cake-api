@@ -5,6 +5,7 @@ import { LoginResDto } from './dto/login.res.dto';
 import { LoginReqDto } from './dto/login.req.dto';
 import { RefreshReqDto } from './dto/refresh.req.dto';
 import { RefreshResDto } from './dto/refresh.res.dto';
+import { Public } from '@/decorators/public.decorators';
 
 @Controller('admin')
 export class AdminController {

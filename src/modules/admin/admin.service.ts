@@ -4,19 +4,10 @@ import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from '@/config/config.type';
 import { UserRepository } from '../user/repo/user.repo';
 import { 
-    EmailAlreadyExistsException,
     EmailNotFoundException,
-    FailedToSendOTPException,
-    InvalidOTPException,
-    InvalidTOTPAndCodeException,
-    InvalidTOTPException,
-    OTPExpiredException,
-    RefreshTokenAlreadyUsedException,
-    TOTPAlreadyEnabledException,
-    TOTPNotEnabledException,
-    UnauthorizedAccessException,
     InvalidPasswordException
 } from './auth.error';
+import { AccountResDto } from './dto/account.dto';
 import { 
     AccessTokenPayload,
     AccessTokenPayloadCreate,
@@ -29,6 +20,7 @@ import { LoginReqDto } from './dto/login.req.dto';
 import { LoginResDto } from './dto/login.res.dto';
 import { RefreshReqDto } from './dto/refresh.req.dto';
 import { RefreshResDto } from './dto/refresh.res.dto';
+import { plainToInstance } from 'class-transformer';
 
 type Token = Branded<
   {
@@ -49,9 +41,9 @@ export class AdminService {
 
     async login(body: LoginReqDto): Promise<LoginResDto>{
         // 1. Lấy thông tin user, kiểm tra user có tồn tại hay không, mật khẩu có đúng không
-        const user = await this.userRepository.findOneBy({ 
-            email: body.email,
-        });
+        const user = await this.userRepository.findOneBy(
+            { email: body.email, },
+        );
 
         if (!user) {
             throw EmailNotFoundException
@@ -63,14 +55,27 @@ export class AdminService {
             throw InvalidPasswordException
         }
         // 3. Tạo mới device
+        
         // 4. Tạo mới accessToken và refreshToken
-        const tokens = await this.generateTokens({
+        const payload :AccessTokenPayloadCreate= {
             userId: user.id,
             deviceId: 1,
             roleId: 1,
             roleName: "Admin",
-        })
-        return tokens
+        }
+        
+        const accessToken = this.signAccessToken(payload)
+        const refreshToken = this.signRefreshToken(payload);
+        const account = plainToInstance(AccountResDto, user);
+
+        const data= {
+            account,
+            accessToken,
+            refreshToken
+        }
+
+        
+        return data
     }
 
     async generateTokens({ userId, deviceId, roleId, roleName }: AccessTokenPayloadCreate){
@@ -93,19 +98,15 @@ export class AdminService {
     }
 
     async refreshToken(dto: RefreshReqDto): Promise<RefreshResDto> {
-
-        const user = await this.userRepository.findOneOrFail({
-            where: { id: 1 },
-            select: ['id'],
-        });
-
+        console.log(dto);
         const tokens = await this.generateTokens({
-            userId: user.id,
+            userId: 1,
             deviceId: 1,
             roleId: 1,
             roleName: "Admin",
         })
-        return tokens;
+
+        return tokens
     }
 
     async logout(refreshToken: string){
@@ -146,7 +147,7 @@ export class AdminService {
         )
     }
       
-    private verifyAccessToken(token: string): Promise<AccessTokenPayload> {
+    public verifyAccessToken(token: string): Promise<AccessTokenPayload> {
         return this.jwtService.verifyAsync(token, {
             secret: this.configService.getOrThrow('auth.secret', { infer: true }),
         })

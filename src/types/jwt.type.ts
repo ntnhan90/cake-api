@@ -1,3 +1,9 @@
+export type JwtPayloadType = {
+  id: string;
+  iat: number;
+  exp: number;
+};
+
 export interface AccessTokenPayloadCreate {
   userId: number
   deviceId: number

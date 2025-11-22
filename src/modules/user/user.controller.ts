@@ -1,4 +1,4 @@
-//import { CursorPaginatedDto } from '@/common/dto/cursor-pagination/paginated.dto';
+import { CursorPaginatedDto } from '@/common/dto/cursor-pagination/paginated.dto';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { Controller, Get, Post, Body, Patch, Param, Delete ,Query,HttpStatus} from '@nestjs/common';
 import { UserService } from './user.service';
@@ -8,6 +8,8 @@ import { ListUserReqDto } from './dto/list-user.req.dto';
 import { UserResDto } from './dto/user.res.dto';
 import { ApiAuth } from '@/decorators/http.decorators';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { Public } from '@/decorators/public.decorators';
+import { AuthOptional } from '@/decorators/auth-optional.decorators';
 
 @Controller('user')
 export class UserController {
@@ -36,10 +38,12 @@ export class UserController {
 
 
   	@Get()
+//	@AuthOptional()
   	@ApiAuth({
 		type: UserResDto,
 		summary: 'List users',
-		isPaginated: true,
+	//	isPaginated: true,
+		auths: ['jwt'],
  	 })
   	findAll(@Query() reqDto: ListUserReqDto): Promise<OffsetPaginatedDto<UserResDto>> {
     	return this.userService.findAll(reqDto);
