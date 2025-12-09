@@ -39,11 +39,12 @@ async function bootstrap() {
     const corsOrigin = configService.getOrThrow('app.corsOrigin', {
         infer: true,
     });
-
+   
     app.enableCors({
         origin: corsOrigin,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        allowedHeaders: 'Content-Type, Accept',
+      //  allowedHeaders: 'Content-Type, Accept',
+        allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
     });
     console.info('CORS Origin:', corsOrigin);

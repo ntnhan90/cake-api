@@ -17,6 +17,8 @@ import { ProductLabelsModule } from './product-labels/product-labels.module';
 import { ProductAttributesModule } from './product-attributes/product-attributes.module';
 import { CurrenciesModule } from './currencies/currencies.module';
 import { ProfileModule } from './profile/profile.module';
+import { MediaModule } from './media/media.module';
+import { TaxModule } from './tax/tax.module';
 
 @Module({
   	imports: [
@@ -36,7 +38,7 @@ import { ProfileModule } from './profile/profile.module';
 		ProductCollectionsModule, 
 		ProductLabelsModule, 
 		ProductAttributesModule, 
-		CurrenciesModule, ProfileModule,
+		CurrenciesModule, ProfileModule, MediaModule, TaxModule,
 	],
 })
 export class ApiModule {}

@@ -25,7 +25,6 @@ export class UserService {
 	async create(dto: CreateUserDto) :Promise<UserResDto> {
 		const { username, email, password, first_name, last_name } = dto;
 
-		// check uniqueness of username/email
 		const user = await this.userRepository.findOne({
 			where: [
 				{

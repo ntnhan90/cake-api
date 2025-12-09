@@ -1,37 +1,27 @@
-import {StringField,NumberField} from '@/decorators/field.decorators';
+import z from "zod";
+import { lowerCaseTransformer } from '@/utils/transformers/lower-case.transformer';
 import { Exclude, Expose } from 'class-transformer';
+import {
+  EmailField,
+  StringField,
+  StringFieldOptional,
+} from '@/decorators/field.decorators';
 
 @Exclude()
 export class ProfileResDto {
-    @StringField()
     @Expose()
-    id: string;
-
-    @StringField()
-    @Expose()
-    email: string;
+    id: number
 
     @StringField()
     @Expose()
     username: string;
 
-    @StringField()
+    @EmailField()
     @Expose()
-    avatar_id: string;
-    
-    @StringField()
-    @Expose()
-    first_name: string;
+    email: string;
 
-    @StringField()
+    @StringFieldOptional()
     @Expose()
-    last_name: string;
-
-    @StringField()
-    @Expose()
-    refresh_token: string;
-
-    @NumberField()
-    @Expose()
-    isActive: number;
+    avatar_id?: string;
 }
+

@@ -1,6 +1,6 @@
 import { CursorPaginatedDto } from '@/common/dto/cursor-pagination/paginated.dto';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
-import { Controller, Get, Post, Body, Patch, Param, Delete ,Query,HttpStatus} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete ,Query,HttpStatus, Put} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -36,13 +36,11 @@ export class UserController {
 		return await this.userService.create(createUserDto);
 	}
 
-
   	@Get()
-//	@AuthOptional()
+	@Public()
   	@ApiAuth({
 		type: UserResDto,
 		summary: 'List users',
-	//	isPaginated: true,
 		auths: ['jwt'],
  	 })
   	findAll(@Query() reqDto: ListUserReqDto): Promise<OffsetPaginatedDto<UserResDto>> {
@@ -50,13 +48,14 @@ export class UserController {
   	}
 
   	@Get(':id')
+	@Public()
 	@ApiAuth({ type: UserResDto, summary: 'Find user by id' })
-  	@ApiParam({ name: 'id', type: 'String' })
-  	findOne(@Param('id') id: number) {
+  	@ApiParam({ name: 'id', type: 'Number' })
+  	findOne(@Param('id') id: number): Promise<UserResDto>  {
     	return this.userService.findOne(+id);
   	}
 
-  	@Patch(':id')
+  	@Put(':id')
 	@ApiAuth({ type: UserResDto, summary: 'Update user' })
   	@ApiParam({ name: 'id', type: 'String' })
   	update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {

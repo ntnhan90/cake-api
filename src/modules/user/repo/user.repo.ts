@@ -16,7 +16,7 @@ export class UserRepository extends Repository<UserEntity> {
     }
 
     async findUniqueIncludeRolePermissions(id){
-        const user = await this.findOneBy({ id });
+        const user = await this.findOneByOrFail({ id });
         return user;
     }
     
