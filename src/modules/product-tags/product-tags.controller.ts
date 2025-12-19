@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
 import { ProductTagsService } from './product-tags.service';
 import { CreateProductTagDto } from './dto/create-product-tag.req.dto';
 import { UpdateProductTagDto } from './dto/update-product-tag.req.dto';
@@ -11,8 +11,8 @@ export class ProductTagsController {
     constructor(private readonly productTagsService: ProductTagsService) {}
 
     @Post()
-    create(@Body() createProductTagDto: CreateProductTagDto) {
-        return this.productTagsService.create(createProductTagDto);
+    async create(@Body() createProductTagDto: CreateProductTagDto): Promise<TagsResDto> {
+        return await this.productTagsService.create(createProductTagDto);
     }
 
     @Get()
@@ -21,17 +21,17 @@ export class ProductTagsController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id') id: number):Promise<TagsResDto> {
         return this.productTagsService.findOne(+id);
     }
 
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() updateProductTagDto: UpdateProductTagDto) {
+    @Put(':id')
+    update(@Param('id') id: number, @Body() updateProductTagDto: UpdateProductTagDto) {
         return this.productTagsService.update(+id, updateProductTagDto);
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
+    remove(@Param('id') id: number) {
         return this.productTagsService.remove(+id);
     }
 }

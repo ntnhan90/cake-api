@@ -1,5 +1,5 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column,} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 export enum STATUS {
     PUBLISHED = "published",
@@ -28,7 +28,6 @@ export class ProductColectionEntity extends AbstractEntity {
 
     @Column({nullable:true})
     image:string
-
 
     @Column({default:0})
     is_featured:number

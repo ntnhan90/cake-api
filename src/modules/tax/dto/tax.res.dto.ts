@@ -11,7 +11,7 @@ export class TaxResDto {
 	@Expose()
 	title: string;
 
-	@StringField()
+	@NumberField()
 	@Expose()
 	percentage: number;
 	

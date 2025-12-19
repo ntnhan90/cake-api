@@ -14,17 +14,11 @@ export class CurrencyEntity extends AbstractEntity {
     @Column()
     title:string
 
-    @Column()
-    symbol:string
-
     @Column({default:0})
     is_prefix_symbol:number
 
-    @Column({default:0, nullable:true})
+    @Column({ type: "decimal", precision: 10, scale: 2 ,default:0, nullable:true})
     decimals:number
-
-    @Column({default:0, nullable:true})
-    order:number
 
     @Column({default:0})
     default:number

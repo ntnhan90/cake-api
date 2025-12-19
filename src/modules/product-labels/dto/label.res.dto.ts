@@ -14,4 +14,7 @@ export class LabelsResDto {
     @Expose()
     color: string;
 
+    @StringField()
+    @Expose()
+    status: string;
 }

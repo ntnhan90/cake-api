@@ -11,10 +11,6 @@ export class CurrencyResDto {
 	@Expose()
 	title: string;
 
-	@StringField()
-	@Expose()
-	symbol: string;
-	
 	@NumberField()
 	@Expose()
 	is_prefix_symbol:number
@@ -23,9 +19,6 @@ export class CurrencyResDto {
 	@Expose()	
 	decimals:number
 
-	@NumberField()
-	@Expose()
-	 order:number
 
 	@NumberField()
 	@Expose()

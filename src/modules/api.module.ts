@@ -5,7 +5,6 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { PostModule } from './post/post.module';
 import { ContactModule } from './contact/contact.module';
-import { PaymentModule } from './payment/payment.module';
 import { CustomersModule } from './customers/customers.module';
 import { ProductsModule } from './products/products.module';
 import { AdminModule } from './admin/admin.module';
@@ -19,26 +18,29 @@ import { CurrenciesModule } from './currencies/currencies.module';
 import { ProfileModule } from './profile/profile.module';
 import { MediaModule } from './media/media.module';
 import { TaxModule } from './tax/tax.module';
+import { PermissionModule } from './permission/permission.module';
 
 @Module({
   	imports: [
+		AdminModule, 
+		AuthModule,
+		ContactModule,
+		CurrenciesModule, 
+		CustomersModule,
    	 	HealthModule, 
 		HomeModule, 
-		UserModule,
-		RolesModule,  
-		AuthModule, 
-		PostModule, 
-		ContactModule, 
-		PaymentModule, 
-		CustomersModule, 
-		ProductsModule, 
-		AdminModule, 
+		MediaModule,
 		ProductCategoriesModule, 
 		ProductTagsModule, 
 		ProductCollectionsModule, 
 		ProductLabelsModule, 
 		ProductAttributesModule, 
-		CurrenciesModule, ProfileModule, MediaModule, TaxModule,
+		ProductsModule, 
+		ProfileModule,
+		PostModule, 
+		RolesModule,
+		TaxModule, 
+		UserModule, PermissionModule,
 	],
 })
 export class ApiModule {}

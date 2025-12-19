@@ -8,30 +8,30 @@ import { LabelsResDto } from './dto/label.res.dto';
 
 @Controller('product-labels')
 export class ProductLabelsController {
-  constructor(private readonly productLabelsService: ProductLabelsService) {}
+    constructor(private readonly productLabelsService: ProductLabelsService) {}
 
-  @Post()
-  async create(@Body() createProductLabelDto: CreateProductLabelDto):Promise<LabelsResDto> {
-      return await this.productLabelsService.create(createProductLabelDto);
-  }
+    @Post()
+    async create(@Body() dto: CreateProductLabelDto):Promise<LabelsResDto> {
+        return await this.productLabelsService.create(dto);
+    }
 
-  @Get()
-  async findAll(@Query() reqDto: ListLabelsReqDto):Promise<OffsetPaginatedDto<LabelsResDto>> {
-      return await this.productLabelsService.findAll(reqDto);
-  }
+    @Get()
+    async findAll(@Query() reqDto: ListLabelsReqDto):Promise<OffsetPaginatedDto<LabelsResDto>> {
+        return await this.productLabelsService.findAll(reqDto);
+    }
 
-  @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return await this.productLabelsService.findOne(+id);
-  }
+    @Get(':id')
+    async findOne(@Param('id') id: number) {
+      return await this.productLabelsService.findOne(+id);
+    }
 
-  @Patch(':id')
-  async update(@Param('id') id: number, @Body() updateProductLabelDto: UpdateProductLabelDto) {
-    return await this.productLabelsService.update(+id, updateProductLabelDto);
-  }
+    @Patch(':id')
+    async update(@Param('id') id: number, @Body() dto: UpdateProductLabelDto) {
+      return await this.productLabelsService.update(+id, dto);
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productLabelsService.remove(+id);
-  }
+    @Delete(':id')
+    remove(@Param('id') id: number) {
+      return this.productLabelsService.remove(+id);
+    }
 }

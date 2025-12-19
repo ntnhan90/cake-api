@@ -12,6 +12,13 @@ export class TagsResDto {
 
     @StringField()
     @Expose()
-    color: string;
+    slug: string;
 
+    @StringField()
+    @Expose()
+    description: string;
+
+    @StringField()
+    @Expose()
+    status: string;
 }

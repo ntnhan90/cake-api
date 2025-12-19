@@ -20,6 +20,9 @@ export class ProductCategoryEntity extends AbstractEntity {
     @Column()   
     name:string
 
+    @Column()   
+    slug:string
+
     @Column({default:0})
     parent_id:number
 
@@ -34,12 +37,11 @@ export class ProductCategoryEntity extends AbstractEntity {
     status:string
 
     @Column({default:0})
-    order:string
+    order:number
 
     @Column({nullable:true})
     image:string
 
     @Column({default:0})
     is_featured:number
-
 }

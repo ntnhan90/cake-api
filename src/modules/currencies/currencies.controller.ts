@@ -16,7 +16,7 @@ export class CurrenciesController {
     }
 
     @Get()
-   // @Public()
+    @Public()
     async findAll(@Query() reqDto:ListCurrencyReqDto) : Promise<OffsetPaginatedDto<CurrencyResDto>> {
         return await this.currenciesService.findAll(reqDto);
     }

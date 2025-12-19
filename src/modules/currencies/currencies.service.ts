@@ -43,10 +43,8 @@ export class CurrenciesService {
         const currency = await this.currencyRepo.findOneByOrFail({id})
 
         currency.title = dto.title;
-        currency.symbol = dto.symbol;
         currency.is_prefix_symbol = dto.is_prefix_symbol;
         currency.decimals = dto.decimals;
-        currency.order = dto.order;
         currency.default = dto.default;
         currency.exchange_rate= dto.exchange_rate;
         return this.currencyRepo.save(currency);

@@ -12,13 +12,16 @@ import { LabelsResDto } from './dto/label.res.dto';
 export class ProductLabelsService {
     constructor(private readonly proLabelsRepository: ProductLabelsRepository) {}
 
-    async create(createProductLabelDto: CreateProductLabelDto) {
-        const newUser = this.proLabelsRepository.create(createProductLabelDto);
-        return this.proLabelsRepository.save(newUser);
+    async create(dto: CreateProductLabelDto) {
+        const newLabel = this.proLabelsRepository.create(dto);
+        return this.proLabelsRepository.save(newLabel);
     }
     
     async findAll(reqDto: ListLabelsReqDto):Promise<OffsetPaginatedDto<LabelsResDto>> {
-        const query = this.proLabelsRepository.createQueryBuilder('product_labels');
+        const query = this.proLabelsRepository.createQueryBuilder('product_labels').orderBy(
+            'product_labels.createdAt',
+            'DESC'
+        )
         const [posts, metaDto] = await paginate<ProductLabelsEntity>(query, reqDto, {
             skipCount: false,
             takeAll: false,
@@ -33,16 +36,13 @@ export class ProductLabelsService {
         return label.toDto(LabelsResDto);
     }
 
-    async update(id: number, updateProductLabelDto: UpdateProductLabelDto) {
+    async update(id: number, dto: UpdateProductLabelDto) {
         const label = await this.proLabelsRepository.findOneByOrFail({id});
-        if (label) {
-            
-            return this.proLabelsRepository.save(label);
-            console.log("User updated successfully:", label);
-        } else {
-            console.log("User not found.");
-        }
+        label.name = dto.name;
+        label.color = dto.color;
+        label.status = dto.status;
         
+        return this.proLabelsRepository.save(label)
     }
 
     async remove(id: number) {

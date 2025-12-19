@@ -1,34 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete , Query} from '@nestjs/common';
 import { ProductCategoriesService } from './product-categories.service';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
 import { UpdateProductCategoryDto } from './dto/update-product-category.dto';
+import { ListProductCateReqDto } from './dto/list-cate.req.dto';
+import { ProductCateResDto } from './dto/cate.res.dto';
+import { Public } from '@/decorators/public.decorators';
+import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 
 @Controller('product-categories')
 export class ProductCategoriesController {
-  constructor(private readonly productCategoriesService: ProductCategoriesService) {}
+    constructor(private readonly productCategoriesService: ProductCategoriesService) {}
 
-  @Post()
-  create(@Body() createProductCategoryDto: CreateProductCategoryDto) {
-    return this.productCategoriesService.create(createProductCategoryDto);
-  }
+    @Post()
+    async create(@Body() dto: CreateProductCategoryDto) :Promise<ProductCateResDto>{
+        return await this.productCategoriesService.create(dto);
+    }
 
-  @Get()
-  findAll() {
-    return this.productCategoriesService.findAll();
-  }
+    @Get()
+    async findAll(@Query() reqDto: ListProductCateReqDto) :Promise<OffsetPaginatedDto<ProductCateResDto>>{
+        return await this.productCategoriesService.findAll(reqDto);
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productCategoriesService.findOne(+id);
-  }
+    @Get(':id')
+    findOne(@Param('id') id: number) :Promise<ProductCateResDto> {
+        return this.productCategoriesService.findOne(+id);
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductCategoryDto: UpdateProductCategoryDto) {
-    return this.productCategoriesService.update(+id, updateProductCategoryDto);
-  }
+    @Put(':id')
+    update(@Param('id') id: number, @Body() dto: UpdateProductCategoryDto) {
+        return this.productCategoriesService.update(+id, dto);
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productCategoriesService.remove(+id);
-  }
+    @Delete(':id')
+    remove(@Param('id') id: number) {
+        return this.productCategoriesService.remove(+id);
+    }
 }

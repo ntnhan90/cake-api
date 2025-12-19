@@ -24,6 +24,9 @@ export class ProductEntity extends AbstractEntity {
     @Column()
     name:string
 
+    @Column()
+    slug:string
+
     @Column('text',{nullable:true})
     description:string
 
