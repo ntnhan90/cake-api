@@ -6,6 +6,7 @@ import { Multer } from 'multer';
 import { Public } from '@/decorators/public.decorators';
 import * as fs from 'fs';
 import * as path from 'path';
+import { makeSlug } from '@/utils/slug';
 
 @Controller('media')
 export class MediaController {
@@ -24,22 +25,23 @@ export class MediaController {
     @Post('uploadFolder')
     async uploadFolder(
         @Body('user_id') user_id: number,
-        @Body('folderName') folderName: string,
+        @Body('name') name: string,
         @Body('parent') parent?: string,
     ) {
-        if (!folderName) {
+        if (!name) {
             return { error: 'folderName is required' };
         }
-
+        let slug = makeSlug(name);
         const uploadRoot = path.join(process.cwd(), 'uploads');
         const folderPath = parent
-        ? path.join(uploadRoot, parent, folderName)
-        : path.join(uploadRoot, folderName);
-
+        ? path.join(uploadRoot, parent, slug)
+        : path.join(uploadRoot, slug);
+        
+        // folderPath = makeSlug(folderPath);
         // Kiểm tra nếu folder chưa tồn tại → tạo
         if (!fs.existsSync(folderPath)) {
             let parent_id = 0;
-            const saved = await this.mediaService.uploadFolder(folderName, parent_id , user_id)
+            const saved = await this.mediaService.uploadFolder(name, parent_id , user_id,slug)
             fs.mkdirSync(folderPath, { recursive: true });
             return { message: 'Folder created', path: folderPath };
         }

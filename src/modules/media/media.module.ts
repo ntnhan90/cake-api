@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
     destination: ( req, file, callback) =>{
         const folderName = req.body.folderName;
         // gốc upload
-        const uploadRoot = path.join(process.cwd(), 'upload');
+        const uploadRoot = path.join(process.cwd(), 'uploads');
         // nếu có folderName => tạo folder con
         const folderPath = folderName
         ? path.join(uploadRoot, folderName)

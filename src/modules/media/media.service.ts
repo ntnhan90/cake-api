@@ -27,11 +27,11 @@ export class MediaService {
         return this.fileRepo.save(entity);
     }
 
-    uploadFolder(folder_name,parent_id,user_id){
+    uploadFolder(folder_name,parent_id,user_id,slug){
         const entity = this.folderRepo.create({
             user_id:user_id,
             name:folder_name,
-            slug:folder_name,
+            slug:slug,
             parent_id:parent_id,
         });
 
