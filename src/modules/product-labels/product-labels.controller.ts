@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
 import { ProductLabelsService } from './product-labels.service';
 import { CreateProductLabelDto } from './dto/create-product-label.dto';
 import { UpdateProductLabelDto } from './dto/update-product-label.dto';
@@ -25,7 +25,7 @@ export class ProductLabelsController {
       return await this.productLabelsService.findOne(+id);
     }
 
-    @Patch(':id')
+    @Put(':id')
     async update(@Param('id') id: number, @Body() dto: UpdateProductLabelDto) {
       return await this.productLabelsService.update(+id, dto);
     }

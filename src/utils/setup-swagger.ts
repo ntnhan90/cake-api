@@ -18,7 +18,7 @@ function setupSwagger(app: INestApplication) {
       configService.getOrThrow('app.url', { infer: true }),
       'Development',
     )
-    .addServer('https://example.com', 'Staging')
+    .addServer('/maycake',)
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

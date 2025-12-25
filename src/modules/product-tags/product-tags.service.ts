@@ -9,6 +9,8 @@ import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import { ProductTagEntity } from './entities/product-tag.entity';
 import assert from 'assert';
+import slugify from 'slugify';
+
 @Injectable()
 export class ProductTagsService {
     constructor(private readonly proTagsRepo : ProductTagsRepository){};
@@ -50,5 +52,42 @@ export class ProductTagsService {
     async remove(id: number) {
         return this.proTagsRepo.findOneByOrFail({id});
         return this.proTagsRepo.softDelete(id);
+    }
+
+    async isSlugExists(slug:string) :Promise<boolean>{
+        const count = await this.proTagsRepo.count({
+            where: {slug},
+        })
+        return count > 0;
+    }
+
+    async findSimilarSlugs( baseSlug: string) : Promise<string[]>{
+        const rows = await this.proTagsRepo
+            .createQueryBuilder('product_tags')
+            .select('product_tags.slug')
+            .where('product_tags.slug = :base', { base: baseSlug })
+            .orWhere('product_tags.slug LIKE :like', {
+                like: `${baseSlug}-%`,
+            })
+            .getRawMany()
+
+        return rows.map((r) => r.post_slug)
+    }
+
+    async generateUniqueSlug(title: string): Promise<string> {
+        const baseSlug = slugify(title)
+        const slugs = await this.findSimilarSlugs(baseSlug)
+
+        if (!slugs.includes(baseSlug)) return baseSlug
+
+        let max = 0
+        slugs.forEach((s) => {
+            const match = s.match(new RegExp(`^${baseSlug}-(\\d+)$`))
+            if (match) {
+            max = Math.max(max, Number(match[1]))
+            }
+        })
+
+        return `${baseSlug}-${max + 1}`
     }
 }
