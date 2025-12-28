@@ -1,8 +1,7 @@
-import {
-  StringField,
-} from '@/decorators/field.decorators';
-
+import {StringField,} from '@/decorators/field.decorators';
+import { IsNotEmpty } from 'class-validator'
 export class CreateProductTagDto {
+    @IsNotEmpty()
     @StringField()
     name:string
     

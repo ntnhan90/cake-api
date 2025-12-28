@@ -1,5 +1,5 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column,} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column,Index} from "typeorm";
 
 export enum STATUS {
     PUBLISHED = "published",
@@ -8,6 +8,7 @@ export enum STATUS {
 }
 
 @Entity('product_tags')
+@Index(['name'], { unique: true })
 export class ProductTagEntity extends AbstractEntity {
     constructor(data?: Partial<ProductTagEntity>){
         super();

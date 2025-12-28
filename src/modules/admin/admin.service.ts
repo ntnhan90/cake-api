@@ -98,7 +98,6 @@ export class AdminService {
     }
 
     async refreshToken(dto: RefreshReqDto): Promise<RefreshResDto> {
-        console.log(dto);
         const tokens = await this.generateTokens({
             userId: 1,
             deviceId: 1,

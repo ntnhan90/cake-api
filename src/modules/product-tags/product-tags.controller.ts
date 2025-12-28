@@ -35,21 +35,12 @@ export class ProductTagsController {
         return this.productTagsService.remove(+id);
     }
 
-    @Get('check-slug')
-    async checkSlug(@Query('slug') slug: string) {
-        if (!slug) {
-        return { exists: false }
-        }
 
-        const exists = await this.productTagsService.isSlugExists(slug)
+    @Get('check-name')
+        async checkName(@Query('name') name: string) {
+        if (!name) return { exists: false }
+
+        const exists = await this.productTagsService.isNameExists(name)
         return { exists }
-    }
-
-    @Get('resolve-slug')
-    async resolveSlug(@Query('name') name: string) {
-        if (!name) return { slug: '' }
-
-        const slug = await this.productTagsService.generateUniqueSlug(name)
-        return { slug }
     }
 }
