@@ -39,12 +39,29 @@ async function bootstrap() {
     const corsOrigin = configService.getOrThrow('app.corsOrigin', {
         infer: true,
     });
-   
+    
+    const allowedOrigins = [
+        'http://localhost:4000',
+        'http://dotstore.vn',
+        'https://dotstore.vn',
+        'https://www.dotstore.vn',
+        'https://admin.dotstore.vn',
+    ];
+
     app.enableCors({
-        origin: corsOrigin,
+        origin: (origin, callback) => {
+            // Cho phép swagger, postman, curl (origin = undefined)
+            if (!origin) return callback(null, true);
+
+            if (allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+
+            return callback(new Error(`CORS blocked origin: ${origin}`), false);
+        },
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       //  allowedHeaders: 'Content-Type, Accept',
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Api-Key'],
         credentials: true,
     });
     console.info('CORS Origin:', corsOrigin);

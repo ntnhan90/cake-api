@@ -4,27 +4,24 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 function setupSwagger(app: INestApplication) {
-  const configService = app.get(ConfigService<AllConfigType>);
-  const appName = configService.getOrThrow('app.name', { infer: true });
+	const configService = app.get(ConfigService<AllConfigType>);
+	const appName = configService.getOrThrow('app.name', { infer: true });
+	const appUrl = configService.getOrThrow('app.url', { infer: true });
 
-  const config = new DocumentBuilder()
-    .setTitle(appName)
-    .setDescription('A boolerplate project')
-    .setVersion('1.0')
-    .setContact('Company Name', 'Dotsgrowth', 'ntnhan90@gmail.com')
-    .addBearerAuth()
-    .addApiKey({ type: 'apiKey', name: 'Api-Key', in: 'header' }, 'Api-Key')
-    .addServer(
-      configService.getOrThrow('app.url', { infer: true }),
-      'Development',
-    )
-    .addServer('/maycake',)
-    .build();
+	const config = new DocumentBuilder()
+		.setTitle(appName)
+		.setDescription('A boolerplate project')
+		.setVersion('1.0')
+		.setContact('Company Name', 'Dotsgrowth', 'ntnhan90@gmail.com')
+		.addBearerAuth()
+		.addApiKey({ type: 'apiKey', name: 'Api-Key', in: 'header' }, 'Api-Key')
+		.addServer(appUrl, 'Production')
+		.build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document, {
-    customSiteTitle: appName,
-  });
+	const document = SwaggerModule.createDocument(app, config);
+	SwaggerModule.setup('api-docs', app, document, {
+		customSiteTitle: appName,
+	});
 }
 
 export default setupSwagger;
