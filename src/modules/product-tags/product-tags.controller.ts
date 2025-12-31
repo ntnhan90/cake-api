@@ -11,8 +11,8 @@ export class ProductTagsController {
     constructor(private readonly productTagsService: ProductTagsService) {}
 
     @Post()
-    async create(@Body() createProductTagDto: CreateProductTagDto): Promise<TagsResDto> {
-        return await this.productTagsService.create(createProductTagDto);
+    async create(@Body() dto: CreateProductTagDto): Promise<TagsResDto> {
+        return await this.productTagsService.create(dto);
     }
 
     @Get()

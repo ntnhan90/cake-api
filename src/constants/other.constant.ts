@@ -1,6 +1,6 @@
 import path from 'path'
 
-export const UPLOAD_DIR = path.resolve('upload')
+export const UPLOAD_DIR = path.resolve('uploads')
 export const ALL_LANGUAGE_CODE = 'all'
 export const OrderBy = {
   Asc: 'asc',

@@ -1,4 +1,4 @@
-import { Injectable,UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable,UnauthorizedException, UnprocessableEntityException,HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from '@/config/config.type';
@@ -98,18 +98,47 @@ export class AdminService {
     }
 
     async refreshToken(dto: RefreshReqDto): Promise<RefreshResDto> {
-        const tokens = await this.generateTokens({
-            userId: 1,
-            deviceId: 1,
-            roleId: 1,
-            roleName: "Admin",
-        })
+        try {
+            // 1. Kiểm tra refreshToken có hợp lệ không
+            const { userId } = await this.verifyRefreshToken(dto.refreshToken)
+            // 2. Kiểm tra refreshToken có tồn tại trong database không
+           
+            // 4. Xóa refreshToken cũ
+       
+            // 5. Tạo mới accessToken và refreshToken
+            const user = await this.userRepository.findOneBy(
+                { id: userId, },
+            );
 
-        return tokens
+            const payload :AccessTokenPayloadCreate= {
+                userId: userId,
+                deviceId: 1,
+                roleId: 1,
+                roleName: "Admin",
+            }
+            const accessToken = this.signAccessToken(payload)
+            const refreshToken = this.signRefreshToken(payload);
+            const account = plainToInstance(AccountResDto, user);
+
+            const data= {
+                user,
+                accessToken,
+                refreshToken
+            }
+
+            return data
+
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error
+            }
+            throw new UnauthorizedException('Error.UnauthorizedAccess')
+        }  
+
+       
     }
 
     async logout(refreshToken: string){
-        console.log(refreshToken);
         try {
             // 1. Kiểm tra refreshToken có hợp lệ không
             const user = await this.verifyRefreshToken(refreshToken)

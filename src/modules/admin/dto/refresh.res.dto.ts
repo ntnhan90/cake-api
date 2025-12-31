@@ -6,5 +6,4 @@ export class RefreshResDto {
 
   @StringField()
   refreshToken!: string;
-
 }

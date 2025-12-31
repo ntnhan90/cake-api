@@ -13,7 +13,7 @@ export class MediaFolderEntity extends AbstractEntity{
     id: number
 
     @Column()
-    user_id:string
+    user_id:number
 
     @Column({nullable:true})
     name:string
@@ -22,7 +22,10 @@ export class MediaFolderEntity extends AbstractEntity{
     slug:string
 
     @Column({default:0})
-    parent_id:string
+    parent_id:number
+
+    @Column()
+    path: string;
 
     @DeleteDateColumn({
         name: 'deleted_at',

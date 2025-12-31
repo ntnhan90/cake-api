@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,NotFoundException,BadRequestException } from '@nestjs/common';
 import { Multer } from 'multer';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MediaFileEntity } from './entities/file.entity';
 import { MediaFolderEntity } from './entities/folder.entity';
 import { MediaTreeType } from 'src/types/media.type';
+import slugify from 'slugify';
+import { CreateFolderDto } from './dto/create-media.dto';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class MediaService {
@@ -13,12 +17,20 @@ export class MediaService {
         @InjectRepository(MediaFolderEntity)   private folderRepo: Repository<MediaFolderEntity>,
     ){}
 
-    async saveFile(file: Multer.File, folder_id, user_id) {
+    async uploadFile(
+        file: Express.Multer.File,
+        folderId: number,
+        userId:number
+    ) {
+        if (!file) {
+            throw new BadRequestException('File is required')
+        }
+        const url = file.path.replace(/\\/g, '/')
         const entity = this.fileRepo.create({
-            user_id: user_id,
+            user_id: userId,
             name: file.filename,
             alt: file.filename,
-            folder_id: folder_id,
+            folder_id: folderId,
             mime_type: file.mimetype,
             size: file.size,
             url: file.path.replace(/\\/g, '/'), // fix cho Windows
@@ -27,12 +39,36 @@ export class MediaService {
         return this.fileRepo.save(entity);
     }
 
-    uploadFolder(folder_name,parent_id,user_id,slug){
+    async uploadFolder(user_id, name , parent_id){
+       // return dto;
+        const slug = name;
+        let pathDb: string;
+        
+        if (parent_id) {
+            const parent = await this.folderRepo.findOne({
+                where: { id: parent_id },
+            });
+
+            if (!parent) {
+                throw new NotFoundException('Parent folder not found');
+            }
+            pathDb = `${parent.path}/${slug}`;
+        } else {
+            pathDb = `root/${slug}`;
+        }
+          // 🔹 2. Tạo folder vật lý
+        const uploadRoot = process.env.UPLOAD_ROOT || 'uploads';
+
+        const physicalPath = path.join(uploadRoot, pathDb);
+        // mkdir -p (recursive)
+        fs.mkdirSync(physicalPath, { recursive: true });
+
         const entity = this.folderRepo.create({
-            user_id:user_id,
-            name:folder_name,
+            user_id: user_id,
+            name:name,
             slug:slug,
             parent_id:parent_id,
+            path: pathDb,
         });
 
         return this.folderRepo.save(entity);

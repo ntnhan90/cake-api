@@ -1,55 +1,40 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { MediaService } from './media.service';
 import { MediaController } from './media.controller';
-import { MulterModule } from '@nestjs/platform-express';
-import { existsSync, mkdirSync } from 'fs';
-import multer from 'multer'
-import { UPLOAD_DIR } from '@/constants/other.constant';
-import { generateRandomFilename } from '@/utils/helpers';
-import * as fs from 'fs';
-import * as path from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MediaFileEntity } from './entities/file.entity';
 import { MediaFolderEntity } from './entities/folder.entity';
+import { MulterModule } from '@nestjs/platform-express';
+import { UPLOAD_DIR } from '@/constants/other.constant';
+import multer from 'multer'
+import { generateRandomFilename } from '@/utils/helpers';
+import { existsSync, mkdirSync } from 'fs'
 
 const storage = multer.diskStorage({
-    destination: ( req, file, callback) =>{
-        const folderName = req.body.folderName;
-        // gốc upload
-        const uploadRoot = path.join(process.cwd(), 'uploads');
-        // nếu có folderName => tạo folder con
-        const folderPath = folderName
-        ? path.join(uploadRoot, folderName)
-        : uploadRoot;
-    
-        
-        // Tạo thư mục nếu chưa có
-        if(!fs.existsSync(folderPath)){
-            fs.mkdirSync(folderPath, { recursive: true});
-        }
-    
-        callback(null, folderPath)
-    },
-    filename:(req, file, callback) =>{
-        const newFilename = generateRandomFilename(file.originalname)
-        callback(null, newFilename)
-    }
+  destination: function (req, file, cb) {
+    cb(null, UPLOAD_DIR)
+  },
+  filename: function (req, file, cb) {
+    const newFilename = generateRandomFilename(file.originalname)
+    cb(null, newFilename)
+  },
 })
 
 @Module({
     imports:[
+        TypeOrmModule.forFeature([MediaFileEntity, MediaFolderEntity]),
         MulterModule.register({
-            storage,
+          storage,
         }),
-        TypeOrmModule.forFeature([MediaFileEntity, MediaFolderEntity])
     ],
     controllers: [MediaController],
     providers: [MediaService],
 })
+
 export class MediaModule {
-    constructor(){
-        if(!existsSync(UPLOAD_DIR)){
-            mkdirSync(UPLOAD_DIR,{ recursive: true})
-        }
+  constructor() {
+    if (!existsSync(UPLOAD_DIR)) {
+      mkdirSync(UPLOAD_DIR, { recursive: true })
     }
+  }
 }
