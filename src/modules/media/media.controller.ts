@@ -8,19 +8,19 @@ import {
   Get
 } from '@nestjs/common';
 import { MediaService } from './media.service';
-import { FileInterceptor ,FilesInterceptor} from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { Request } from 'express';
-import * as fs from 'fs';
-import { generateRandomFilename } from '@/utils/helpers';
 import { Public } from '@/decorators/public.decorators';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('media')
 export class MediaController {
     constructor(private readonly mediaService: MediaService) {}
     
     @Post('uploadFile')
-    @UseInterceptors(FileInterceptor('file'))
+    @UseInterceptors(
+        FileInterceptor('file', {
+            dest: 'uploads/tmp', // upload tạm
+        }),
+    )
     uploadFile( 
         @UploadedFile() file: Express.Multer.File,
         @Body('folder_id') folderId: number,
@@ -28,13 +28,7 @@ export class MediaController {
     ) {
         return this.mediaService.uploadFile(file, folderId,user_Id);
     }
-    /*
-    async uploadFile(
-        @UploadedFile() file: Express.Multer.File,
-        @Body('folder_id') folderId: number
-    ) {
-        return this.mediaService.uploadFile(file, folderId);
-    }*/
+    
 
     @Post('uploadFolder')
     async uploadFolder(

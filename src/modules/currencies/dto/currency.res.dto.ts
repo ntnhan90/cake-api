@@ -3,7 +3,7 @@ import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
 export class CurrencyResDto {
-	@StringField()
+	@NumberField()
 	@Expose()
 	id: number;
 

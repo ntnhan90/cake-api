@@ -5,8 +5,8 @@ import { Repository } from 'typeorm';
 import { MediaFileEntity } from './entities/file.entity';
 import { MediaFolderEntity } from './entities/folder.entity';
 import { MediaTreeType } from 'src/types/media.type';
-import slugify from 'slugify';
-import { CreateFolderDto } from './dto/create-media.dto';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -17,15 +17,35 @@ export class MediaService {
         @InjectRepository(MediaFolderEntity)   private folderRepo: Repository<MediaFolderEntity>,
     ){}
 
+
     async uploadFile(
         file: Express.Multer.File,
         folderId: number,
         userId:number
     ) {
-        if (!file) {
-            throw new BadRequestException('File is required')
+        let uploadDir = path.join(process.cwd(), 'uploads');
+        if (folderId !== 0) {
+            const folder = await this.folderRepo.findOne({
+                where: { id: folderId },
+            });
+
+            if (!folder) {
+                throw new BadRequestException('Folder not found');
+            }
+
+            uploadDir = path.join(uploadDir, folder.name);
         }
-        const url = file.path.replace(/\\/g, '/')
+        console.log("uploadDir ,", uploadDir );
+        // tạo folder nếu chưa có
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        const finalPath = path.join(uploadDir, file.originalname);
+
+        // move file từ tmp → folder thật
+        fs.renameSync(file.path, finalPath);
+
         const entity = this.fileRepo.create({
             user_id: userId,
             name: file.filename,
@@ -54,7 +74,7 @@ export class MediaService {
             }
             pathDb = `${parent.path}/${slug}`;
         } else {
-            pathDb = `root/${slug}`;
+            pathDb = `${slug}`;
         }
           // 🔹 2. Tạo folder vật lý
         const uploadRoot = process.env.UPLOAD_ROOT || 'uploads';
