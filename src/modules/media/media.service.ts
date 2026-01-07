@@ -35,6 +35,7 @@ export class MediaService {
 
             uploadDir = path.join(uploadDir, folder.name);
         }
+         
         console.log("uploadDir ,", uploadDir );
         // tạo folder nếu chưa có
         if (!fs.existsSync(uploadDir)) {
@@ -46,6 +47,7 @@ export class MediaService {
         // move file từ tmp → folder thật
         fs.renameSync(file.path, finalPath);
 
+        /*
         const entity = this.fileRepo.create({
             user_id: userId,
             name: file.filename,
@@ -57,6 +59,8 @@ export class MediaService {
         });
 
         return this.fileRepo.save(entity);
+        */
+        return file.path;
     }
 
     async uploadFolder(user_id, name , parent_id){

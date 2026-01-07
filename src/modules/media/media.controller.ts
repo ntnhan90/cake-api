@@ -26,7 +26,7 @@ export class MediaController {
         @Body('folder_id') folderId: number,
         @Body('user_id') user_Id: number
     ) {
-        return this.mediaService.uploadFile(file, folderId,user_Id);
+        return this.mediaService.uploadFile(file, folderId, user_Id);
     }
     
 

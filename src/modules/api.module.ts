@@ -19,6 +19,8 @@ import { ProfileModule } from './profile/profile.module';
 import { MediaModule } from './media/media.module';
 import { TaxModule } from './tax/tax.module';
 import { PermissionModule } from './permission/permission.module';
+import { FaqsModule } from './faqs/faqs.module';
+import { FaqCateModule } from './faq-cate/faq-cate.module';
 
 @Module({
   	imports: [
@@ -40,7 +42,9 @@ import { PermissionModule } from './permission/permission.module';
 		PostModule, 
 		RolesModule,
 		TaxModule, 
-		UserModule, PermissionModule,
+		UserModule,
+		PermissionModule, 
+		FaqsModule, FaqCateModule,
 	],
 })
 export class ApiModule {}

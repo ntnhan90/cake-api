@@ -11,8 +11,8 @@ export class CurrenciesController {
     constructor(private readonly currenciesService: CurrenciesService) {}
 
     @Post()
-    async create(@Body() createCurrencyDto: CreateCurrencyDto):Promise<CurrencyResDto> {
-        return await this.currenciesService.create(createCurrencyDto);
+    async create(@Body() dto: CreateCurrencyDto):Promise<CurrencyResDto> {
+        return await this.currenciesService.create(dto);
     }
 
     @Get()
@@ -27,8 +27,8 @@ export class CurrenciesController {
     }
 
     @Put(':id')
-    update(@Param('id') id: number, @Body() updateCurrencyDto: UpdateCurrencyDto) {
-        return this.currenciesService.update(+id, updateCurrencyDto);
+    update(@Param('id') id: number, @Body() dto: UpdateCurrencyDto) {
+        return this.currenciesService.update(+id, dto);
     }
 
     @Delete(':id')

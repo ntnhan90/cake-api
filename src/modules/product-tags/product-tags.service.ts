@@ -62,10 +62,7 @@ export class ProductTagsService {
         }
         const tag = await this.proTagsRepo.findOneByOrFail({id});
         tag.name = dto.name;
-        if(dto.description){
-            tag.description = dto.description;
-        }
-        
+        tag.description = dto.description;
         tag.status = dto.status;
         
         return `This action updates a #${id} productTag`;
