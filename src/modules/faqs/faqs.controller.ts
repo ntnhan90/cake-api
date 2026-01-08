@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Put, Param, Delete ,Query} from '@nestjs/common';
 import { FaqsService } from './faqs.service';
 import { CreateFaqsDto } from './dto/create-faq.dto';
-import { UpdateFaqDto } from './dto/update-faq.dto';
+import { UpdateFaqsDto } from './dto/update-faq.dto';
 import { FaqsResDto } from './dto/faq.res.dto';
 import { ListFaqsReqDto } from './dto/list-faqs.req.dto';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
@@ -26,7 +26,7 @@ export class FaqsController {
     }
 
     @Put(':id')
-    update(@Param('id') id: number, @Body() dto: UpdateFaqDto) {
+    update(@Param('id') id: number, @Body() dto: UpdateFaqsDto) {
         return this.faqsService.update(+id, dto);
     }
 

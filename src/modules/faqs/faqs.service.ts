@@ -14,8 +14,8 @@ import assert from 'assert';
 export class FaqsService {
     constructor(private readonly faqsRepo : FaqsRepository) {}
     async create(dto: CreateFaqsDto): Promise<FaqsResDto> {
-        const newCurrency = this.faqsRepo.create(dto);
-        return await this.faqsRepo.save(newCurrency);
+        const newFaqs = this.faqsRepo.create(dto);
+        return await this.faqsRepo.save(newFaqs);
     }
 
     async findAll(reqDto: ListFaqsReqDto) :Promise<OffsetPaginatedDto<FaqsResDto>> {

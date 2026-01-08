@@ -5,6 +5,7 @@ import { UpdateFaqCateDto } from './dto/update-faq-cate.dto';
 import { faqCateResDto } from './dto/faqCate.res.dto';
 import { ListFaqCateReqDto } from './dto/list-faqCate.req.dto';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
+import { Public } from '@/decorators/public.decorators';
 @Controller('faq-cate')
 export class FaqCateController {
     constructor(private readonly faqCateService: FaqCateService) {}
@@ -13,7 +14,8 @@ export class FaqCateController {
     create(@Body() dto: CreateFaqCateDto) : Promise<faqCateResDto>{
         return this.faqCateService.create(dto);
     }
-
+    
+    @Public()
     @Get()
     findAll(@Query() reqDto:ListFaqCateReqDto): Promise<OffsetPaginatedDto<faqCateResDto>>  {
         return this.faqCateService.findAll(reqDto);
