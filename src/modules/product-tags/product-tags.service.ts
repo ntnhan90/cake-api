@@ -55,17 +55,14 @@ export class ProductTagsService {
     }
 
     async update(id: number, dto: UpdateProductTagDto) {
-        const exists = await this.isNameExistsForUpdate(dto.name, id)
-
-        if (exists) {
-            throw new BadRequestException('Tag name đã tồn tại')
-        }
         const tag = await this.proTagsRepo.findOneByOrFail({id});
         tag.name = dto.name;
-        tag.description = dto.description;
+        if (dto.description !== undefined) {
+            tag.description = dto.description; // có thể là null hoặc string
+        }
         tag.status = dto.status;
         
-        return `This action updates a #${id} productTag`;
+        return this.proTagsRepo.save(tag)
     }
 
     async remove(id: number) {

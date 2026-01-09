@@ -1,6 +1,5 @@
 import {StringField,} from '@/decorators/field.decorators';
-import { IsOptional } from 'class-validator';
-import { IsNotEmpty } from 'class-validator'
+import { IsOptional,IsNotEmpty,IsString } from 'class-validator';
 export class CreateProductTagDto {
     @IsNotEmpty()
     @StringField()
@@ -10,7 +9,7 @@ export class CreateProductTagDto {
     slug:string	
 
     @IsOptional()
-    @StringField()
+    @IsString()
     description?: string;
 
     @StringField()
