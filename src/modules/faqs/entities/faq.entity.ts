@@ -1,5 +1,6 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column,ManyToOne, JoinColumn} from "typeorm";
+import { FaqCateEntity } from 'src/modules/faq-cate/entities/faq-cate.entity';
 
 export enum STATUS {
     PUBLISHED = "published",
@@ -23,9 +24,13 @@ export class FaqsEntity extends AbstractEntity {
     @Column('text')
     answer:string
     
-    @Column()
-    category_id:number
+    @ManyToOne(() => FaqCateEntity, cate => cate.faqs)
+    @JoinColumn({ name: 'category_id' })
+    category: FaqCateEntity;
     
+    @Column()
+    category_id: number
+
     @Column({
         type: "enum",
         enum: STATUS,

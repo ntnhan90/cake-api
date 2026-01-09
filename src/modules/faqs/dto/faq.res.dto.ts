@@ -1,5 +1,9 @@
 import {StringField,NumberField} from '@/decorators/field.decorators';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
+export class FaqCateDto {
+  id: number;
+  name: string;
+}
 
 @Exclude()
 export class FaqsResDto {

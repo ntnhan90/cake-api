@@ -1,4 +1,5 @@
 import {StringField,NumberField,} from '@/decorators/field.decorators';
+import { IsOptional,IsString } from 'class-validator';
 
 export class CreateProductCollectionDto {
     @StringField()
@@ -6,13 +7,15 @@ export class CreateProductCollectionDto {
     
     @StringField()
     slug:string
-    
-    @StringField()
+
+    @IsOptional()
+    @IsString()
     description:string
     
-    @StringField()
+    @IsOptional()
+    @IsString()
     image:string
-    
+
     @NumberField()
     is_featured:number
 

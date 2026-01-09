@@ -43,8 +43,13 @@ export class ProductCollectionsService {
         const collection = await this.collectionRepo.findOneByOrFail({id});
         collection.name = dto.name;
         collection.slug = dto.slug;
-        collection.description = dto.description
-        collection.status = dto.image
+        /*
+        if (dto.description !== undefined) {
+            collection.description = dto.description; // có thể là null hoặc string
+        }
+        if (dto.image !== undefined) {
+            collection.image = dto.image; // có thể là null hoặc string
+        }*/
         collection.is_featured = dto.is_featured
         collection.status = dto.status
 

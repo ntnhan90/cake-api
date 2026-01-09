@@ -1,6 +1,6 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column} from "typeorm";
-
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
+import { FaqsEntity } from 'src/modules/faqs/entities/faq.entity';
 export enum STATUS {
     PUBLISHED = "published",
     DRAFT = "draft",
@@ -33,4 +33,7 @@ export class FaqCateEntity extends AbstractEntity{
         default: STATUS.PUBLISHED,
     })
     status:string
+
+    @OneToMany(() => FaqsEntity, faq => faq.category)
+    faqs: FaqsEntity[]
 }
