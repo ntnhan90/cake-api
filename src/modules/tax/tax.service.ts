@@ -7,15 +7,13 @@ import { TaxResDto } from './dto/tax.res.dto';
 import { TaxRepository } from './repo/tax.repo';
 import { TaxEntity } from './entities/tax.entity';
 import { paginate } from '@/utils/offset-pagination';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 
 @Injectable()
 export class TaxService {
     //private readonly logger = new Logger(UserService.name);
-    constructor(
-        private readonly taxRepo: TaxRepository,
-    ){}
+    constructor( private readonly taxRepo: TaxRepository, ){}
 
     async create(dto: CreateTaxDto) :Promise<TaxResDto> {
         const newTax = this.taxRepo.create(dto);
@@ -34,7 +32,7 @@ export class TaxService {
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToClass(TaxResDto, taxes), metaDto);
+        return new OffsetPaginatedDto(plainToInstance(TaxResDto, taxes), metaDto);
     }
 
     async findOne(id: number): Promise<TaxResDto> {

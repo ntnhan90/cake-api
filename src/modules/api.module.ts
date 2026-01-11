@@ -3,7 +3,6 @@ import { HealthModule } from './health/health.module';
 import { HomeModule } from './home/home.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { PostModule } from './post/post.module';
 import { ContactModule } from './contact/contact.module';
 import { CustomersModule } from './customers/customers.module';
 import { ProductsModule } from './products/products.module';
@@ -21,6 +20,9 @@ import { TaxModule } from './tax/tax.module';
 import { PermissionModule } from './permission/permission.module';
 import { FaqsModule } from './faqs/faqs.module';
 import { FaqCateModule } from './faq-cate/faq-cate.module';
+import { TagsModule } from './tags/tags.module';
+import { PostsModule } from './posts/posts.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   	imports: [
@@ -39,12 +41,15 @@ import { FaqCateModule } from './faq-cate/faq-cate.module';
 		ProductAttributesModule, 
 		ProductsModule, 
 		ProfileModule,
-		PostModule, 
 		RolesModule,
 		TaxModule, 
 		UserModule,
 		PermissionModule, 
-		FaqsModule, FaqCateModule,
+		FaqsModule, 
+		FaqCateModule,
+		TagsModule,
+		CategoriesModule, 
+		PostsModule
 	],
 })
 export class ApiModule {}

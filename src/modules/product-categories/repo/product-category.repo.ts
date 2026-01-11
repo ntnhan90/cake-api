@@ -7,5 +7,4 @@ export class ProductCategoryRepository extends Repository<ProductCategoryEntity>
     constructor(private readonly dataSource: DataSource){
         super(ProductCategoryEntity, dataSource.createEntityManager());
     }
-    
 }

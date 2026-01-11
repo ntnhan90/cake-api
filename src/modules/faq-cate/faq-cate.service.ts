@@ -7,7 +7,7 @@ import { FaqCateRepository } from './repo/faqCate.repo';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { FaqCateEntity } from './entities/faq-cate.entity';
 import { paginate } from '@/utils/offset-pagination';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 
 
@@ -30,7 +30,7 @@ export class FaqCateService {
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToClass(faqCateResDto, faqCate),metaDto)
+        return new OffsetPaginatedDto(plainToInstance(faqCateResDto, faqCate),metaDto)
     }
 
     async findOne(id: number) :Promise<faqCateResDto> {

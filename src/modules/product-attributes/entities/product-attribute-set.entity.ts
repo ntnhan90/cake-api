@@ -23,16 +23,10 @@ export class ProductAttributeSetEntity extends AbstractEntity {
     @Column()
     slug:string
 
-    @Column()
-    display_layout:string
-
     @Column({
         type: "enum",
         enum: STATUS,
         default: STATUS.DRAFT,
     })
     status:string
-
-    @Column()
-    order:number
 }

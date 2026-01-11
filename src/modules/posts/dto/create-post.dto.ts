@@ -1,30 +1,34 @@
 import {StringField,NumberField} from '@/decorators/field.decorators';
 import { IsOptional,IsNotEmpty,IsString } from 'class-validator';
 
-export class CreateProductCategoryDto {
+export class CreatePostDto {
     @StringField()
-    @IsOptional()
     name:string
 
     @StringField()   
     slug:string
 
-    @NumberField()
-    parent_id:number
-
     @IsOptional()
     @IsString()
     description:string
+
+    @IsOptional()
+    @IsString()
+    content:string
+
+    @NumberField()
+    user_id:number
+
+    @NumberField()
+    is_featured:number
+
+    @IsOptional()
+    @IsString()
+    image:string
 
     @StringField()
     status:string
 
     @NumberField()
-    order:number
-
-    @StringField()
-    image:string
-
-    @NumberField()
-    is_featured:number
+    view:number
 }

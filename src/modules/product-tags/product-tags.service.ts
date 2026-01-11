@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductTagDto } from './dto/create-product-tag.req.dto';
 import { UpdateProductTagDto } from './dto/update-product-tag.req.dto';
-import { ProductTagsRepository } from './repo/product-tag.repo';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
-import { ListTagsReqDto } from './dto/list-tag.req.dto';
-import { TagsResDto } from './dto/tag.res.dto';
+import { ProductTagsRepository } from './repo/product-tag.repo';
+import { ListProductTagsReqDto } from './dto/list-product-tags.req.dto';
+import { ProductTagsResDto } from './dto/product-tags.res.dto';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import { ProductTagEntity } from './entities/product-tag.entity';
@@ -17,7 +17,7 @@ import { Not } from 'typeorm';
 export class ProductTagsService {
     constructor(private readonly proTagsRepo : ProductTagsRepository){};
 
-    async create(dto: CreateProductTagDto) :Promise<TagsResDto>{
+    async create(dto: CreateProductTagDto) :Promise<ProductTagsResDto>{
         const exists = await this.isNameExists(dto.name)
         if (exists) {
             throw new BadRequestException('Tag name đã tồn tại')
@@ -34,7 +34,7 @@ export class ProductTagsService {
         }
     }
 
-    async findAll(reqDto: ListTagsReqDto):Promise<OffsetPaginatedDto<TagsResDto>> {
+    async findAll(reqDto: ListProductTagsReqDto):Promise<OffsetPaginatedDto<ProductTagsResDto>> {
         const query = this.proTagsRepo.createQueryBuilder('product_tags').orderBy(
             'product_tags.createdAt',
             'DESC'
@@ -45,13 +45,13 @@ export class ProductTagsService {
             takeAll: false,
         });
 
-        return new OffsetPaginatedDto(plainToInstance(TagsResDto, tags), metaDto);
+        return new OffsetPaginatedDto(plainToInstance(ProductTagsResDto, tags), metaDto);
     }
 
-    async findOne(id: number):Promise<TagsResDto> {
+    async findOne(id: number):Promise<ProductTagsResDto> {
         assert(id, 'id is required');
         const tag = await this.proTagsRepo.findOneByOrFail({id});
-        return  tag.toDto(TagsResDto)
+        return  tag.toDto(ProductTagsResDto)
     }
 
     async update(id: number, dto: UpdateProductTagDto) {

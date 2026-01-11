@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
 import { UpdateProductCategoryDto } from './dto/update-product-category.dto';
-import { ListProductCateReqDto } from './dto/list-cate.req.dto';
-import { ProductCateResDto } from './dto/cate.res.dto';
+import { ListProductCateReqDto } from './dto/list-product-cate.req.dto';
+import { ProductCateResDto } from './dto/product-cate.res.dto';
 import { ProductCategoryRepository } from './repo/product-category.repo';
 import { ProductCategoryEntity } from './entities/product-category.entity';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { paginate } from '@/utils/offset-pagination';
-import { plainToClass } from 'class-transformer';
-
+import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
+
 @Injectable()
 export class ProductCategoriesService {
     constructor(private readonly proCateRepo : ProductCategoryRepository){}
@@ -29,7 +29,7 @@ export class ProductCategoriesService {
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToClass(ProductCateResDto, taxes), metaDto);
+        return new OffsetPaginatedDto(plainToInstance(ProductCateResDto, taxes), metaDto);
     }
 
     async findOne(id: number):Promise<ProductCateResDto> {

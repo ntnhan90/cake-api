@@ -7,7 +7,7 @@ import { FaqsRepository } from './repo/faq.repo';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { FaqsEntity } from './entities/faq.entity';
 import { paginate } from '@/utils/offset-pagination';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class FaqsService {
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToClass(FaqsResDto, faqs),metaDto)
+        return new OffsetPaginatedDto(plainToInstance(FaqsResDto, faqs),metaDto)
     }
 
     async findOne(id: number) : Promise<FaqsResDto>{

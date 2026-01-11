@@ -7,7 +7,7 @@ import { ContactRepository } from './repo/contact.repo';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { ContactEntity } from './entities/contact.entity';
 import { paginate } from '@/utils/offset-pagination';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class ContactService {
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToClass(ContactResDto, currencies),metaDto)
+        return new OffsetPaginatedDto(plainToInstance(ContactResDto, currencies),metaDto)
     }
 
     async findOne(id: number) :Promise<ContactResDto>{

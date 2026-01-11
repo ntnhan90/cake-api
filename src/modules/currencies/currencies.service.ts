@@ -7,7 +7,7 @@ import { CurrencyRepository } from './repo/currencies.repo';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { CurrencyEntity } from './entities/currency.entity';
 import { paginate } from '@/utils/offset-pagination';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class CurrenciesService {
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToClass(CurrencyResDto, currencies),metaDto)
+        return new OffsetPaginatedDto(plainToInstance(CurrencyResDto, currencies),metaDto)
     }
 
     async findOne(id: number):Promise<CurrencyResDto> {

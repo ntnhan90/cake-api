@@ -7,7 +7,7 @@ import { RoleRepository } from './repo/role.repo';
 import { RoleEntity } from './entities/role.entity';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { paginate } from '@/utils/offset-pagination';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class RolesService {
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToClass(RoleResDto, taxes), metaDto);
+        return new OffsetPaginatedDto(plainToInstance(RoleResDto, taxes), metaDto);
     }
 
     async findOne(id: number) :Promise<RoleResDto> {

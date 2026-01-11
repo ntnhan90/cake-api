@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Put, Param, Delete , Query} from '@nestjs/
 import { ProductCategoriesService } from './product-categories.service';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
 import { UpdateProductCategoryDto } from './dto/update-product-category.dto';
-import { ListProductCateReqDto } from './dto/list-cate.req.dto';
-import { ProductCateResDto } from './dto/cate.res.dto';
+import { ListProductCateReqDto } from './dto/list-product-cate.req.dto';
+import { ProductCateResDto } from './dto/product-cate.res.dto';
 import { Public } from '@/decorators/public.decorators';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 

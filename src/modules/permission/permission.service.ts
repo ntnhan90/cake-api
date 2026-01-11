@@ -7,7 +7,7 @@ import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto
 import { PermisstionRepository } from './repo/permission.repo';
 import { PermissionEntity } from './entities/permission.entity';
 import { paginate } from '@/utils/offset-pagination';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class PermissionService {
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToClass(PermissionResDto, permission), metaDto)
+        return new OffsetPaginatedDto(plainToInstance(PermissionResDto, permission), metaDto)
     }
 
     async findOne(id: number) :Promise<PermissionResDto> {

@@ -1,9 +1,8 @@
 import {StringField,NumberField} from '@/decorators/field.decorators';
 import { IsOptional,IsNotEmpty,IsString } from 'class-validator';
 
-export class CreateProductCategoryDto {
+export class CreateCategoryDto {
     @StringField()
-    @IsOptional()
     name:string
 
     @StringField()   
@@ -27,4 +26,7 @@ export class CreateProductCategoryDto {
 
     @NumberField()
     is_featured:number
+
+    @NumberField()
+    is_default:number
 }

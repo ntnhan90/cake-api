@@ -2,26 +2,26 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/
 import { ProductTagsService } from './product-tags.service';
 import { CreateProductTagDto } from './dto/create-product-tag.req.dto';
 import { UpdateProductTagDto } from './dto/update-product-tag.req.dto';
-import { ListTagsReqDto } from './dto/list-tag.req.dto';
+import { ListProductTagsReqDto } from './dto/list-product-tags.req.dto';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
-import { TagsResDto } from './dto/tag.res.dto';
+import { ProductTagsResDto } from './dto/product-tags.res.dto';
 
 @Controller('product-tags')
 export class ProductTagsController {
     constructor(private readonly productTagsService: ProductTagsService) {}
 
     @Post()
-    async create(@Body() dto: CreateProductTagDto): Promise<TagsResDto> {
+    async create(@Body() dto: CreateProductTagDto): Promise<ProductTagsResDto> {
         return await this.productTagsService.create(dto);
     }
 
     @Get()
-    async findAll(@Query() reqDto:ListTagsReqDto):Promise<OffsetPaginatedDto<TagsResDto>> {
+    async findAll(@Query() reqDto:ListProductTagsReqDto):Promise<OffsetPaginatedDto<ProductTagsResDto>> {
         return await this.productTagsService.findAll(reqDto);
     }
 
     @Get(':id')
-    findOne(@Param('id') id: number):Promise<TagsResDto> {
+    findOne(@Param('id') id: number):Promise<ProductTagsResDto> {
         return this.productTagsService.findOne(+id);
     }
 

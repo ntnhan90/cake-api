@@ -1,5 +1,6 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column,} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column,ManyToMany} from "typeorm";
+import { PostEntity } from 'src/modules/posts/entities/post.entity';
 
 export enum STATUS {
     PUBLISHED = "published",
@@ -7,9 +8,9 @@ export enum STATUS {
     PENDING = "pending"
 }
 
-@Entity('product_categories')
-export class ProductCategoryEntity extends AbstractEntity {
-    constructor(data?: Partial<ProductCategoryEntity>){
+@Entity('categories')
+export class CategoryEntity extends AbstractEntity {
+    constructor(data?: Partial<CategoryEntity>){
         super();
         Object.assign(this, data)
     }
@@ -47,4 +48,7 @@ export class ProductCategoryEntity extends AbstractEntity {
 
     @Column({default:0})
     is_default:number
+
+    @ManyToMany(() => PostEntity, (post) => post.categories)
+    posts: PostEntity[];
 }

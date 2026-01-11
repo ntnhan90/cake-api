@@ -1,7 +1,6 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
 import { hashPassword as hashPass } from '@/utils/password.util';
 import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany,Relation, BeforeInsert, BeforeUpdate,DeleteDateColumn} from "typeorm";
-import { PostEntity } from 'src/modules/post/entities/post.entity';
 import { DeviceEntity } from './device.entity';
 
 @Entity('users')
@@ -44,10 +43,6 @@ export class UserEntity extends AbstractEntity {
 
     @OneToMany(() => DeviceEntity, (device) => device.userId)
     device?: DeviceEntity[];
-
-    @OneToMany(() => PostEntity, (post) => post.user)
-    posts: Relation<PostEntity[]>;
-
 
     @DeleteDateColumn({
         name: 'deleted_at',

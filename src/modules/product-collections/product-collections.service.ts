@@ -7,7 +7,7 @@ import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto
 import { ProductColectionRepository } from './repo/proCollection.repo';
 import { ProductColectionEntity } from './entities/product-collection.entity';
 import { paginate } from '@/utils/offset-pagination';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class ProductCollectionsService {
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToClass(CollectionResDto, taxes), metaDto);
+        return new OffsetPaginatedDto(plainToInstance(CollectionResDto, taxes), metaDto);
     }
 
     async findOne(id: number):Promise<CollectionResDto> {
