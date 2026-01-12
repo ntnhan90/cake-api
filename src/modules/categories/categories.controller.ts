@@ -7,6 +7,12 @@ import { ListCategoryReqDto } from './dto/list-cate.req.dto';
 import { Public } from '@/decorators/public.decorators';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 
+export interface CategoryWithCount {
+  id: number;
+  name: string;
+  parent_id: number;
+  count: number;
+}
 
 @Controller('categories')
 export class CategoriesController {
@@ -22,6 +28,13 @@ export class CategoriesController {
         return await this.categoriesService.findAll(reqDto);
     }
 
+    @Public()
+    @Get("/tree")
+    async getTree(): Promise<CategoryWithCount[]>  {
+        return this.categoriesService.getCategoryWithPostCount();
+    }
+    
+    @Public()
     @Get(':id')
     async findOne(@Param('id') id: number):Promise<CategoryResDto> {
         return await this.categoriesService.findOne(+id);
@@ -36,4 +49,6 @@ export class CategoriesController {
     async remove(@Param('id') id: number) {
         return await this.categoriesService.remove(+id);
     }
+
+    
 }

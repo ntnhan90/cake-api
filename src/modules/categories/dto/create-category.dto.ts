@@ -21,7 +21,8 @@ export class CreateCategoryDto {
     @NumberField()
     order:number
 
-    @StringField()
+    @IsOptional()
+    @IsString()
     image:string
 
     @NumberField()

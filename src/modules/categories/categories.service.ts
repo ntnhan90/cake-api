@@ -10,6 +10,13 @@ import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 
+export interface CategoryWithCount {
+  id: number;
+  name: string;
+  parent_id: number;
+  count: number;
+}
+
 @Injectable()
 export class CategoriesService {
     constructor(private readonly cateRepo : CategoryRepository){};
@@ -57,4 +64,30 @@ export class CategoriesService {
         return this.cateRepo.findOneByOrFail({id});
         return this.cateRepo.softDelete(id);
     }
+
+    async getCategoryWithPostCount(): Promise<CategoryWithCount[]> {
+        const rows = await this.cateRepo
+            .createQueryBuilder('c')
+            .leftJoin('c.posts', 'p')
+            .select([
+                'c.id AS id',
+                'c.name AS name',
+                'c.parent_id AS parent_id',
+                'COUNT(p.id) AS count',
+            ])
+            .groupBy('c.id')
+            .addGroupBy('c.name')
+            .addGroupBy('c.parent_id')
+            .orderBy('c.parent_id', 'ASC')
+            .addOrderBy('c.id', 'ASC')
+            .getRawMany();
+        
+        return rows.map(row =>({
+            id: Number(row.id),
+            name: row.name,
+            parent_id: Number(row.parent_id),
+            count: Number(row.count),
+        }));
+    }
+
 }
