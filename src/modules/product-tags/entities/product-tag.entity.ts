@@ -1,5 +1,6 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column,Index} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column,Index, ManyToMany} from "typeorm";
+import { ProductEntity } from 'src/modules/products/entities/product.entity';
 
 export enum STATUS {
     PUBLISHED = "published",
@@ -34,4 +35,6 @@ export class ProductTagEntity extends AbstractEntity {
     })
     status:string
 
+    @ManyToMany(() => ProductEntity, (products) => products.tags)
+    products: ProductEntity[];
 }

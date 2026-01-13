@@ -6,6 +6,7 @@ import { ListProductCateReqDto } from './dto/list-product-cate.req.dto';
 import { ProductCateResDto } from './dto/product-cate.res.dto';
 import { Public } from '@/decorators/public.decorators';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
+import { CategoryWithCount } from 'src/types/category.type';
 
 @Controller('product-categories')
 export class ProductCategoriesController {
@@ -19,6 +20,12 @@ export class ProductCategoriesController {
     @Get()
     async findAll(@Query() reqDto: ListProductCateReqDto) :Promise<OffsetPaginatedDto<ProductCateResDto>>{
         return await this.productCategoriesService.findAll(reqDto);
+    }
+
+    @Public()
+    @Get("/tree")
+    async getTree(): Promise<CategoryWithCount[]>  {
+        return this.productCategoriesService.getCategoryWithPostCount();
     }
 
     @Get(':id')

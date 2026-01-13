@@ -22,7 +22,6 @@ export class RoleEntity extends AbstractEntity {
     @Column({default:0})
     is_default:number
 
-    @ManyToMany(() => UserEntity)
-    @JoinTable()
-    r: UserEntity[]
+    @ManyToMany(() => UserEntity, (users) => users.roles)
+    users: UserEntity[];
 }

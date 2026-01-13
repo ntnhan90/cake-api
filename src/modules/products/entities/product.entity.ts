@@ -88,19 +88,70 @@ export class ProductEntity extends AbstractEntity {
     @Column({default:0})
     views:number
 
-    @ManyToMany(() => ProductCategoryEntity)
-    @JoinTable()
-    cate: ProductCategoryEntity[]
 
-    @ManyToMany(() => ProductTagEntity)
-    @JoinTable()
-    tag: ProductTagEntity[]
+    @ManyToMany(()=>ProductCategoryEntity, (product_category) => product_category.products,{
+        cascade: true// cho phép tạo tag mới khi save post
+    })
+    @JoinTable({
+        name: 'product_category_product',
+        joinColumn: {
+            name: 'product_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'product_category_id',
+            referencedColumnName: 'id',
+        },
+    })
+    categories: ProductCategoryEntity[]
 
-    @ManyToMany(() => ProductColectionEntity)
-    @JoinTable()
-    col: ProductColectionEntity[]
-    
-    @ManyToMany(() => ProductLabelsEntity)
-    @JoinTable()
-    label: ProductLabelsEntity[] 
+    @ManyToMany(()=>ProductTagEntity, (product_tags) => product_tags.products,{
+        cascade: true// cho phép tạo tag mới khi save post
+    })
+    @JoinTable({
+        name: 'product_tag_product',
+        joinColumn: {
+            name: 'product_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'product_tag_id',
+            referencedColumnName: 'id',
+        },
+    })
+    tags: ProductTagEntity[]
+
+    @ManyToMany(()=>ProductLabelsEntity, (product_labels) => product_labels.products,{
+        cascade: true// cho phép tạo tag mới khi save post
+    })
+    @JoinTable({
+        name: 'product_label_product',
+        joinColumn: {
+            name: 'product_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'product_label_id',
+            referencedColumnName: 'id',
+        },
+    })
+    labels: ProductLabelsEntity[]
+
+
+    @ManyToMany(()=>ProductColectionEntity, (product_collections) => product_collections.products,{
+        cascade: true// cho phép tạo tag mới khi save post
+    })
+    @JoinTable({
+        name: 'product_collection_product',
+        joinColumn: {
+            name: 'product_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'product_collection_id',
+            referencedColumnName: 'id',
+        },
+    })
+    collections: ProductColectionEntity[]
+
 }

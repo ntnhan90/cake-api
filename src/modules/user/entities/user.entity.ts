@@ -1,7 +1,8 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
 import { hashPassword as hashPass } from '@/utils/password.util';
-import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany,Relation, BeforeInsert, BeforeUpdate,DeleteDateColumn} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany,ManyToMany, BeforeInsert, BeforeUpdate,DeleteDateColumn,JoinTable} from "typeorm";
 import { DeviceEntity } from './device.entity';
+import { RoleEntity } from 'src/modules/roles/entities/role.entity';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
@@ -51,6 +52,22 @@ export class UserEntity extends AbstractEntity {
         nullable:true
     })
     deletedAt: Date;
+
+    @ManyToMany(()=>RoleEntity, (roles) => roles.users,{
+        cascade: true// cho phép tạo tag mới khi save post
+    })
+    @JoinTable({
+        name: 'role_users',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'role_id',
+            referencedColumnName: 'id',
+        },
+    })
+    roles: RoleEntity[]
 
     @BeforeInsert()
     @BeforeUpdate()

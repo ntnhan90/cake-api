@@ -6,13 +6,8 @@ import { CategoryResDto } from './dto/category.res.dto';
 import { ListCategoryReqDto } from './dto/list-cate.req.dto';
 import { Public } from '@/decorators/public.decorators';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
+import { CategoryWithCount } from 'src/types/category.type';
 
-export interface CategoryWithCount {
-  id: number;
-  name: string;
-  parent_id: number;
-  count: number;
-}
 
 @Controller('categories')
 export class CategoriesController {

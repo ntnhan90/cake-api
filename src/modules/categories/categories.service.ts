@@ -9,13 +9,8 @@ import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
+import { CategoryWithCount } from 'src/types/category.type';
 
-export interface CategoryWithCount {
-  id: number;
-  name: string;
-  parent_id: number;
-  count: number;
-}
 
 @Injectable()
 export class CategoriesService {
@@ -73,6 +68,7 @@ export class CategoriesService {
                 'c.id AS id',
                 'c.name AS name',
                 'c.parent_id AS parent_id',
+                'c.is_featured AS is_featured',
                 'COUNT(p.id) AS count',
             ])
             .groupBy('c.id')
@@ -86,6 +82,7 @@ export class CategoriesService {
             id: Number(row.id),
             name: row.name,
             parent_id: Number(row.parent_id),
+            is_featured: Number(row.is_featured),
             count: Number(row.count),
         }));
     }
