@@ -8,7 +8,6 @@ import { Public } from '@/decorators/public.decorators';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { CategoryWithCount } from 'src/types/category.type';
 
-
 @Controller('categories')
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}

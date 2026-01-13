@@ -20,6 +20,14 @@ export class CategoryResDto {
     @Expose()
     parent_id: number;
 
+	@NumberField()
+    @Expose()
+    is_featured: number;
+
+	@NumberField()
+    @Expose()
+    is_default: number;
+
     @StringField()
 	@Expose()
 	description?: string;

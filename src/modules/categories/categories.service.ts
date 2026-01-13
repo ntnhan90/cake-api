@@ -11,7 +11,6 @@ import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 import { CategoryWithCount } from 'src/types/category.type';
 
-
 @Injectable()
 export class CategoriesService {
     constructor(private readonly cateRepo : CategoryRepository){};
@@ -60,6 +59,11 @@ export class CategoriesService {
         return this.cateRepo.softDelete(id);
     }
 
+
+
+
+
+    
     async getCategoryWithPostCount(): Promise<CategoryWithCount[]> {
         const rows = await this.cateRepo
             .createQueryBuilder('c')
@@ -69,6 +73,7 @@ export class CategoriesService {
                 'c.name AS name',
                 'c.parent_id AS parent_id',
                 'c.is_featured AS is_featured',
+                'c.is_default AS is_default',
                 'COUNT(p.id) AS count',
             ])
             .groupBy('c.id')
@@ -83,6 +88,7 @@ export class CategoriesService {
             name: row.name,
             parent_id: Number(row.parent_id),
             is_featured: Number(row.is_featured),
+            is_default: Number(row.is_default),
             count: Number(row.count),
         }));
     }

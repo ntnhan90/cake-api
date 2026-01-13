@@ -67,6 +67,7 @@ export class ProductCategoriesService {
                 'c.name AS name',
                 'c.parent_id AS parent_id',
                 'c.is_featured AS is_featured',
+                'c.is_default AS is_default',
                 'COUNT(p.id) AS count',
             ])
             .groupBy('c.id')
@@ -81,6 +82,7 @@ export class ProductCategoriesService {
             name: row.name,
             parent_id: Number(row.parent_id),
             is_featured: Number(row.is_featured),
+            is_default:  Number(row.is_default),
             count: Number(row.count),
         }));
     }
