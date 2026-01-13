@@ -5,6 +5,7 @@ import { UpdateProductTagDto } from './dto/update-product-tag.req.dto';
 import { ListProductTagsReqDto } from './dto/list-product-tags.req.dto';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { ProductTagsResDto } from './dto/product-tags.res.dto';
+import { Public } from '@/decorators/public.decorators';
 
 @Controller('product-tags')
 export class ProductTagsController {
@@ -15,6 +16,7 @@ export class ProductTagsController {
         return await this.productTagsService.create(dto);
     }
 
+    @Public()
     @Get()
     async findAll(@Query() reqDto:ListProductTagsReqDto):Promise<OffsetPaginatedDto<ProductTagsResDto>> {
         return await this.productTagsService.findAll(reqDto);

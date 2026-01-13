@@ -20,10 +20,18 @@ export class TagsService {
     }
 
     async findAll(reqDto: ListTagsReqDto) :Promise<OffsetPaginatedDto<TagsResDto>> {
+        const { q } = reqDto
         const query = this.tagsRepo.createQueryBuilder('tags').orderBy(
             'tags.createdAt',
             'DESC'
         )
+
+        if (q) {
+            query.andWhere(
+            '(tags.name LIKE :q OR tags.slug LIKE :q)',
+            { q: `%${q}%` }
+            )
+        }
 
         const [tags,metaDto] = await paginate<TagEntity>(query, reqDto,{
             skipCount:false,

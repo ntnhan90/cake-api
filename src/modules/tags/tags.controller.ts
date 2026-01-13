@@ -16,6 +16,7 @@ export class TagsController {
         return await this.tagsService.create(dto);
     }
 
+    @Public()
     @Get()
     async findAll(@Query() reqDto: ListTagsReqDto):Promise<OffsetPaginatedDto<TagsResDto>> {
         return await this.tagsService.findAll(reqDto);

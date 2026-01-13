@@ -35,10 +35,18 @@ export class ProductTagsService {
     }
 
     async findAll(reqDto: ListProductTagsReqDto):Promise<OffsetPaginatedDto<ProductTagsResDto>> {
+        const { q } = reqDto
         const query = this.proTagsRepo.createQueryBuilder('product_tags').orderBy(
             'product_tags.createdAt',
             'DESC'
         )
+
+        if (q) {
+            query.andWhere(
+            '(product_tags.name LIKE :q OR product_tags.slug LIKE :q)',
+            { q: `%${q}%` }
+            )
+        }
 
         const [tags, metaDto] = await paginate<ProductTagEntity>(query, reqDto, {
             skipCount: false,
