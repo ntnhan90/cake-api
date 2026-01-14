@@ -1,5 +1,5 @@
 import {StringField,NumberField} from '@/decorators/field.decorators';
-import { IsOptional,IsNotEmpty,IsString } from 'class-validator';
+import { IsOptional,IsNotEmpty,IsString , IsArray} from 'class-validator';
 
 export class CreatePostDto {
     @StringField()
@@ -29,6 +29,11 @@ export class CreatePostDto {
     @StringField()
     status:string
 
-    @NumberField()
-    view:number
+    views:number
+
+    @IsArray()
+    @IsString({ each: true })
+    tags: string[];
+
+    categories: number[]
 }

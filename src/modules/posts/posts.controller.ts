@@ -22,6 +22,7 @@ export class PostsController {
         return this.postsService.findAll(reqDto);
     }
 
+    @Public()
     @Get(':id')
     findOne(@Param('id') id: number):Promise<PostResDto>  {
         return this.postsService.findOne(+id);

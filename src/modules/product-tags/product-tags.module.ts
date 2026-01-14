@@ -4,10 +4,12 @@ import { ProductTagsController } from './product-tags.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductTagEntity } from './entities/product-tag.entity';
 import { ProductTagsRepository } from './repo/product-tag.repo';
+import { TagRepository } from '../tags/repo/tag.repo';
 
 @Module({
     imports: [TypeOrmModule.forFeature([ProductTagEntity])],
     controllers: [ProductTagsController],
     providers: [ProductTagsService,ProductTagsRepository],
+    exports: [ProductTagsRepository]
 })
 export class ProductTagsModule {}

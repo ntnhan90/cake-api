@@ -58,10 +58,10 @@ export class ProductCategoriesService {
 		await this.proCateRepo.softDelete(id);
     }
 
-     async getCategoryWithPostCount(): Promise<CategoryWithCount[]> {
+    async getCategoryWithPostCount(): Promise<CategoryWithCount[]> {
         const rows = await this.proCateRepo
             .createQueryBuilder('c')
-            .leftJoin('c.product', 'p')
+            .leftJoin('c.products', 'p')
             .select([
                 'c.id AS id',
                 'c.name AS name',

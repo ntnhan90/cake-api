@@ -17,6 +17,7 @@ export class CategoriesController {
         return await this.categoriesService.create(dto);
     }
 
+    @Public()
     @Get()
     async findAll(@Query() reqDto: ListCategoryReqDto) :Promise<OffsetPaginatedDto<CategoryResDto>> {
         return await this.categoriesService.findAll(reqDto);
