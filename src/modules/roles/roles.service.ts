@@ -20,7 +20,7 @@ export class RolesService {
 
     async findAll(reqDto: ListRoleReqDto):Promise<OffsetPaginatedDto<RoleResDto>> {
         const query = this.roleRepo.createQueryBuilder('roles').orderBy(
-            'taxes.createdAt',
+            'roles.createdAt',
             'DESC'
         )
 

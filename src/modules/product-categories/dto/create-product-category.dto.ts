@@ -1,5 +1,5 @@
 import {StringField,NumberField} from '@/decorators/field.decorators';
-import { IsOptional,IsNotEmpty,IsString } from 'class-validator';
+import { IsOptional,IsNotEmpty,IsString , IsNumber} from 'class-validator';
 
 export class CreateProductCategoryDto {
     @StringField()
@@ -19,10 +19,11 @@ export class CreateProductCategoryDto {
     @StringField()
     status:string
 
-    @NumberField()
+    @IsNumber()
     order:number
 
-    @StringField()
+    @IsOptional()
+    @IsString()
     image:string
 
     @NumberField()

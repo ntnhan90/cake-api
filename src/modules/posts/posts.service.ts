@@ -100,7 +100,7 @@ export class PostsService {
     }
 
     async findOne(id: number)  :Promise<PostResDto>{
-         assert(id,'id is required');
+        assert(id,'id is required');
         const post = await this.postRepo.findOneByOrFail({id})
         return post.toDto(PostResDto);
     }
