@@ -1,7 +1,8 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
 import { TagEntity } from 'src/modules/tags/entities/tag.entity';
 import { CategoryEntity } from 'src/modules/categories/entities/category.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany,JoinTable} from "typeorm";
+import { PostCategoryEntity } from './post_categories.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany,JoinTable,OneToMany} from "typeorm";
 
 export enum STATUS {
     PUBLISHED = "published",
@@ -66,20 +67,9 @@ export class PostEntity extends AbstractEntity {
     })
     tags: TagEntity[]
 
-
-    @ManyToMany(()=>CategoryEntity, (category) => category.posts,{
-        cascade: true// cho phép tạo tag mới khi save post
-    })
-    @JoinTable({
-        name: 'post_categories',
-        joinColumn: {
-            name: 'post_id',
-            referencedColumnName: 'id',
-        },
-        inverseJoinColumn: {
-            name: 'category_id',
-            referencedColumnName: 'id',
-        },
-    })
-    categories: CategoryEntity[]
+    @OneToMany(
+    () => PostCategoryEntity,
+        postCategory => postCategory.post,
+    )
+    postCategories: PostCategoryEntity[];
 }

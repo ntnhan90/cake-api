@@ -60,10 +60,6 @@ export class CategoriesService {
     }
 
 
-
-
-
-    
     async getCategoryWithPostCount(): Promise<CategoryWithCount[]> {
         const rows = await this.cateRepo
             .createQueryBuilder('c')

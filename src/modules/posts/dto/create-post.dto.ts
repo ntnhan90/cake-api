@@ -1,39 +1,50 @@
-import {StringField,NumberField} from '@/decorators/field.decorators';
-import { IsOptional,IsNotEmpty,IsString , IsArray} from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsOptional,
+  IsString,
+  ArrayNotEmpty,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreatePostDto {
-    @StringField()
-    name:string
 
-    @StringField()   
-    slug:string
+  @IsString()
+  name: string;
 
-    @IsOptional()
-    @IsString()
-    description:string
+  @IsString()
+  slug: string;
 
-    @IsOptional()
-    @IsString()
-    content:string
+  @IsOptional()
+  @IsString()
+  description?: string;
 
-    @NumberField()
-    user_id:number
+  @IsOptional()
+  @IsString()
+  content?: string;
 
-    @NumberField()
-    is_featured:number
+  @IsInt()
+  @Type(() => Number)
+  user_id: number;
 
-    @IsOptional()
-    @IsString()
-    image:string
+  @IsInt()
+  @Type(() => Number)
+  is_featured: number;
 
-    @StringField()
-    status:string
+  @IsString()
+  status: string;
 
-    views:number
+  /* ================= CATEGORIES (QUAN TRỌNG) ================= */
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsInt({ each: true })
+  @Type(() => Number)
+  categories?: number[];
 
-    @IsArray()
-    @IsString({ each: true })
-    tags: string[];
-
-    categories: number[]
+  /* ================= TAGS ================= */
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
 }

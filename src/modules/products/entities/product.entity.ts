@@ -55,10 +55,10 @@ export class ProductEntity extends AbstractEntity {
     @Column({default:0})
     is_featured:number
 
-    @Column('decimal', { precision: 6, scale: 2,nullable:true},)
+    @Column('decimal', { precision: 6, scale: 2,nullable:true, default:0},)
     price:number 
 
-    @Column('decimal', { precision: 6, scale: 2,nullable:true},)
+    @Column('decimal', { precision: 6, scale: 2,nullable:true,},)
     sale_price:number
 
     @CreateDateColumn({
@@ -73,16 +73,16 @@ export class ProductEntity extends AbstractEntity {
     })
     end_date: Date;
 
-    @Column('decimal', { precision: 6, scale: 2,nullable:true })
+    @Column('decimal', { precision: 6, scale: 2,nullable:true, default:0 })
     length: number
 
-    @Column('decimal', { precision: 6, scale: 2 ,nullable:true})
+    @Column('decimal', { precision: 6, scale: 2 ,nullable:true, default:0})
     wide: number
 
-    @Column('decimal', { precision: 6, scale: 2,nullable:true })
+    @Column('decimal', { precision: 6, scale: 2,nullable:true , default:0})
     height: number
 
-    @Column('decimal', { precision: 6, scale: 2 ,nullable:true})
+    @Column('decimal', { precision: 6, scale: 2 ,nullable:true, default:0})
     weight: number
 
     @Column({default:0})

@@ -1,6 +1,6 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column} from "typeorm";
-
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany,DeleteDateColumn} from "typeorm";
+import { ProductAttributeEntity } from './product-attribute.entity';
 export enum STATUS {
     PUBLISHED = "published",
     DRAFT = "draft",
@@ -29,4 +29,14 @@ export class ProductAttributeSetEntity extends AbstractEntity {
         default: STATUS.DRAFT,
     })
     status:string
+
+    @DeleteDateColumn({ name: 'deleted_at' })
+    deletedAt?: Date;
+
+    @OneToMany(
+        () => ProductAttributeEntity,
+        attr => attr.attributeSet,
+        { cascade: false }, // ❌ KHÔNG cascade
+    )
+    attributes: ProductAttributeEntity[];
 }

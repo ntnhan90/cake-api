@@ -1,5 +1,7 @@
 import {StringField,NumberField} from '@/decorators/field.decorators';
-import { Exclude, Expose } from 'class-transformer';
+import { Optional } from '@nestjs/common';
+import { Exclude, Expose ,Transform} from 'class-transformer';
+import { IsString } from 'class-validator';
 
 @Exclude()
 export class PostResDto{
@@ -15,11 +17,13 @@ export class PostResDto{
 	@Expose()
 	slug: string;
 	
-    @StringField()
+	@Optional()
+    @IsString()
 	@Expose()
 	description?: string;
 
-    @StringField()
+    @Optional()
+    @IsString()
 	@Expose()
 	content?: string;
 
@@ -35,7 +39,8 @@ export class PostResDto{
 	@Expose()
 	views: number;
     
-    @StringField()
+    @Optional()
+    @IsString()
 	@Expose()
 	image?: string;
 
@@ -44,8 +49,29 @@ export class PostResDto{
 	status: string;
     
 	@Expose()
-    tags: {
-        tag_id: number;
-        tag_name: string;
-    }[];
+	@Transform(({ obj }) =>
+		obj.tags?.map(tag => ({
+			tag_id: tag.id,
+			tag_name: tag.name,
+		})) ?? [],
+	)
+	tags: {
+		tag_id: number;
+		tag_name: string;
+	}[];
+
+	// 🔥 QUAN TRỌNG NHẤT
+	@Expose()
+	@Transform(({ obj }) =>
+		obj.postCategories?.map(pc => ({
+		id: pc.category.id,
+		name: pc.category.name,
+		slug: pc.category.slug,
+		})) ?? [],
+	)
+	categories: {
+		id: number;
+		name: string;
+		slug: string;
+	}[];
 }

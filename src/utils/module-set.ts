@@ -46,6 +46,7 @@ function generateModulesSet() {
 
 			return new DataSource(options).initialize();
 		},
+		//logging: ['query', 'error'],
 	});
 
 	const i18nModule = I18nModule.forRootAsync({
