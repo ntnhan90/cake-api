@@ -1,6 +1,14 @@
 import {StringField,NumberField} from '@/decorators/field.decorators';
 import { Exclude, Expose } from 'class-transformer';
 
+export class PermissionResDto {
+  id: number;
+  name: string;
+  path: string;
+  method: string;
+  module: string;
+}
+
 @Exclude()
 export class RoleResDto {
 	@StringField()
@@ -11,13 +19,7 @@ export class RoleResDto {
 	@Expose()
 	name: string;
 
-	@StringField()
-	@Expose()
-	slug: string;
-	
-	@StringField()
-	@Expose()
-	permissions: string;
+	permissions: PermissionResDto[];
 
     @StringField()
 	@Expose()

@@ -9,13 +9,32 @@ import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In,Repository } from 'typeorm';
+import { PermissionEntity } from '../permission/entities/permission.entity';
 
 @Injectable()
 export class RolesService {
-    constructor(private readonly roleRepo: RoleRepository){}
+    constructor(
+        private readonly roleRepo: RoleRepository,
+        @InjectRepository(PermissionEntity)
+        private readonly permissionRepo: Repository<PermissionEntity>,
+    ){}
+
     async create(dto: CreateRoleDto):Promise<RoleResDto>  {
-        const newRole = this.roleRepo.create(dto);
-        return await this.roleRepo.save(newRole);
+        const role = this.roleRepo.create({
+            name: dto.name,
+            description: dto.description,
+            is_default: dto.is_default,
+        });
+
+        if (dto.permissionIds?.length) {
+            role.permissions = await this.permissionRepo.findBy({
+                id: In(dto.permissionIds),
+            });
+        }
+
+        return this.roleRepo.save(role);
     }
 
     async findAll(reqDto: ListRoleReqDto):Promise<OffsetPaginatedDto<RoleResDto>> {
@@ -41,9 +60,8 @@ export class RolesService {
     async update(id: number, dto: UpdateRoleDto) {
         const role = await this.roleRepo.findOneByOrFail({id});
         role.name = dto.name;
-        role.slug = dto.slug;
         role.description = dto.description;
-        role.permissions = dto.permissions;
+      //  role.permissions = dto.permissions;
         role.is_default = dto.is_default
 
         return this.roleRepo.save(role);

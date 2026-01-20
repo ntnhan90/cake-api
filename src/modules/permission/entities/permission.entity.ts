@@ -1,6 +1,7 @@
 import { AbstractEntity } from "@/database/entities/abstract.entity";
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany,JoinTable} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn,UpdateDateColumn, ManyToMany,JoinTable} from "typeorm";
 import { HTTPMethod } from "@/constants/role.constant";
+import { RoleEntity } from "src/modules/roles/entities/role.entity";
 
 @Entity('permissions')
 export class PermissionEntity extends AbstractEntity {
@@ -29,4 +30,7 @@ export class PermissionEntity extends AbstractEntity {
         enum: HTTPMethod,
     })
     method:string
+
+    @ManyToMany(() => RoleEntity, (roles) => roles.permissions)
+    roles: RoleEntity[];
 }

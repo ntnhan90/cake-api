@@ -6,10 +6,9 @@ import { PostRepository } from './repo/post.repo';
 import { PostEntity } from './entities/post.entity';
 import { TagEntity } from '../tags/entities/tag.entity';
 import { CategoryEntity } from '../categories/entities/category.entity';
-import { PostCategoryEntity } from './entities/post_categories.entity';
 
 @Module({
-    imports : [TypeOrmModule.forFeature([PostEntity,TagEntity,CategoryEntity,PostCategoryEntity])],
+    imports : [TypeOrmModule.forFeature([PostEntity,TagEntity,CategoryEntity])],
     controllers: [PostsController],
     providers: [PostsService, PostRepository],
 })

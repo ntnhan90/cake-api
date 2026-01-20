@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module,OnModuleInit } from '@nestjs/common';
 import { HealthModule } from './health/health.module';
 import { HomeModule } from './home/home.module';
 import { UserModule } from './user/user.module';
@@ -23,7 +23,11 @@ import { FaqCateModule } from './faq-cate/faq-cate.module';
 import { TagsModule } from './tags/tags.module';
 import { PostsModule } from './posts/posts.module';
 import { CategoriesModule } from './categories/categories.module';
+import { OrdersModule } from './orders/orders.module';
+import { DiscountModule } from './discount/discount.module';
 
+import { PermissionSyncService } from './permission/sync.permission';
+import { ALL_PERMISSIONS } from '@/constants/permission.constants';
 @Module({
   	imports: [
 		AdminModule, 
@@ -49,7 +53,17 @@ import { CategoriesModule } from './categories/categories.module';
 		FaqCateModule,
 		TagsModule,
 		CategoriesModule, 
-		PostsModule
+		PostsModule,
+		OrdersModule,
+		DiscountModule
 	],
 })
-export class ApiModule {}
+export class ApiModule implements OnModuleInit {
+	constructor(
+		private readonly permissionSync: PermissionSyncService,
+	) {}
+
+	async onModuleInit() {
+		await this.permissionSync.sync(ALL_PERMISSIONS);
+	}
+}

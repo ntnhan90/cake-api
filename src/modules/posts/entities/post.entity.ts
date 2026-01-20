@@ -1,7 +1,7 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
 import { TagEntity } from 'src/modules/tags/entities/tag.entity';
 import { CategoryEntity } from 'src/modules/categories/entities/category.entity';
-import { PostCategoryEntity } from './post_categories.entity';
+//import { PostCategoryEntity } from './post_categories.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany,JoinTable,OneToMany} from "typeorm";
 
 export enum STATUS {
@@ -67,9 +67,25 @@ export class PostEntity extends AbstractEntity {
     })
     tags: TagEntity[]
 
+    //CategoryEntity
+    @ManyToMany(()=>TagEntity, (category) => category.posts)
+    @JoinTable({
+        name: 'post_categories',
+        joinColumn: {
+            name: 'post_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'category_id',
+            referencedColumnName: 'id',
+        },
+    })
+    categories: CategoryEntity[]
+    /*
     @OneToMany(
     () => PostCategoryEntity,
         postCategory => postCategory.post,
     )
     postCategories: PostCategoryEntity[];
+    */
 }

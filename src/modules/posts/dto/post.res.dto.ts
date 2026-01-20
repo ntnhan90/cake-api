@@ -2,7 +2,8 @@ import {StringField,NumberField} from '@/decorators/field.decorators';
 import { Optional } from '@nestjs/common';
 import { Exclude, Expose ,Transform} from 'class-transformer';
 import { IsString } from 'class-validator';
-
+import { TagsResDto } from 'src/modules/tags/dto/tags.res.dto';
+import { CategoryResDto } from 'src/modules/categories/dto/category.res.dto';
 @Exclude()
 export class PostResDto{
     @NumberField()
@@ -50,28 +51,27 @@ export class PostResDto{
     
 	@Expose()
 	@Transform(({ obj }) =>
-		obj.tags?.map(tag => ({
-			tag_id: tag.id,
-			tag_name: tag.name,
-		})) ?? [],
+		Array.isArray(obj.tags)
+		? obj.tags.map(tag => ({
+			id: tag.id,
+			name: tag.name,
+			}))
+		: [],
 	)
-	tags: {
-		tag_id: number;
-		tag_name: string;
-	}[];
+	tags: TagsResDto[];
 
 	// 🔥 QUAN TRỌNG NHẤT
 	@Expose()
 	@Transform(({ obj }) =>
-		obj.postCategories?.map(pc => ({
-		id: pc.category.id,
-		name: pc.category.name,
-		slug: pc.category.slug,
-		})) ?? [],
+		Array.isArray(obj.postCategories)
+		? obj.postCategories
+			.filter(pc => pc.category)
+			.map(pc => ({
+				id: pc.category.id,
+				name: pc.category.name,
+				slug: pc.category.slug,
+			}))
+		: [],
 	)
-	categories: {
-		id: number;
-		name: string;
-		slug: string;
-	}[];
+	categories: CategoryResDto[];
 }

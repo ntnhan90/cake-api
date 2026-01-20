@@ -1,7 +1,7 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column,OneToMany} from "typeorm";
-import { PostCategoryEntity } from 'src/modules/posts/entities/post_categories.entity';
-
+import { Entity, PrimaryGeneratedColumn, Column,OneToMany,ManyToMany} from "typeorm";
+//import { PostCategoryEntity } from 'src/modules/posts/entities/post_categories.entity';
+import { PostEntity } from 'src/modules/posts/entities/post.entity';
 export enum STATUS {
     PUBLISHED = "published",
     DRAFT = "draft",
@@ -49,9 +49,14 @@ export class CategoryEntity extends AbstractEntity {
     @Column({default:0})
     is_default:number
 
+    /*
     @OneToMany(
         () => PostCategoryEntity,
         postCategory => postCategory.category,
     )
     postCategories: PostCategoryEntity[];
+    */
+
+    @ManyToMany(() => PostEntity, (post) => post.categories)
+    posts: PostEntity[];
 }

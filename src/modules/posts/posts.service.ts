@@ -10,7 +10,7 @@ import { PostEntity } from './entities/post.entity';
 import assert from 'assert';
 import { TagEntity } from '../tags/entities/tag.entity';
 import { CategoryEntity } from '../categories/entities/category.entity';
-import { PostCategoryEntity } from './entities/post_categories.entity';
+//import { PostCategoryEntity } from './entities/post_categories.entity';
 import { In,Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -26,8 +26,8 @@ export class PostsService {
         @InjectRepository(CategoryEntity)
         private readonly cateRepo: Repository<CategoryEntity>,
         
-        @InjectRepository(PostCategoryEntity)
-        private readonly postCategoryRepo: Repository<PostCategoryEntity>,
+   //     @InjectRepository(PostCategoryEntity)
+   //     private readonly postCategoryRepo: Repository<PostCategoryEntity>,
     ){};
     /* =====================================================
      HELPER: xử lý tags string[] -> TagEntity[]
@@ -59,74 +59,38 @@ export class PostsService {
 
     async create(dto: CreatePostDto): Promise<PostResDto> {
         return this.postRepo.manager.transaction(async manager => {
+
             const { categories, tags, ...postData } = dto;
 
-            /* =====================================================
-            1️⃣ Validate categories (nếu có)
-            ===================================================== */
+            /* ------------------ VALIDATE CATEGORY ------------------ */
+            let categoryEntities: CategoryEntity[] = [];
+
             if (categories?.length) {
-            const count = await manager.count(CategoryEntity, {
-                where: { id: In(categories) },
+            categoryEntities = await manager.findBy(CategoryEntity, {
+                id: In(categories),
             });
 
-            if (count !== categories.length) {
+            if (categoryEntities.length !== categories.length) {
                 throw new NotFoundException('Category not found');
             }
             }
 
-            /* =====================================================
-            2️⃣ Create post (KHÔNG relation)
-            ===================================================== */
-            const post = await manager.save(
-                manager.create(PostEntity, postData),
-            );
-
-            /* =====================================================
-            3️⃣ Insert post_categories (COMPOSITE KEY)
-            ===================================================== */
-            if (categories?.length) {
-                await manager.insert(
-                    PostCategoryEntity,
-                    categories.map(categoryId => ({
-                    post_id: post.id,
-                    category_id: categoryId,
-                    })),
-                );
-            }
-
-            /* =====================================================
-            4️⃣ Resolve + add tags (ManyToMany)
-            ===================================================== */
-            if (tags?.length) {
-                const tagEntities = await this.resolveTags(tags);
-
-                await manager
-                    .createQueryBuilder()
-                    .relation(PostEntity, 'tags')
-                    .of(post.id)
-                    .add(tagEntities.map(t => t.id));
-                }
-
-            /* =====================================================
-            5️⃣ Reload post WITH relations (QUAN TRỌNG)
-            ===================================================== */
-            const fullPost = await manager.findOne(PostEntity, {
-                where: { id: post.id },
-                relations: [
-                    'postCategories',
-                    'postCategories.category',
-                    'tags',
-                ],
+            /* ------------------ CREATE POST ------------------ */
+            const post = manager.create(PostEntity, {
+            ...postData,
+            categories: categoryEntities, // 🔥 GÁN TRỰC TIẾP
             });
 
-            if (!fullPost) {
-                throw new InternalServerErrorException('Create post failed');
+            await manager.save(post);
+
+            /* ------------------ TAGS ------------------ */
+            if (tags?.length) {
+            const tagEntities = await this.resolveTags(tags);
+            post.tags = tagEntities;
+            await manager.save(post);
             }
 
-            /* =====================================================
-            6️⃣ Map sang Response DTO
-            ===================================================== */
-            return fullPost.toDto(PostResDto);
+            return post.toDto(PostResDto);
         });
     }
 
@@ -135,7 +99,6 @@ export class PostsService {
             'posts.createdAt',
             'DESC'
         )
-
         const [posts, metaDto] = await paginate<PostEntity>(query, reqDto, {
             skipCount: false,
             takeAll: false,
@@ -148,7 +111,7 @@ export class PostsService {
         assert(id,'id is required');
         const post = await this.postRepo.findOne({
             where: { id },
-            relations: ['tags', 'postCategories', 'postCategories.category'],
+            relations: ['tags', 'categories'],
         });
         return post.toDto(PostResDto);
     }
@@ -160,20 +123,6 @@ export class PostsService {
         await this.postRepo.update(id, postData);
 
         // ===== SYNC CATEGORIES =====
-        if (categories) {
-            // xoá hết cũ
-            await this.postCategoryRepo.delete({ post_id: id });
-
-            // insert mới
-            if (categories.length) {
-                await this.postCategoryRepo.insert(
-                    categories.map(categoryId => ({
-                    post_id: id,
-                    category_id: categoryId,
-                    })),
-                );
-            }
-        }
 
         // ===== SYNC TAGS =====
         if (tags) {
