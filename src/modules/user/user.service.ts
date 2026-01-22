@@ -1,7 +1,5 @@
-//import { CursorPaginationDto } from '@/common/dto/cursor-pagination/cursor-pagination.dto';
-//import { CursorPaginatedDto } from '@/common/dto/cursor-pagination/paginated.dto';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto'
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger ,NotFoundException,BadRequestException} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
@@ -15,6 +13,9 @@ import assert from 'assert';
 import { UserRepository } from './repo/user.repo';
 import { UserAlreadyExistsException } from './user.error';
 import { compareSync } from 'bcrypt';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import * as bcrypt from 'bcrypt';
+import { hashPassword as hashPass } from '@/utils/password.util';
 
 @Injectable()
 export class UserService {
@@ -27,12 +28,8 @@ export class UserService {
 
 		const user = await this.userRepository.findOne({
 			where: [
-				{
-					username,
-				},
-				{
-					email,
-				},
+				{ username, },
+				{ email, },
 			],
 		});
 
@@ -79,6 +76,35 @@ export class UserService {
 		user.refresh_token = updateUserDto.refresh_token;
     	await this.userRepository.save(user);;
   	}
+
+	async updatePassword( userId: number, dto: UpdateUserPasswordDto,) {
+		const user = await this.userRepository.findOne({
+			where: { id: userId },
+			select: ['id', 'password'],
+		});
+	
+		if (!user) {
+			throw new NotFoundException('Customer not found');
+		}
+	
+		const isMatch = await bcrypt.compare(
+			dto.oldPassword,
+			user.password,
+		);
+	
+		if (!isMatch) {
+			throw new BadRequestException('Old password is incorrect');
+		}
+		  //  this.password = await hashPass(this.password)
+		  //  const hashedPassword = await bcrypt.hash(dto.newPassword, 10);
+		const hashedPassword = await hashPass(dto.newPassword);
+	
+		await this.userRepository.update(userId, {
+			password: hashedPassword,
+		});
+	
+		return { message: 'Password updated successfully' };
+	}
 
   	async remove(id: number) {
 		await this.userRepository.findOneByOrFail({id});

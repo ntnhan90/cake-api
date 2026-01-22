@@ -7,7 +7,6 @@ export enum STATUS {
     DRAFT = "draft",
 }
 
-
 @Entity('customers')
 export class CustomerEntity extends AbstractEntity {
     constructor(data?: Partial<CustomerEntity>){
