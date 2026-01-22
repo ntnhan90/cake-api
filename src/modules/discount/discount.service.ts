@@ -1,26 +1,57 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDiscountDto } from './dto/create-discount.dto';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
+import { ListDiscountReqDto } from './dto/list-discount.req.dto';
+import { DiscountResDto } from './dto/discount.res.dto';
+import { In,Repository } from 'typeorm';
+import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
+import { paginate } from '@/utils/offset-pagination';
+import { plainToInstance } from 'class-transformer';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DiscountEntity } from './entities/discount.entity';
+import assert from 'assert';
 
 @Injectable()
 export class DiscountService {
-  create(createDiscountDto: CreateDiscountDto) {
-    return 'This action adds a new discount';
-  }
+    constructor(  
+        @InjectRepository(DiscountEntity)
+        private readonly discountRepo: Repository<DiscountEntity>,
+    ){}
 
-  findAll() {
-    return `This action returns all discount`;
-  }
+    async create(dto: CreateDiscountDto):Promise<DiscountResDto>  {
+        const newDiscount = this.discountRepo.create(dto);
+        return await this.discountRepo.save(newDiscount)
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} discount`;
-  }
+    async findAll(reqDto: ListDiscountReqDto) :Promise<OffsetPaginatedDto<DiscountResDto>>  {
+        const query = this.discountRepo.createQueryBuilder('discounts').orderBy(
+            'discounts.createdAt',
+            'DESC'
+        )
 
-  update(id: number, updateDiscountDto: UpdateDiscountDto) {
-    return `This action updates a #${id} discount`;
-  }
+        const [discounts,metaDto] = await paginate<DiscountResDto>(query, reqDto,{
+            skipCount:false,
+            takeAll: false
+        });
 
-  remove(id: number) {
-    return `This action removes a #${id} discount`;
-  }
+        return new OffsetPaginatedDto(plainToInstance(DiscountResDto, discounts), metaDto);
+    }
+
+    async findOne(id: number) :Promise<DiscountResDto>  {
+        assert(id, 'id is required');
+        const discount = await this.discountRepo.findOneByOrFail({id});
+        return discount.toDto(DiscountResDto);
+    }
+
+    async update(id: number, dto: UpdateDiscountDto) {
+        const role = await this.discountRepo.findOneByOrFail({id});
+        role.title = dto.title;
+
+        return this.discountRepo.save(role);
+    }
+
+    async remove(id: number) {
+        await this.discountRepo.findOneByOrFail({id});
+		await this.discountRepo.softDelete(id);
+    }
 }

@@ -55,8 +55,8 @@ export class CategoriesService {
     }
 
     async remove(id: number) {
-        return this.cateRepo.findOneByOrFail({id});
-        return this.cateRepo.softDelete(id);
+        await this.cateRepo.findOneByOrFail({id});
+        await this.cateRepo.softDelete(id);
     }
 
 

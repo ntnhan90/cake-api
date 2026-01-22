@@ -21,11 +21,11 @@ export class RoleResDto {
 
 	permissions: PermissionResDto[];
 
-    @StringField()
+  @StringField()
 	@Expose()
 	description: string;
 
-    @NumberField()
+  @NumberField()
 	@Expose()
 	is_default: number;
 

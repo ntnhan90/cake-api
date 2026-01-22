@@ -16,7 +16,7 @@ export class ProductCollectionsService {
 
     async create(dto: CreateProductCollectionDto) :Promise<CollectionResDto>{
         const newColection = this.collectionRepo.create(dto);
-        return  await this.collectionRepo.save(newColection)
+        return await this.collectionRepo.save(newColection)
     }
 
     async findAll(reqDto: ListCollectionReqDto):Promise<OffsetPaginatedDto<CollectionResDto>> {

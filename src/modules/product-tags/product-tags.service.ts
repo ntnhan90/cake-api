@@ -74,8 +74,8 @@ export class ProductTagsService {
     }
 
     async remove(id: number) {
-        return this.proTagsRepo.findOneByOrFail({id});
-        return this.proTagsRepo.softDelete(id);
+        await this.proTagsRepo.findOneByOrFail({ id });
+        await this.proTagsRepo.softDelete(id);
     }
 
     async isSlugExists(slug:string) :Promise<boolean>{

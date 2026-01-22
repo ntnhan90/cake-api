@@ -54,7 +54,7 @@ export class ProductCategoriesService {
     }
 
     async remove(id: number) {
-       await this.proCateRepo.findOneByOrFail({id});
+        await this.proCateRepo.findOneByOrFail({id});
 		await this.proCateRepo.softDelete(id);
     }
 

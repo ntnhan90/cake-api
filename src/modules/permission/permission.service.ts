@@ -11,17 +11,33 @@ import { plainToInstance } from 'class-transformer';
 export class PermissionService {
     constructor(private readonly permissionRepo: PermisstionRepository){}
     
-    async findAll(reqDto: ListPermissionReqDto) :Promise<OffsetPaginatedDto<PermissionResDto>>{
-        const query = this.permissionRepo.createQueryBuilder('permissions').orderBy(
-            'permissions.createdAt',
-            'DESC'
-        )
+    async findAll(reqDto: ListPermissionReqDto) :Promise<OffsetPaginatedDto<PermissionResDto>> {
+            const query = this.permissionRepo.createQueryBuilder('posts').orderBy(
+                'posts.createdAt',
+                'DESC'
+            )
+            const [posts, metaDto] = await paginate<PermissionEntity>(query, reqDto, {
+                skipCount: false,
+                takeAll: true,
+            });
+    
+            return new OffsetPaginatedDto(plainToInstance(PermissionEntity, posts), metaDto);
+        }
+    /*
+    async findAll(reqDto: ListPermissionReqDto): Promise<PermissionResDto[]> {
+        const query = this.permissionRepo
+            .createQueryBuilder('permissions')
+            .orderBy('permissions.createdAt', 'DESC');
 
-        const [permission,metaDto] = await paginate<PermissionEntity>(query, reqDto,{
-            skipCount:false,
-            takeAll: false
+        // ÉP lấy hết
+     //   query.take(undefined);
+      //  query.skip(undefined);
+
+        const permissions = await query.getMany();
+
+        return plainToInstance(PermissionResDto, permissions, {
+            excludeExtraneousValues: true,
         });
-
-        return new OffsetPaginatedDto(plainToInstance(PermissionResDto, permission), metaDto)
     }
+        */
 }
