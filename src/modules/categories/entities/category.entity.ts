@@ -49,14 +49,6 @@ export class CategoryEntity extends AbstractEntity {
     @Column({default:0})
     is_default:number
 
-    /*
-    @OneToMany(
-        () => PostCategoryEntity,
-        postCategory => postCategory.category,
-    )
-    postCategories: PostCategoryEntity[];
-    */
-
     @ManyToMany(() => PostEntity, (post) => post.categories)
     posts: PostEntity[];
 }

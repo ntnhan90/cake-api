@@ -31,10 +31,10 @@ export class DiscountEntity extends AbstractEntity{
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({nullable:true})
     title:string
 
-    @Column()
+    @Column({nullable:true})
     code:string
 
     @CreateDateColumn({

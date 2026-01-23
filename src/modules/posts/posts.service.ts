@@ -123,8 +123,34 @@ export class PostsService {
         await this.postRepo.update(id, postData);
 
         // ===== SYNC CATEGORIES =====
+        if(categories || tags){
+            const post = await this.postRepo.findOne({
+                where: { id },
+                relations: ['categories', 'tags'],
+            });
 
+            if (!post) {
+                throw new NotFoundException('Post not found');
+            }
+
+            if (categories !== undefined) {
+                post.categories = categories.length
+                ? await this.cateRepo.findBy({
+                    id: In(categories),
+                })
+                : [];
+            }
+
+            if (tags !== undefined) {
+                post.tags = tags.length
+                ? await this.resolveTags(tags)
+                : [];
+            }
+
+            await this.postRepo.save(post);
+        }
         // ===== SYNC TAGS =====
+        /*
         if (tags) {
             const post = await this.postRepo.findOne({
                 where: { id },
@@ -133,7 +159,7 @@ export class PostsService {
 
             post.tags = await this.resolveTags(tags);
             await this.postRepo.save(post);
-        }
+        }*/
         return true
     }
 

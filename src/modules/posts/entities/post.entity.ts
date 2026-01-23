@@ -68,7 +68,7 @@ export class PostEntity extends AbstractEntity {
     tags: TagEntity[]
 
     //CategoryEntity
-    @ManyToMany(()=>TagEntity, (category) => category.posts)
+    @ManyToMany(()=>CategoryEntity, (category) => category.posts)
     @JoinTable({
         name: 'post_categories',
         joinColumn: {
@@ -81,11 +81,4 @@ export class PostEntity extends AbstractEntity {
         },
     })
     categories: CategoryEntity[]
-    /*
-    @OneToMany(
-    () => PostCategoryEntity,
-        postCategory => postCategory.post,
-    )
-    postCategories: PostCategoryEntity[];
-    */
 }

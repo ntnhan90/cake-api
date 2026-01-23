@@ -60,17 +60,13 @@ export class PostResDto{
 	)
 	tags: TagsResDto[];
 
-	// 🔥 QUAN TRỌNG NHẤT
 	@Expose()
 	@Transform(({ obj }) =>
-		Array.isArray(obj.postCategories)
-		? obj.postCategories
-			.filter(pc => pc.category)
-			.map(pc => ({
-				id: pc.category.id,
-				name: pc.category.name,
-				slug: pc.category.slug,
-			}))
+	Array.isArray(obj.categories)
+		? obj.categories.map(category => ({
+			id: category.id,
+			name: category.name,
+		}))
 		: [],
 	)
 	categories: CategoryResDto[];
