@@ -21,7 +21,7 @@ export class TagEntity extends AbstractEntity {
     @Column()
     name:string
 
-    @Column()
+    @Column({unique:true})
     slug:string
 
     @Column('text',{nullable:true})

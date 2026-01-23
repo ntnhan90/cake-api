@@ -35,26 +35,85 @@ export class PostsService {
     private async resolveTags(tagNames?: string[]): Promise<TagEntity[]> {
         if (!tagNames || tagNames.length === 0) return [];
 
-        // unique + trim
-        const names = [...new Set(tagNames.map(t => t.trim()))];
+        // normalize + unique name input
+        const names = [
+            ...new Set(
+            tagNames
+                .filter(Boolean)
+                .map(n => n.trim())
+                .filter(Boolean),
+            ),
+        ];
 
-        // tags đã tồn tại
+        if (!names.length) return [];
+
+        // generate base slug từ name
+        const baseSlugs = names.map(name => this.slugify(name));
+
+        // tìm các tag đã tồn tại theo slug
         const existingTags = await this.tagRepo.find({
-            where: { name: In(names) },
+            where: { slug: In(baseSlugs) },
         });
 
-        const existingNames = existingTags.map(t => t.name);
+        const existingSlugs = existingTags.map(t => t.slug);
 
-        // tags mới
-        const newTags = names
-        .filter(name => !existingNames.includes(name))
-        .map(name => this.tagRepo.create({ name }));
+        const newTags: TagEntity[] = [];
+
+        for (let i = 0; i < names.length; i++) {
+            const name = names[i];
+            const baseSlug = baseSlugs[i];
+
+            // nếu slug đã tồn tại → skip (reuse tag)
+            if (existingSlugs.includes(baseSlug)) {
+                continue;
+            }
+
+            const uniqueSlug = await this.generateUniqueSlug(baseSlug);
+
+            newTags.push(
+                this.tagRepo.create({
+                    name,
+                    slug: uniqueSlug,
+                }),
+            );
+        }
 
         if (newTags.length) {
             await this.tagRepo.save(newTags);
         }
 
         return [...existingTags, ...newTags];
+    }
+
+    private slugify(text: string): string {
+        return text
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '') // bỏ ký tự đặc biệt
+        .replace(/\s+/g, '-')     // space → -
+        .replace(/-+/g, '-');     // gộp --
+    }
+
+    private async generateUniqueSlug(baseSlug: string): Promise<string> {
+        let slug = baseSlug;
+        let counter = 1;
+
+        while (
+            await this.tagRepo.exist({
+            where: { slug },
+            })
+        ) {
+            slug = `${baseSlug}-${counter}`;
+            counter++;
+        }
+
+        return slug;
+    }
+
+    private slugToName(slug: string): string {
+        return slug
+            .replace(/-/g, ' ')
+            .replace(/\b\w/g, char => char.toUpperCase());
     }
 
     async create(dto: CreatePostDto): Promise<PostResDto> {
@@ -149,17 +208,7 @@ export class PostsService {
 
             await this.postRepo.save(post);
         }
-        // ===== SYNC TAGS =====
-        /*
-        if (tags) {
-            const post = await this.postRepo.findOne({
-                where: { id },
-                relations: ['tags'],
-            });
-
-            post.tags = await this.resolveTags(tags);
-            await this.postRepo.save(post);
-        }*/
+       
         return true
     }
 
