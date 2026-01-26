@@ -9,39 +9,27 @@ export enum STATUS {
 
 @Entity('product_attributes')
 export class ProductAttributeEntity extends AbstractEntity {
-     constructor(data?: Partial<ProductAttributeEntity>){
-        super();
-        Object.assign(this, data)
-    }
 
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @ManyToOne(
-        () => ProductAttributeSetEntity,
-        set => set.attributes,
-        { onDelete: 'CASCADE' },
-    )
-    @JoinColumn({ name: 'attribute_set_id' })
-    attributeSet: ProductAttributeSetEntity;
-    @Column()
-    attribute_set_id :number
+  @ManyToOne(
+    () => ProductAttributeSetEntity,
+    set => set.attributes,
+    { onDelete: 'CASCADE' },
+  )
+  @JoinColumn({ name: 'attribute_set_id' })
+  attributeSet: ProductAttributeSetEntity;
 
-    @Column()
-    title :string
+  @Column()
+  title: string;
 
-    @Column()
-    slug :string
+  @Column({ nullable: true })
+  color: string;
 
-    @Column({nullable:true})
-    color :string
+  @Column({ nullable: true })
+  image: string;
 
-    @Column({nullable:true})
-    image :string
-
-    @Column()
-    is_default :number
-
-    @DeleteDateColumn({ name: 'deleted_at' })
-    deletedAt?: Date;
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt?: Date;
 }

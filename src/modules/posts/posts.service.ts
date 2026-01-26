@@ -10,7 +10,6 @@ import { PostEntity } from './entities/post.entity';
 import assert from 'assert';
 import { TagEntity } from '../tags/entities/tag.entity';
 import { CategoryEntity } from '../categories/entities/category.entity';
-//import { PostCategoryEntity } from './entities/post_categories.entity';
 import { In,Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -25,9 +24,6 @@ export class PostsService {
 
         @InjectRepository(CategoryEntity)
         private readonly cateRepo: Repository<CategoryEntity>,
-        
-   //     @InjectRepository(PostCategoryEntity)
-   //     private readonly postCategoryRepo: Repository<PostCategoryEntity>,
     ){};
     /* =====================================================
      HELPER: xử lý tags string[] -> TagEntity[]
@@ -110,11 +106,6 @@ export class PostsService {
         return slug;
     }
 
-    private slugToName(slug: string): string {
-        return slug
-            .replace(/-/g, ' ')
-            .replace(/\b\w/g, char => char.toUpperCase());
-    }
 
     async create(dto: CreatePostDto): Promise<PostResDto> {
         return this.postRepo.manager.transaction(async manager => {
@@ -125,28 +116,28 @@ export class PostsService {
             let categoryEntities: CategoryEntity[] = [];
 
             if (categories?.length) {
-            categoryEntities = await manager.findBy(CategoryEntity, {
-                id: In(categories),
-            });
+                categoryEntities = await manager.findBy(CategoryEntity, {
+                    id: In(categories),
+                });
 
-            if (categoryEntities.length !== categories.length) {
-                throw new NotFoundException('Category not found');
-            }
+                if (categoryEntities.length !== categories.length) {
+                    throw new NotFoundException('Category not found');
+                }
             }
 
             /* ------------------ CREATE POST ------------------ */
             const post = manager.create(PostEntity, {
-            ...postData,
-            categories: categoryEntities, // 🔥 GÁN TRỰC TIẾP
+                ...postData,
+                categories: categoryEntities, // 🔥 GÁN TRỰC TIẾP
             });
 
             await manager.save(post);
 
             /* ------------------ TAGS ------------------ */
             if (tags?.length) {
-            const tagEntities = await this.resolveTags(tags);
-            post.tags = tagEntities;
-            await manager.save(post);
+                const tagEntities = await this.resolveTags(tags);
+                post.tags = tagEntities;
+                await manager.save(post);
             }
 
             return post.toDto(PostResDto);

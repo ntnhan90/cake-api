@@ -43,12 +43,12 @@ export class RolesService {
             'DESC'
         )
 
-        const [taxes,metaDto] = await paginate<RoleEntity>(query, reqDto,{
+        const [roles,metaDto] = await paginate<RoleEntity>(query, reqDto,{
             skipCount:false,
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToInstance(RoleResDto, taxes), metaDto);
+        return new OffsetPaginatedDto(plainToInstance(RoleResDto, roles), metaDto);
     }
 
     async findOne(id: number) :Promise<RoleResDto> {

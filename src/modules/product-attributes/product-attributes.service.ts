@@ -1,117 +1,139 @@
 import { Injectable ,NotFoundException} from '@nestjs/common';
 import { CreateAttributeSetDto } from './dto/create-product-attribute.dto';
 import { UpdateProductAttributeDto } from './dto/update-product-attribute.dto';
-import { AttributeSetRepository } from './repo/attribute-set.repo';
-import { AttributeRepository } from './repo/attribute.repo';
+import { ListAttributesReqDto } from './dto/list-attribute.req.dto';
+import { AttributeResDto } from './dto/attributes.res.dto';
 import { ProductAttributeSetEntity } from './entities/product-attribute-set.entity';
 import { ProductAttributeEntity } from './entities/product-attribute.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In,Repository } from 'typeorm';
+import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
+import { paginate } from '@/utils/offset-pagination';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ProductAttributesService {
     constructor(
-        private readonly attrSetRepo: AttributeSetRepository,
-        private readonly attrRepo: AttributeRepository,
+        @InjectRepository(ProductAttributeSetEntity)
+        private readonly attrSetRepo: Repository<ProductAttributeSetEntity>,
+
+        @InjectRepository(ProductAttributeEntity)
+        private readonly attrRepo: Repository<ProductAttributeEntity>,
+
     ){}
 
     async create(dto: CreateAttributeSetDto) {
-        return this.attrSetRepo.manager.transaction(async manager =>{
-            const { attributes, ...setData } = dto;
-            // 1 create attribute set
-            const attributeSet = await manager.save(
-                manager.create(ProductAttributeSetEntity, setData),
-            );
+        const attributeSet = this.attrSetRepo.create({
+            name: dto.name,
+            status: dto.status,
+        });
 
-            // 2 create attributes (nếu có)
-            if(attributes?.length){
-                const attrEntities = attributes.map(attr =>
-                    manager.create(ProductAttributeEntity,{
-                        ...attr,
-                        attribute_set_id: attributeSet.id
-                    })
-                );
+        const savedSet = await this.attrSetRepo.save(attributeSet);
 
-                await manager.save(ProductAttributeEntity, attrEntities)
-            }
-            // 3 load lại để trả response
-            return manager.findOne(ProductAttributeSetEntity, {
-                where: { id: attributeSet.id },
-                relations: ['attributes'],
-            });
-        })
+        // 2. Guard: tránh lỗi map undefined
+        if (!dto.attributes || !Array.isArray(dto.attributes)) {
+            return savedSet;
+        }
+
+        // 3. Create attributes (CHÚ Ý CÚ PHÁP)
+        const attributes: ProductAttributeEntity[] = dto.attributes.map(
+        (attr): ProductAttributeEntity =>
+            this.attrRepo.create({
+            title: attr.title,
+            color: attr.color ?? null,
+            image: attr.image ?? null,
+            attributeSet: savedSet, // ✅ BẮT BUỘC
+            }),
+        );
+
+        console.log('DTO ATTRIBUTES:', dto.attributes);
+        console.log('CREATED ATTRS:', attributes);
+        // 4. SAVE THÌ MỚI INSERT DB
+        await this.attrRepo.save(attributes);
+                
+        return savedSet;
     }
 
-    async findAll() {
-        const sets = await this.attrSetRepo.createQueryBuilder('product_attribute_sets')
-            .leftJoinAndSelect('product_attribute_sets.attributes', 'attributes')
-        //    .where('product_attribute_sets.deleted_at IS NULL')
-        //    .andWhere('attributes.deleted_at IS NULL')
-            .orderBy('product_attribute_sets.id', 'DESC')
-            .addOrderBy('attributes.order', 'ASC')
-            .getMany();
-        return sets;
+    async findAll(reqDto: ListAttributesReqDto):Promise<OffsetPaginatedDto<AttributeResDto>> {
+        const query = this.attrSetRepo.createQueryBuilder('product_attribute_sets').orderBy(
+            'product_attribute_sets.createdAt',
+            'DESC'
+        )
+
+        const [faqs,metaDto] = await paginate<ProductAttributeSetEntity>(query, reqDto,{
+            skipCount:false,
+            takeAll: false
+        });
+
+        return new OffsetPaginatedDto(plainToInstance(AttributeResDto, faqs),metaDto)
     }
 
     async findOne(id: number) {
-        const set = await this.attrSetRepo.findOne({
+        const attributeSet = await this.attrSetRepo.findOne({
             where: { id },
-                relations: ['attributes'],
-            });
-
-            if (!set) {
-                throw new NotFoundException('Attribute set not found');
-            }
-
-            return set;
-    }
-
-    update(id: number, dto: CreateAttributeSetDto) {
-        const { attributes, ...setData } = dto;
-
-        return this.attrSetRepo.manager.transaction(async manager => {
-            await manager.update(ProductAttributeSetEntity, id, setData);
-
-            if(attributes){
-                // xoá attribute cũ
-                await manager.delete(ProductAttributeEntity, {
-                    attribute_set_id: id,
-                });
-
-                // insert lại
-                if(attributes.length){
-                    await manager.save(
-                        ProductAttributeEntity,
-                        attributes.map(attr => ({
-                            ...attr,
-                            attribute_set_id: id,
-                        }))
-                    )
-                }
-            }
-
-            return manager.findOne(ProductAttributeSetEntity,{
-                where: {id},
-                relations: ['attributes'],
-            });
-        });
-    }
-
-    async remove(id: number) {
-        const set = await this.attrSetRepo.findOne({
-            where: { id },
+            relations: {
+                attributes: true,
+            },
         });
 
-        if (!set) {
+        if (!attributeSet) {
             throw new NotFoundException('Attribute set not found');
         }
 
-        // 1️⃣ soft delete attributes
-        await this.attrRepo.softDelete({
-            attribute_set_id: id,
+        return attributeSet;
+    }
+
+    async update(id: number, dto: CreateAttributeSetDto) {
+        const attributeSet = await this.attrSetRepo.findOne({
+            where: { id },
+            relations: { attributes: true },
         });
+
+         if (!attributeSet) {
+            throw new NotFoundException('Attribute set not found');
+        }
+
+        attributeSet.name = dto.name;
+        attributeSet.status = dto.status;
+        await this.attrSetRepo.save(attributeSet);
+
+        if(dto.attributes &&  Array.isArray(dto.attributes)){
+            // xoá attributes cũ
+            if (attributeSet.attributes?.length) {
+                await this.attrRepo.remove(attributeSet.attributes);
+            }
+            // tạo attributes mới
+            const newAttributes = dto.attributes.map(attr =>
+                this.attrRepo.create({
+                    title: attr.title,
+                    color: attr.color ?? null,
+                    image: attr.image ?? null,
+                    attributeSet,
+                }),
+            );
+            await this.attrRepo.save(newAttributes);
+        }
+        return this.findOne(id)
+    }
+
+    async remove(id: number) {
+        const attributeSet = await this.attrSetRepo.findOne({
+            where: { id },
+            relations: { attributes: true },
+        });
+
+        if (!attributeSet) {
+            throw new NotFoundException('Attribute set not found');
+        }
+
+        if (attributeSet.attributes?.length) {
+            const attrIds = attributeSet.attributes.map(a => a.id);
+            await this.attrRepo.softDelete(attrIds);
+        }
 
         // 2️⃣ soft delete attribute set
         await this.attrSetRepo.softDelete(id);
 
-        return true;
+        return { message: 'Attribute set soft deleted' };
     }
 }

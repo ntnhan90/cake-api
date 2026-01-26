@@ -20,9 +20,6 @@ export class ProductAttributeSetEntity extends AbstractEntity {
     @Column()
     name:string
 
-    @Column()
-    slug:string
-
     @Column({
         type: "enum",
         enum: STATUS,
