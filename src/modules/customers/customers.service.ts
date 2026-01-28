@@ -52,12 +52,21 @@ export class CustomersService {
     }
 
     async update(id: number, dto: UpdateCustomerDto) {
-        const role = await this.customerRepo.findOneByOrFail({id});
-        role.name = dto.name;
-        role.email = dto.email;
+        const customer = await this.customerRepo.findOneByOrFail({id});
+        if (!customer) throw new NotFoundException();
+
+        if (dto.password) {
+            //customer.password = await hash(dto.password);
+            customer.password = dto.password
+        }
+        if ('dob' in dto) {
+            customer.dob = dto.dob; // Date | null
+        }
+        customer.name = dto.name;
+        customer.phone = dto.phone
 
 
-        return this.customerRepo.save(role);
+        return this.customerRepo.save(customer);
     }
 
     async updatePassword( customerId: number, dto: UpdateCustomerPasswordDto,) {

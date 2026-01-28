@@ -39,8 +39,11 @@ export class CustomerEntity extends AbstractEntity {
     @Column({nullable:true})
     remember_token:string
 
-    @Column({nullable:true})
-    confirmed_at:Date
+    @Column({
+        type: 'timestamp',
+        nullable: true,
+    })
+    confirmed_at: Date | null;
 
     @Column({
         type: "enum",

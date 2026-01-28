@@ -17,11 +17,13 @@ export class CustomersController {
         return this.customersService.create(dto);
     }
 
+    @Public()
     @Get()
     findAll(@Query() reqDto:ListCustomerReqDto) :Promise<OffsetPaginatedDto<CustomerResDto>>{
         return this.customersService.findAll(reqDto);
     }
 
+    @Public()
     @Get(':id')
     findOne(@Param('id') id: number) : Promise<CustomerResDto> {
         return this.customersService.findOne(+id);

@@ -2,7 +2,6 @@ import {StringField,NumberField, DateField,} from '@/decorators/field.decorators
 import { IsArray, IsDate, IsNotEmpty, IsOptional, IsString, IsInt } from 'class-validator';
 
 export class CreateCustomerDto {
-
     @StringField()
     @IsNotEmpty()
     email:string
@@ -14,7 +13,8 @@ export class CreateCustomerDto {
     @StringField()
     password:string
 
-    @StringField()
+    @IsOptional()
+    @IsString()
     avatar:string
 
     @DateField()
@@ -23,8 +23,9 @@ export class CreateCustomerDto {
     @StringField()
     phone:string	
 
-    @DateField()
-    confirmed_at:Date
+    @IsOptional()
+    @IsDate()
+    confirmed_at?: Date;
 
     @StringField()
     status:string
