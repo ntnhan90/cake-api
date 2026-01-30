@@ -12,6 +12,8 @@ import { TagEntity } from '../tags/entities/tag.entity';
 import { CategoryEntity } from '../categories/entities/category.entity';
 import { In,Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Logger } from '@nestjs/common';
+import {Order} from '@/constants/app.constant';
 
 @Injectable()
 export class PostsService {
@@ -25,6 +27,8 @@ export class PostsService {
         @InjectRepository(CategoryEntity)
         private readonly cateRepo: Repository<CategoryEntity>,
     ){};
+
+    private readonly logger = new Logger(PostsService.name);
     /* =====================================================
      HELPER: xử lý tags string[] -> TagEntity[]
      ===================================================== */
@@ -143,18 +147,37 @@ export class PostsService {
             return post.toDto(PostResDto);
         });
     }
+   
+    async findAll(reqDto: ListPostsReqDto) {
+        const order = reqDto.order ?? Order.DESC;
 
-    async findAll(reqDto: ListPostsReqDto) :Promise<OffsetPaginatedDto<PostResDto>> {
-        const query = this.postRepo.createQueryBuilder('posts').orderBy(
-            'posts.createdAt',
-            'DESC'
-        )
-        const [posts, metaDto] = await paginate<PostEntity>(query, reqDto, {
-            skipCount: false,
-            takeAll: false,
-        });
+        const query = this.postRepo
+            .createQueryBuilder('posts')
+            .leftJoinAndSelect('posts.tags', 'tags')
+            .leftJoinAndSelect('posts.categories', 'categories')
+            .orderBy('posts.createdAt', order)
+            .addOrderBy('posts.id', order);
 
-        return new OffsetPaginatedDto(plainToInstance(PostResDto, posts), metaDto);
+        if (reqDto.q?.trim()) {
+            query.andWhere(
+            '(posts.name LIKE :q OR posts.slug LIKE :q)',
+            { q: `%${reqDto.q.trim()}%` }
+            );
+        }
+
+        const [posts, metaDto] = await paginate<PostEntity>(
+            query, 
+            reqDto,
+            {
+                skipCount: false,
+                takeAll: false,
+            }
+        );
+
+        return new OffsetPaginatedDto(
+            plainToInstance(PostResDto, posts),
+            metaDto
+        );
     }
 
     async findOne(id: number)  :Promise<PostResDto>{

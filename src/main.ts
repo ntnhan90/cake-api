@@ -85,6 +85,9 @@ async function bootstrap() {
     app.useGlobalPipes(
         new ValidationPipe({
             transform: true,
+            transformOptions: {
+                enableImplicitConversion: true, // 🔥 QUAN TRỌNG
+            },
             whitelist: true,
             errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
             exceptionFactory: (errors: ValidationError[]) => {

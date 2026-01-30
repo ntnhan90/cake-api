@@ -76,6 +76,7 @@ function generateModulesSet() {
 		},
 		inject: [ConfigService],
 	});
+	
   	const loggerModule = LoggerModule.forRootAsync({
 		imports: [ConfigModule],
 		inject: [ConfigService],

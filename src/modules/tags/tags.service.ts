@@ -9,6 +9,7 @@ import { TagEntity } from './entities/tag.entity';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
+import { Order} from '@/constants/app.constant';
 
 @Injectable()
 export class TagsService {
@@ -20,6 +21,8 @@ export class TagsService {
     }
 
     async findAll(reqDto: ListTagsReqDto) :Promise<OffsetPaginatedDto<TagsResDto>> {
+        const order = reqDto.order ?? Order.DESC;
+
         const { q } = reqDto
         const query = this.tagsRepo.createQueryBuilder('tags').orderBy(
             'tags.createdAt',
@@ -33,10 +36,14 @@ export class TagsService {
             )
         }
 
-        const [tags,metaDto] = await paginate<TagEntity>(query, reqDto,{
-            skipCount:false,
-            takeAll: false
-        });
+        const [tags,metaDto] = await paginate<TagEntity>(
+            query, 
+            reqDto,
+            {
+                skipCount:false,
+                takeAll: false
+            }
+        );
 
         return new OffsetPaginatedDto(plainToInstance(TagsResDto, tags), metaDto);
     }

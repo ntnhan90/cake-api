@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query , Req} from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -6,7 +6,6 @@ import { PostResDto } from './dto/post.res.dto';
 import { ListPostsReqDto } from './dto/list-posts.req.dto';
 import { Public } from '@/decorators/public.decorators';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
-
 
 @Controller('posts')
 export class PostsController {
@@ -17,6 +16,7 @@ export class PostsController {
         return this.postsService.create(dto);
     }
 
+    @Public()
     @Get()
     findAll(@Query() reqDto: ListPostsReqDto) :Promise<OffsetPaginatedDto<PostResDto>> {
         return this.postsService.findAll(reqDto);
