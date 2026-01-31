@@ -9,10 +9,17 @@ import { ProductColectionEntity } from './entities/product-collection.entity';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
+import {Order} from '@/constants/app.constant';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+
 
 @Injectable()
 export class ProductCollectionsService {
-    constructor(private readonly collectionRepo: ProductColectionRepository){}
+    constructor(
+        @InjectRepository(ProductColectionEntity)
+        private readonly collectionRepo: Repository<ProductColectionEntity>,
+    ){}
 
     async create(dto: CreateProductCollectionDto) :Promise<CollectionResDto>{
         const newColection = this.collectionRepo.create(dto);
@@ -20,17 +27,23 @@ export class ProductCollectionsService {
     }
 
     async findAll(reqDto: ListCollectionReqDto):Promise<OffsetPaginatedDto<CollectionResDto>> {
-        const query = this.collectionRepo.createQueryBuilder('product_colections').orderBy(
-            'product_colections.createdAt',
-            'DESC'
-        )
+        const order = reqDto.order ?? Order.DESC;
+        const query = this.collectionRepo
+            .createQueryBuilder('product_colections')
+            .orderBy( 'product_colections.createdAt',order)
 
-        const [taxes,metaDto] = await paginate<ProductColectionEntity>(query, reqDto,{
+        if (reqDto.q?.trim()) {
+            query.andWhere(
+            '(product_colections.name LIKE :q)',
+            { q: `%${reqDto.q.trim()}%` }
+            );
+        }
+        const [collections,metaDto] = await paginate<ProductColectionEntity>(query, reqDto,{
             skipCount:false,
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToInstance(CollectionResDto, taxes), metaDto);
+        return new OffsetPaginatedDto(plainToInstance(CollectionResDto, collections), metaDto);
     }
 
     async findOne(id: number):Promise<CollectionResDto> {

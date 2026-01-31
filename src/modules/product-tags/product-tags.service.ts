@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductTagDto } from './dto/create-product-tag.req.dto';
 import { UpdateProductTagDto } from './dto/update-product-tag.req.dto';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
-import { ProductTagsRepository } from './repo/product-tag.repo';
 import { ListProductTagsReqDto } from './dto/list-product-tags.req.dto';
 import { ProductTagsResDto } from './dto/product-tags.res.dto';
 import { paginate } from '@/utils/offset-pagination';
@@ -12,10 +11,18 @@ import assert from 'assert';
 import slugify from 'slugify';
 import { BadRequestException } from '@nestjs/common';
 import { Not } from 'typeorm';
-
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Order } from '@/constants/app.constant';
 @Injectable()
 export class ProductTagsService {
-    constructor(private readonly proTagsRepo : ProductTagsRepository){};
+    //constructor(private readonly proTagsRepo : ProductTagsRepository){};
+
+    constructor(
+        @InjectRepository(ProductTagEntity)
+        private readonly proTagsRepo: Repository<ProductTagEntity>,
+    ) {}
+    
 
     async create(dto: CreateProductTagDto) :Promise<ProductTagsResDto>{
         const exists = await this.isNameExists(dto.name)
@@ -35,17 +42,16 @@ export class ProductTagsService {
     }
 
     async findAll(reqDto: ListProductTagsReqDto):Promise<OffsetPaginatedDto<ProductTagsResDto>> {
-        const { q } = reqDto
-        const query = this.proTagsRepo.createQueryBuilder('product_tags').orderBy(
-            'product_tags.createdAt',
-            'DESC'
-        )
+        const order = reqDto.order ?? Order.DESC;
+        const query = this.proTagsRepo
+            .createQueryBuilder('product_tags')
+            .orderBy(  'product_tags.createdAt', order )
 
-        if (q) {
+        if (reqDto.q?.trim()) {
             query.andWhere(
             '(product_tags.name LIKE :q OR product_tags.slug LIKE :q)',
-            { q: `%${q}%` }
-            )
+            { q: `%${reqDto.q.trim()}%` }
+            );
         }
 
         const [tags, metaDto] = await paginate<ProductTagEntity>(query, reqDto, {

@@ -9,6 +9,7 @@ import { ContactEntity } from './entities/contact.entity';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
+import { Order } from '@/constants/app.constant';
 
 @Injectable()
 export class ContactService {
@@ -19,17 +20,25 @@ export class ContactService {
     }
 
     async findAll(reqDto:ListContactReqDto) : Promise<OffsetPaginatedDto<ContactResDto>> {
-        const query = this.contactRepo.createQueryBuilder('contacts').orderBy(
-            'contacts.createdAt',
-            'DESC'
-        )
+        const order = reqDto.order ?? Order.DESC;
 
-        const [currencies,metaDto] = await paginate<ContactEntity>(query, reqDto,{
+        const query = this.contactRepo
+            .createQueryBuilder('contacts')
+            .orderBy('contacts.createdAt', order)
+
+        if (reqDto.q?.trim()) {
+            query.andWhere(
+            '(contacts.name LIKE :q)',
+            { q: `%${reqDto.q.trim()}%` }
+            );
+        }
+
+        const [contact,metaDto] = await paginate<ContactEntity>(query, reqDto,{
             skipCount:false,
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToInstance(ContactResDto, currencies),metaDto)
+        return new OffsetPaginatedDto(plainToInstance(ContactResDto, contact),metaDto)
     }
 
     async findOne(id: number) :Promise<ContactResDto>{

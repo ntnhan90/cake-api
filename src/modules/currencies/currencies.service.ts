@@ -3,16 +3,21 @@ import { CreateCurrencyDto } from './dto/create-currency.dto';
 import { UpdateCurrencyDto } from './dto/update-currency.dto';
 import { CurrencyResDto} from './dto/currency.res.dto';
 import { ListCurrencyReqDto } from './dto/list-currency.req.dto';
-import { CurrencyRepository } from './repo/currencies.repo';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { CurrencyEntity } from './entities/currency.entity';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Order } from '@/constants/app.constant';
 
 @Injectable()
 export class CurrenciesService {
-    constructor(private readonly currencyRepo : CurrencyRepository) {}
+    constructor(
+        @InjectRepository(CurrencyEntity)
+        private readonly currencyRepo: Repository<CurrencyEntity>,
+    ) {}
 
     async create(dto: CreateCurrencyDto):Promise<CurrencyResDto> {
         const newCurrency = this.currencyRepo.create(dto);
@@ -20,11 +25,17 @@ export class CurrenciesService {
     }
 
     async findAll(reqDto: ListCurrencyReqDto) :Promise<OffsetPaginatedDto<CurrencyResDto>>{
-        const query = this.currencyRepo.createQueryBuilder('currencies').orderBy(
-            'currencies.createdAt',
-            'DESC'
-        )
+        const order = reqDto.order ?? Order.DESC
+        const query = this.currencyRepo
+            .createQueryBuilder('currencies')
+            .orderBy( 'currencies.createdAt', order)
 
+        if (reqDto.q?.trim()) {
+            query.andWhere(
+            '(currencies.name LIKE :q)',
+            { q: `%${reqDto.q.trim()}%` }
+            );
+        }
         const [currencies,metaDto] = await paginate<CurrencyEntity>(query, reqDto,{
             skipCount:false,
             takeAll: false

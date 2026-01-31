@@ -10,10 +10,14 @@ import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 import { Order} from '@/constants/app.constant';
-
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class TagsService {
-    constructor(private readonly tagsRepo : TagRepository){};
+    constructor(
+        @InjectRepository(TagEntity)
+        private readonly tagsRepo: Repository<TagEntity>,
+    ){};
 
     async create(dto: CreateTagDto) :Promise<TagsResDto>{
         const newTag = this.tagsRepo.create(dto);
@@ -23,17 +27,15 @@ export class TagsService {
     async findAll(reqDto: ListTagsReqDto) :Promise<OffsetPaginatedDto<TagsResDto>> {
         const order = reqDto.order ?? Order.DESC;
 
-        const { q } = reqDto
-        const query = this.tagsRepo.createQueryBuilder('tags').orderBy(
-            'tags.createdAt',
-            'DESC'
-        )
+        const query = this.tagsRepo
+        .createQueryBuilder('tags')
+        .orderBy( 'tags.createdAt',  order  )
 
-        if (q) {
+        if (reqDto.q?.trim()) {
             query.andWhere(
             '(tags.name LIKE :q OR tags.slug LIKE :q)',
-            { q: `%${q}%` }
-            )
+            { q: `%${reqDto.q.trim()}%` }
+            );
         }
 
         const [tags,metaDto] = await paginate<TagEntity>(

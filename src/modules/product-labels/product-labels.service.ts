@@ -2,26 +2,32 @@ import { Injectable } from '@nestjs/common';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { CreateProductLabelDto } from './dto/create-product-label.dto';
 import { UpdateProductLabelDto } from './dto/update-product-label.dto';
-import { ProductLabelsRepository } from './repo/product-labels.repo';
 import { ProductLabelsEntity } from './entities/product-label.entity';
 import { ListLabelsReqDto } from './dto/list-labels.req.dto';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import { LabelsResDto } from './dto/label.res.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import {Order} from '@/constants/app.constant';
+
 @Injectable()
 export class ProductLabelsService {
-    constructor(private readonly proLabelsRepository: ProductLabelsRepository) {}
+    constructor(
+        @InjectRepository(ProductLabelsEntity)
+        private readonly proLabelsRepo: Repository<ProductLabelsEntity>,
+    ) {}
 
     async create(dto: CreateProductLabelDto) {
-        const newLabel = this.proLabelsRepository.create(dto);
-        return this.proLabelsRepository.save(newLabel);
+        const newLabel = this.proLabelsRepo.create(dto);
+        return this.proLabelsRepo.save(newLabel);
     }
     
     async findAll(reqDto: ListLabelsReqDto):Promise<OffsetPaginatedDto<LabelsResDto>> {
-        const query = this.proLabelsRepository.createQueryBuilder('product_labels').orderBy(
-            'product_labels.createdAt',
-            'DESC'
-        )
+        const order = reqDto.order ?? Order.DESC;
+        const query = this.proLabelsRepo
+            .createQueryBuilder('product_labels')
+            .orderBy( 'product_labels.createdAt', order  )
         const [posts, metaDto] = await paginate<ProductLabelsEntity>(query, reqDto, {
             skipCount: false,
             takeAll: false,
@@ -31,23 +37,23 @@ export class ProductLabelsService {
     }
 
     async findOne(id: number) :Promise<LabelsResDto>{
-        const label = await this.proLabelsRepository.findOneByOrFail({id})
+        const label = await this.proLabelsRepo.findOneByOrFail({id})
 
         return label.toDto(LabelsResDto);
     }
 
     async update(id: number, dto: UpdateProductLabelDto) {
-        const label = await this.proLabelsRepository.findOneByOrFail({id});
+        const label = await this.proLabelsRepo.findOneByOrFail({id});
         label.name = dto.name;
         label.color = dto.color;
         label.status = dto.status;
         
-        return this.proLabelsRepository.save(label)
+        return this.proLabelsRepo.save(label)
     }
 
     async remove(id: number) {
-        await this.proLabelsRepository.findOneByOrFail({id});
-        await this.proLabelsRepository.softDelete({id});
+        await this.proLabelsRepo.findOneByOrFail({id});
+        await this.proLabelsRepo.softDelete({id});
         //return `This action removes a #${id} productLabel`;
     }
 

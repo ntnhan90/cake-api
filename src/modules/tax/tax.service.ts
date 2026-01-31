@@ -9,23 +9,28 @@ import { TaxEntity } from './entities/tax.entity';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import {Order} from '@/constants/app.constant';
 
 @Injectable()
 export class TaxService {
     //private readonly logger = new Logger(UserService.name);
-    constructor( private readonly taxRepo: TaxRepository, ){}
+    constructor(
+        @InjectRepository(TaxEntity)
+        private readonly taxRepo: Repository<TaxEntity>,
+    ){};
 
     async create(dto: CreateTaxDto) :Promise<TaxResDto> {
         const newTax = this.taxRepo.create(dto);
         return await this.taxRepo.save(newTax)
-        //return 'This action adds a new tax';
     }
 
     async findAll(reqDto: ListTaxReqDto):Promise<OffsetPaginatedDto<TaxResDto>> {
-        const query = this.taxRepo.createQueryBuilder('taxes').orderBy(
-            'taxes.createdAt',
-            'DESC'
-        )
+        const order = reqDto.order ?? Order.DESC;
+        const query = this.taxRepo
+            .createQueryBuilder('taxes')
+            .orderBy( 'taxes.createdAt',  order )
 
         const [taxes,metaDto] = await paginate<TaxEntity>(query, reqDto,{
             skipCount:false,

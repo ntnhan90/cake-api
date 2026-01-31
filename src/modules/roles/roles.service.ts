@@ -3,7 +3,6 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { ListRoleReqDto } from './dto/list-role.req.dto';
 import { RoleResDto } from './dto/role.res.dto';
-import { RoleRepository } from './repo/role.repo';
 import { RoleEntity } from './entities/role.entity';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { paginate } from '@/utils/offset-pagination';
@@ -12,13 +11,17 @@ import assert from 'assert';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In,Repository } from 'typeorm';
 import { PermissionEntity } from '../permission/entities/permission.entity';
+import {Order} from '@/constants/app.constant';
 
 @Injectable()
 export class RolesService {
     constructor(
-        private readonly roleRepo: RoleRepository,
+        @InjectRepository(RoleEntity)
+        private readonly roleRepo: Repository<RoleEntity>,
+
         @InjectRepository(PermissionEntity)
         private readonly permissionRepo: Repository<PermissionEntity>,
+
     ){}
 
     async create(dto: CreateRoleDto):Promise<RoleResDto>  {
@@ -38,11 +41,17 @@ export class RolesService {
     }
 
     async findAll(reqDto: ListRoleReqDto):Promise<OffsetPaginatedDto<RoleResDto>> {
-        const query = this.roleRepo.createQueryBuilder('roles').orderBy(
-            'roles.createdAt',
-            'DESC'
-        )
+        const order = reqDto.order ?? Order.DESC;
+        const query = this.roleRepo
+            .createQueryBuilder('roles')
+            .orderBy( 'roles.createdAt', order )
 
+        if (reqDto.q?.trim()) {
+            query.andWhere(
+            '(roles.name LIKE :q)',
+            { q: `%${reqDto.q.trim()}%` }
+            );
+        }
         const [roles,metaDto] = await paginate<RoleEntity>(query, reqDto,{
             skipCount:false,
             takeAll: false

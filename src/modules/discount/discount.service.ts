@@ -10,7 +10,7 @@ import { plainToInstance } from 'class-transformer';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DiscountEntity } from './entities/discount.entity';
 import assert from 'assert';
-
+import { Order } from '@/constants/app.constant';
 @Injectable()
 export class DiscountService {
     constructor(  
@@ -24,10 +24,11 @@ export class DiscountService {
     }
 
     async findAll(reqDto: ListDiscountReqDto) :Promise<OffsetPaginatedDto<DiscountResDto>>  {
-        const query = this.discountRepo.createQueryBuilder('discounts').orderBy(
-            'discounts.createdAt',
-            'DESC'
-        )
+        const order = reqDto.order ?? Order.DESC;
+
+        const query = this.discountRepo
+            .createQueryBuilder('discounts')
+            .orderBy( 'discounts.createdAt', order)
 
         const [discounts,metaDto] = await paginate<DiscountResDto>(query, reqDto,{
             skipCount:false,

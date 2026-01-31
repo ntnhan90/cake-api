@@ -10,6 +10,7 @@ import { In,Repository } from 'typeorm';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
+import { Order } from '@/constants/app.constant';
 
 @Injectable()
 export class ProductAttributesService {
@@ -55,17 +56,17 @@ export class ProductAttributesService {
     }
 
     async findAll(reqDto: ListAttributesReqDto):Promise<OffsetPaginatedDto<AttributeResDto>> {
-        const query = this.attrSetRepo.createQueryBuilder('product_attribute_sets').orderBy(
-            'product_attribute_sets.createdAt',
-            'DESC'
-        )
+        const order = reqDto.order ?? Order.DESC;
+        const query = this.attrSetRepo
+            .createQueryBuilder('product_attribute_sets')
+            .orderBy( 'product_attribute_sets.createdAt', order )
 
-        const [faqs,metaDto] = await paginate<ProductAttributeSetEntity>(query, reqDto,{
+        const [attr,metaDto] = await paginate<ProductAttributeSetEntity>(query, reqDto,{
             skipCount:false,
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToInstance(AttributeResDto, faqs),metaDto)
+        return new OffsetPaginatedDto(plainToInstance(AttributeResDto, attr),metaDto)
     }
 
     async findOne(id: number) {

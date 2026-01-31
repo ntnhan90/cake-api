@@ -6,7 +6,7 @@ import { ListCustomerReqDto } from './dto/list-customer.req.dto';
 import { CustomerResDto } from './dto/customer.res.dto';
 import { CustomerEntity } from './entities/customer.entity';
 import { CustomerAddressEntity } from './entities/customer_address.entity';
-import { In,Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
@@ -15,6 +15,7 @@ import assert from 'assert';
 import { compareSync } from 'bcrypt';
 import * as bcrypt from 'bcrypt';
 import { hashPassword as hashPass } from '@/utils/password.util';
+import { Order } from '@/constants/app.constant';
 
 @Injectable()
 export class CustomersService {
@@ -32,11 +33,18 @@ export class CustomersService {
     }
 
     async findAll(reqDto: ListCustomerReqDto) :Promise<OffsetPaginatedDto<CustomerResDto>> {
-        const query = this.customerRepo.createQueryBuilder('customers').orderBy(
-            'customers.createdAt',
-            'DESC'
-        )
+        const order = reqDto.order ?? Order.DESC;
+        const query = this.customerRepo
+            .createQueryBuilder('customers')
+            .orderBy('customers.createdAt', order)
 
+        if (reqDto.q?.trim()) {
+            query.andWhere(
+          //  '(customers.name LIKE :q OR posts.slug LIKE :q)',
+           '(customers.name LIKE :q)',
+            { q: `%${reqDto.q.trim()}%` }
+            );
+        }
         const [discounts,metaDto] = await paginate<CustomerResDto>(query, reqDto,{
             skipCount:false,
             takeAll: false
