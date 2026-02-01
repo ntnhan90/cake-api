@@ -30,8 +30,8 @@ export class OrderEntity extends AbstractEntity {
     @Column()
     code:string
 
-    @Column()
-    user_id:number
+    @Column({nullable:true})
+    customer_id:number
 
     @Column({nullable:true})
     shipping_option:number
@@ -44,7 +44,7 @@ export class OrderEntity extends AbstractEntity {
         enum: STATUS,
         default: STATUS.PENDING,
     })
-    status:string
+    status:STATUS
 
     @Column({
         type: 'decimal',
@@ -57,8 +57,7 @@ export class OrderEntity extends AbstractEntity {
         type: 'decimal',
         precision: 15,
         scale: 2,
-        default:0.00,
-        nullable:true
+        default:'0.00',
     })
     tax_amount:string
 
@@ -66,8 +65,7 @@ export class OrderEntity extends AbstractEntity {
         type: 'decimal',
         precision: 15,
         scale: 2,
-        default:0.00,
-        nullable:true
+        default:'0.00',
     })
     shipping_amount:string
 
@@ -81,8 +79,7 @@ export class OrderEntity extends AbstractEntity {
         type: 'decimal',
         precision: 15,
         scale: 2,
-        default:0.00,
-        nullable:true
+        default:'0.00',
     })
     discount_amount:string
 
@@ -98,8 +95,8 @@ export class OrderEntity extends AbstractEntity {
         enum: PAYMENTSTATUS,
         default: PAYMENTSTATUS.PENDING,
     })
-    payment_status:string
+    payment_status:PAYMENTSTATUS
 
-    @Column()
+    @Column({nullable:true})
     payment_id: number
 }

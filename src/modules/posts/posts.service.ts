@@ -148,7 +148,7 @@ export class PostsService {
         });
     }
    
-    async findAll(reqDto: ListPostsReqDto) {
+    async findAll(reqDto: ListPostsReqDto) :Promise<OffsetPaginatedDto<PostResDto>> {
         const order = reqDto.order ?? Order.DESC;
 
         const query = this.postRepo

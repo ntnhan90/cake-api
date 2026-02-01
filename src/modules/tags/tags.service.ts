@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
-import { TagRepository } from './repo/tag.repo';
 import { TagsResDto } from './dto/tags.res.dto';
 import { ListTagsReqDto } from './dto/list-tags.req.dto';
 import { TagEntity } from './entities/tag.entity';

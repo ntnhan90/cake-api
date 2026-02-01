@@ -2,7 +2,7 @@ import {StringField,NumberField, DateField} from '@/decorators/field.decorators'
 import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
-export class RoleResDto {
+export class ProductResDto {
 	@StringField()
 	@Expose()
 	id: number;
@@ -59,21 +59,6 @@ export class RoleResDto {
     @Expose()
     end_date: Date;
 
-    @NumberField()
-    @Expose()
-    length:number
-
-    @NumberField()
-    @Expose()
-    wide:number
-
-    @NumberField()
-    @Expose()
-    weight:number
-
-    @NumberField()
-    @Expose()
-    height:number
 
     @NumberField()
     @Expose()

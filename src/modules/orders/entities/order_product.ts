@@ -14,7 +14,7 @@ export class OrderAddressesEntity extends AbstractEntity {
     @Column()
     order_id:number
 
-    @Column()
+    @Column({default:1})
     qty:number
 
     @Column({
@@ -28,8 +28,7 @@ export class OrderAddressesEntity extends AbstractEntity {
         type: 'decimal',
         precision: 10,
         scale: 2,
-        default:0.00,
-        nullable: true,
+        default:'0.00',
     })
     tax_amount: string;
 
@@ -44,6 +43,4 @@ export class OrderAddressesEntity extends AbstractEntity {
 
     @Column({nullable:true})
     product_image:string
-
-
 }

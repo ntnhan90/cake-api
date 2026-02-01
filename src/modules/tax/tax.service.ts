@@ -4,7 +4,6 @@ import { UpdateTaxDto } from './dto/update-tax.req.dto';
 import { ListTaxReqDto } from './dto/list-tax.req.dto';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { TaxResDto } from './dto/tax.res.dto';
-import { TaxRepository } from './repo/tax.repo';
 import { TaxEntity } from './entities/tax.entity';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
