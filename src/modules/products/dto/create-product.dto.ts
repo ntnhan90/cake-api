@@ -52,6 +52,7 @@ export class CreateProductDto {
   @DateField()
   end_date?: Date | null
 
+  @IsOptional()
   @IsNumber()
   views: number
 

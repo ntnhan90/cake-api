@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entities/product.entity';
@@ -149,13 +149,48 @@ export class ProductsService {
       //  assert(id,'id is required');
         const post = await this.productsRepo.findOne({
             where: { id },
-           // relations: ['tags', 'categories'],
+            relations: ['tags', 'categories'],
         });
         return post.toDto(ProductResDto);
     }
 
-    async update(id: number, updateProductDto: UpdateProductDto) {
-        return `This action updates a #${id} product`;
+    async update(id: number, dto: UpdateProductDto) {
+        const product = await this.productsRepo.findOne({
+            where: {id},
+            relations: ['categories' , 'tags' ]
+        })
+
+        if(!product){
+            throw new NotFoundException('Product no found')
+        }
+
+        const { categories, tags, ...productData } = dto;
+         /** 2. Categories */
+        let categoryEntities = product.categories;
+        if (categories) {
+            categoryEntities = categories.length
+            ? await this.proCateRepo.find({
+                where: { id: In(categories) },
+                })
+            : [];
+        }
+
+        /** 3. Tags */
+        let tagEntities = product.tags;
+        if (tags) {
+            tagEntities = tags.length
+            ? await this.resolveTags(tags)
+            : [];
+        }
+
+        /** 4. Merge & save */
+        Object.assign(product, {
+            ...productData,
+            categories: categoryEntities,
+            tags: tagEntities,
+        });
+
+        return this.productsRepo.save(product);
     }
 
     async remove(id: number) {

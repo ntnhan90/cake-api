@@ -1,6 +1,7 @@
 import {StringField,NumberField, DateField} from '@/decorators/field.decorators';
-import { Exclude, Expose } from 'class-transformer';
-
+import { Exclude, Expose ,Transform} from 'class-transformer';
+import { ProductTagsResDto } from 'src/modules/product-tags/dto/product-tags.res.dto';
+import { ProductCateResDto } from 'src/modules/product-categories/dto/product-cate.res.dto';
 @Exclude()
 export class ProductResDto {
 	@StringField()
@@ -64,4 +65,25 @@ export class ProductResDto {
     @Expose()
     views:number
 
+    @Expose()
+	@Transform(({ obj }) =>
+		Array.isArray(obj.tags)
+		? obj.tags.map(tag => ({
+			id: tag.id,
+			name: tag.name,
+			}))
+		: [],
+	)
+	tags: ProductTagsResDto[];
+
+	@Expose()
+	@Transform(({ obj }) =>
+	Array.isArray(obj.categories)
+		? obj.categories.map(category => ({
+			id: category.id,
+			name: category.name,
+		}))
+		: [],
+	)
+	categories: ProductCateResDto[];
 }

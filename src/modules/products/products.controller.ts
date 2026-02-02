@@ -20,6 +20,7 @@ export class ProductsController {
         return this.productsService.findAll(reqDto);
     }
 
+    @Public()
     @Get(':id')
     findOne(@Param('id') id: number) :Promise<ProductResDto> {
         return this.productsService.findOne(+id);
