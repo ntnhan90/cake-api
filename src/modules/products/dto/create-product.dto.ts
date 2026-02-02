@@ -3,59 +3,66 @@ import {
   NumberField,
   DateField
 } from '@/decorators/field.decorators';
-
+import { IsArray, IsEnum, IsOptional, IsString, IsNumber } from "class-validator"
+import { Type } from 'class-transformer';
 export class CreateProductDto {
-    @StringField()
-    name:string
+  @StringField()
+  name: string
 
-    @StringField()
-    slug:string
+  @StringField()
+  slug: string
 
-    @StringField()
-    description:string
+  @StringField()
+  description: string
 
-    @StringField()
-    content:string
+  @StringField()
+  content: string
 
-    @StringField()
-    status:string
+  @StringField()
+  status: string
 
-    @StringField()
-    image:string
+  @IsOptional()
+  @IsString()
+  image?: string | null
 
-    @StringField()
-    sku:string
-    
-    @NumberField()
-    order:number
+  @IsOptional()
+  @IsString()
+  sku?: string | null
 
-    @NumberField()
-    is_featured:number	
+  @IsOptional()
+  @IsNumber()
+  order?: number
 
-    @NumberField()
-    price:number
+  @IsNumber()
+  is_featured: number	
 
-    @NumberField()
-    sale_price:number
+  @IsNumber()
+  price: number
 
-    @DateField()
-    start_date: Date
+  @IsNumber()
+  sale_price: number
 
-    @DateField()
-    end_date: Date;
+  @IsOptional()
+  @Type(() => Date)
+  @DateField()
+  start_date?: Date | null
 
-    @NumberField()
-    length:number
+  @IsOptional()
+  @Type(() => Date)
+  @DateField()
+  end_date?: Date | null
 
-    @NumberField()
-    wide:number
+  @IsNumber()
+  views: number
 
-    @NumberField()
-    weight:number
+  @IsOptional()
+  @IsArray()
+  @IsNumber({}, { each: true })
+  categories?: number[]
 
-    @NumberField()
-    height:number
-
-    @NumberField()
-    views:number
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[]
 }
+

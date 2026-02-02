@@ -4,7 +4,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entities/product.entity';
 import { ProductTagEntity } from '../product-tags/entities/product-tag.entity';
 import { ProductCategoryEntity } from '../product-categories/entities/product-category.entity';
-import { Repository } from 'typeorm';
+import { In,Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {Order} from '@/constants/app.constant';
 import { ProductResDto } from './dto/product.res.dto';
@@ -25,9 +25,95 @@ export class ProductsService {
         @InjectRepository(ProductCategoryEntity)
         private readonly proCateRepo: Repository<ProductCategoryEntity>,
     ) {}
+
+    private async resolveTags(tagNames?: string[]): Promise<ProductTagEntity[]> {
+        if (!tagNames?.length) return [];
+
+        const names = [...new Set(
+            tagNames.map(n => n?.trim()).filter(Boolean)
+        )];
+
+        if (!names.length) return [];
+
+        const baseSlugs = names.map(n => this.slugify(n));
+
+        const existingTags = await this.proTagRepo.find({
+            where: { slug: In(baseSlugs) },
+        });
+
+        const slugSet = new Set(existingTags.map(t => t.slug));
+        const newTags: ProductTagEntity[] = [];
+
+        for (const [i, name] of names.entries()) {
+            const baseSlug = baseSlugs[i];
+
+            if (slugSet.has(baseSlug)) continue;
+
+            const uniqueSlug = await this.generateUniqueSlug(baseSlug);
+
+            newTags.push(
+                this.proTagRepo.create({ name, slug: uniqueSlug }),
+            );
+
+            slugSet.add(uniqueSlug);
+        }
+
+        if (newTags.length) {
+            await this.proTagRepo.save(newTags);
+        }
+
+        return [...existingTags, ...newTags];
+    }
+
+    private slugify(text: string): string {
+        return text
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '') // bỏ ký tự đặc biệt
+        .replace(/\s+/g, '-')     // space → -
+        .replace(/-+/g, '-');     // gộp --
+    }
+
+    private async generateUniqueSlug(baseSlug: string): Promise<string> {
+        let slug = baseSlug;
+        let counter = 1;
+
+        while (
+            await this.proTagRepo.exist({
+            where: { slug },
+            })
+        ) {
+            slug = `${baseSlug}-${counter}`;
+            counter++;
+        }
+
+        return slug;
+    }
+
     async create(dto: CreateProductDto): Promise<ProductResDto> {
-        const newOrder = this.productsRepo.create(dto);
-        return await this.productsRepo.save(newOrder);
+        const { categories, tags, ...productData } = dto
+        /** 1 Categories */
+        let categoryEntities: ProductCategoryEntity[] = []
+        if (categories?.length) {
+            categoryEntities = await this.proCateRepo.find({
+                where: { id: In(categories) },
+            })
+        }
+
+        /** 2️ Tags (string -> entity) */
+        let tagEntities: ProductTagEntity[] = []
+        if(tags?.length){
+            tagEntities = await this.resolveTags(tags);
+        }
+
+        /** Create product */
+        const product = this.productsRepo.create({
+            ...productData,
+            categories: categoryEntities,
+            tags: tagEntities,
+        })
+
+        return this.productsRepo.save(product)
     }
 
     async findAll(reqDto: ListProductReqDto) :Promise<OffsetPaginatedDto<ProductResDto>> {
