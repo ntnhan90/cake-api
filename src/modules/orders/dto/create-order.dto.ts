@@ -1,11 +1,13 @@
 import {IsArray,IsInt,IsOptional,IsString,ArrayNotEmpty,} from 'class-validator';
 import { Type } from 'class-transformer';
-import { STATUS, PAYMENTSTATUS } from '../entities/order.entity';
+import { STATUS, PAYMENT_STATUS } from '../entities/order.entity';
 
 export class CreateOrderDto {
+    @IsOptional()
     @IsString()
     code: string;
 
+    @IsOptional()
     @IsString()
     shipping_method: string;
 
@@ -13,17 +15,18 @@ export class CreateOrderDto {
     status: STATUS;
 
     @IsString()
-    amount: string;
+    total_amount: string;
 
     @IsString()
     tax_amount: string;
 
+    @IsOptional()
     @IsString()
     shipping_amount: string;
 
     @IsString()
-    sub_total: string;
+    sub_amount: string;
 
     @IsString()
-    payment_status: PAYMENTSTATUS;
+    payment_status: PAYMENT_STATUS;
 }

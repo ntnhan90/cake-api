@@ -1,6 +1,6 @@
 import {NumberField, StringField} from '@/decorators/field.decorators';
 import { Exclude, Expose } from 'class-transformer';
-import { STATUS, PAYMENTSTATUS } from '../entities/order.entity';
+import { STATUS, PAYMENT_STATUS } from '../entities/order.entity';
 @Exclude()
 export class OrdersResDto {
     @Expose()
@@ -23,7 +23,7 @@ export class OrdersResDto {
     status: STATUS;
 
     @Expose()
-    amount: string;
+    total_amount: string;
 
     @Expose()
     tax_amount: string;
@@ -45,10 +45,10 @@ export class OrdersResDto {
     discount_amount: string;
 
     @Expose()
-    sub_total: string;
+    sub_amount: string;
 
     @Expose()
-    payment_status: PAYMENTSTATUS;
+    payment_status: PAYMENT_STATUS;
     
     @Expose()
     payment_id: number

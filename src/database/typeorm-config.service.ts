@@ -24,7 +24,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       logger: TypeOrmCustomLogger.getInstance(
         'default',
         this.configService.get('database.logging', { infer: true })
-          ? ['error', 'warn', 'query', 'schema']
+      //    ? ['error', 'warn', 'query', 'schema']
+          ? ['schema', 'error']
           : ['error', 'warn'],
       ),
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],

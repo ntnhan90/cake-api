@@ -1,6 +1,6 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column,} from "typeorm";
-
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm";
+import { OrderEntity } from './order.entity';
 @Entity('order_addresses')
 export class OrderAddressesEntity extends AbstractEntity {
     constructor(data?: Partial<OrderAddressesEntity>){
@@ -32,8 +32,10 @@ export class OrderAddressesEntity extends AbstractEntity {
     @Column({nullable:true})
     address:string
 
-    @Column()
-    order_id:number
-
-
+    @ManyToOne(() => OrderEntity, order => order.address, {
+        nullable: false,
+        onDelete: 'CASCADE',
+    })
+    @JoinColumn({ name: 'order_id' })
+    order: OrderEntity;
 }

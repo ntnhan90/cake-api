@@ -1,7 +1,13 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column,} from "typeorm";
-
+import { Entity, PrimaryGeneratedColumn, Column,OneToMany} from "typeorm";
+import { OrderProductEntity } from './order_product.entity';
+import { OrderAddressesEntity } from './order_addresses.entity';
 export enum STATUS {
+    PENDING = "pending",
+    COMPLETED = "completed",
+}
+
+export enum PAYMENT_STATUS {
     PENDING = "pending",
     COMPLETED = "completed",
     REFUNDING = "refunding",
@@ -11,9 +17,9 @@ export enum STATUS {
     CANCELED = "canceled",
 }
 
-export enum PAYMENTSTATUS {
-    PENDING = "pending",
-    COMPLETED = "completed",
+export enum PAYMENT_METHOD {
+    COD = "pending",
+    BANK_TRANFER = "bank_tranfer",
 }
 
 
@@ -27,7 +33,7 @@ export class OrderEntity extends AbstractEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({nullable:true})
     code:string
 
     @Column({nullable:true})
@@ -51,7 +57,7 @@ export class OrderEntity extends AbstractEntity {
         precision: 15,
         scale: 2,
     })
-    amount:string
+    total_amount:string
 
     @Column({
         type: 'decimal',
@@ -88,15 +94,21 @@ export class OrderEntity extends AbstractEntity {
         precision: 15,
         scale: 2,
     })
-    sub_total:string
+    sub_amount:string
 
     @Column({
         type: "enum",
-        enum: PAYMENTSTATUS,
-        default: PAYMENTSTATUS.PENDING,
+        enum: PAYMENT_STATUS,
+        default: PAYMENT_STATUS.PENDING,
     })
-    payment_status:PAYMENTSTATUS
+    payment_status:PAYMENT_STATUS
 
     @Column({nullable:true})
     payment_id: number
+
+    @OneToMany(() => OrderProductEntity, products => products.order)
+    products: OrderProductEntity[];
+
+    @OneToMany(() => OrderAddressesEntity, address => address.order)
+    address: OrderAddressesEntity[];
 }

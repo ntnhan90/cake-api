@@ -1,11 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import {
-  BaseEntity,
- // Column,
-  CreateDateColumn,
-  DataSource,
-  UpdateDateColumn,
-} from 'typeorm';
+import {BaseEntity,CreateDateColumn,DataSource,UpdateDateColumn,} from 'typeorm';
 import { getOrder } from '../decorators/order.decorator';
 
 export abstract class AbstractEntity extends BaseEntity {
