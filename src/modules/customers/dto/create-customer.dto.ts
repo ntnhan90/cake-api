@@ -1,5 +1,9 @@
 import {StringField,NumberField, DateField,} from '@/decorators/field.decorators';
-import { IsArray, IsDate, IsNotEmpty, IsOptional, IsString, IsInt } from 'class-validator';
+import { IsEnum, IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+export enum CUSTOMER_STATUS {
+    ACTIVATED = "activated",
+    DRAFT = "draft",
+}
 
 export class CreateCustomerDto {
     @StringField()
@@ -27,6 +31,6 @@ export class CreateCustomerDto {
     @IsDate()
     confirmed_at?: Date;
 
-    @StringField()
-    status:string
+    @IsEnum(CUSTOMER_STATUS)
+    status?: CUSTOMER_STATUS;
 }

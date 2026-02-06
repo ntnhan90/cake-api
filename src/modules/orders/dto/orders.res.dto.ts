@@ -34,7 +34,7 @@ export class OrdersResDto {
 
     @StringField()
     @Expose()
-    description: string;
+    note: string;
 
     @StringField()
     @Expose()
@@ -51,5 +51,5 @@ export class OrdersResDto {
     payment_status: PAYMENT_STATUS;
     
     @Expose()
-    payment_id: number
+    payment_method: string
 }

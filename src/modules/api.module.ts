@@ -27,6 +27,8 @@ import { OrdersModule } from './orders/orders.module';
 import { DiscountModule } from './discount/discount.module';
 import { PermissionSyncService } from './permission/sync.permission';
 import { ALL_PERMISSIONS } from '@/constants/permission.constants';
+import { MaterialsModule } from './materials/materials.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   	imports: [
@@ -55,7 +57,7 @@ import { ALL_PERMISSIONS } from '@/constants/permission.constants';
 		PermissionModule, 
 		TagsModule,
 		TaxModule, 
-		UserModule,
+		UserModule, MaterialsModule, ReportsModule,
 	],
 })
 export class ApiModule implements OnModuleInit {

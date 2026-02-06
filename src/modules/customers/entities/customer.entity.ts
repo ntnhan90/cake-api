@@ -1,8 +1,9 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
 //import { hashPassword as hashPass } from '@/utils/password.util';
-import { Entity, PrimaryGeneratedColumn, Column, Index,} from "typeorm";
-
-export enum STATUS {
+import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany,} from "typeorm";
+import { CustomerAddressEntity } from './customer_address.entity';
+import { Expose } from 'class-transformer';
+export enum CUSTOMER_STATUS {
     ACTIVATED = "activated",
     DRAFT = "draft",
 }
@@ -30,9 +31,10 @@ export class CustomerEntity extends AbstractEntity {
     @Column({nullable:true})
     avatar:string
 
-    @Column({nullable:true})
-    dob:Date
+    @Column({ type: 'date', nullable: true })
+    dob: Date | null;
     
+    @Index()
     @Column({nullable:true})
     phone:string
 
@@ -47,8 +49,15 @@ export class CustomerEntity extends AbstractEntity {
 
     @Column({
         type: "enum",
-        enum: STATUS,
-        default: STATUS.ACTIVATED,
+        enum: CUSTOMER_STATUS,
+        default: CUSTOMER_STATUS.ACTIVATED,
     })
-    status:string	
+    status:CUSTOMER_STATUS
+    
+    @OneToMany(
+        () => CustomerAddressEntity,
+        (address) => address.customer,
+    )
+    @Expose()
+    addresses: CustomerAddressEntity[];
 }

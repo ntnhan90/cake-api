@@ -19,9 +19,6 @@ export class CustomerAddressEntity extends AbstractEntity {
     id: number
 
     @Column()
-    email:string
-
-    @Column()
     name:string	
 
     @Column()
@@ -42,13 +39,11 @@ export class CustomerAddressEntity extends AbstractEntity {
     @Column({default:0})
     is_default:number
 
-    @JoinColumn({
-        name: 'customer_id',
-        referencedColumnName: 'id',
-        foreignKeyConstraintName: 'FK_customer_address',
+    @ManyToOne(() => CustomerEntity, customer => customer.addresses, {
+        onDelete: 'CASCADE',
     })
-    @ManyToOne(() => CustomerEntity, (customer) => customer.id)
-    user!: CustomerEntity;
+    @JoinColumn({ name: 'customer_id' })
+    customer: CustomerEntity;
     
     @Column({nullable:true})
     zip_code:string

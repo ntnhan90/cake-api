@@ -45,34 +45,95 @@ export class CustomersService {
             { q: `%${reqDto.q.trim()}%` }
             );
         }
-        const [discounts,metaDto] = await paginate<CustomerResDto>(query, reqDto,{
+        const [customers,metaDto] = await paginate<CustomerEntity>(query, reqDto,{
             skipCount:false,
             takeAll: false
         });
 
-        return new OffsetPaginatedDto(plainToInstance(CustomerResDto, discounts), metaDto);
+        return new OffsetPaginatedDto(plainToInstance(CustomerResDto, customers), metaDto);
     }
 
     async findOne(id: number)  :Promise<CustomerResDto>{
         assert(id, 'id is required');
-        const customer = await this.customerRepo.findOneByOrFail({id});
-        return customer.toDto(CustomerResDto);
+        const customer = await this.customerRepo.findOne({
+            where: { id },
+            relations: ['addresses'],
+        });
+        
+        return plainToInstance(CustomerResDto, customer, {
+            excludeExtraneousValues: false,
+        });
     }
 
     async update(id: number, dto: UpdateCustomerDto) {
-        const customer = await this.customerRepo.findOneByOrFail({id});
-        if (!customer) throw new NotFoundException();
+        const customer = await this.customerRepo.findOne({
+            where: { id },
+            relations: ['addresses'],
+        });
 
-        if (dto.password) {
-            //customer.password = await hash(dto.password);
-            customer.password = dto.password
+        if (!customer) {
+            throw new NotFoundException('Customer not found');
         }
+
+        /* ================= CUSTOMER ================= */
+        if (dto.password) customer.password = dto.password;
+
         if ('dob' in dto) {
-            customer.dob = dto.dob; // Date | null
+            customer.dob = dto.dob ?? null;
         }
-        customer.name = dto.name;
-        customer.phone = dto.phone
 
+        if (dto.name !== undefined) customer.name = dto.name;
+        if (dto.phone !== undefined) customer.phone = dto.phone;
+        if (dto.status !== undefined) customer.status = dto.status;
+
+        /* ================= ADDRESSES ================= */
+        /* ================= ADDRESSES ================= */
+        if (dto.addresses) {
+            const existingMap = new Map<number, CustomerAddressEntity>();
+
+            for (const a of customer.addresses ?? []) {
+                if (a?.id) existingMap.set(a.id, a);
+            }
+
+            const addressesToSave: CustomerAddressEntity[] = [];
+
+            for (const addrDto of dto.addresses) {
+                let address: CustomerAddressEntity;
+
+                if (addrDto.id) {
+                    address = existingMap.get(addrDto.id);
+                    if (!address) {
+                        throw new NotFoundException(
+                            `Address id ${addrDto.id} not found`,
+                        );
+                    }
+                } else {
+                    address = this.addressRepo.create();
+                    address.customer = customer; // ✅ CHỈ DÒNG NÀY LÀ ĐỦ
+                }
+
+                address.name = addrDto.name;
+                address.phone = addrDto.phone;
+                address.country = addrDto.country ?? null;
+                address.state = addrDto.state ?? null;
+                address.city = addrDto.city ?? null;
+                address.address = addrDto.address;
+                address.zip_code = addrDto.zip_code ?? null;
+                address.is_default = addrDto.is_default ? 1 : 0;
+
+                addressesToSave.push(address);
+            }
+
+            // reset default
+            const defaultAddr = addressesToSave.find(a => a.is_default === 1);
+            if (defaultAddr) {
+                addressesToSave.forEach(a => {
+                    if (a !== defaultAddr) a.is_default = 0;
+                });
+            }
+
+            await this.addressRepo.save(addressesToSave);
+        }
 
         return this.customerRepo.save(customer);
     }
@@ -112,6 +173,6 @@ export class CustomersService {
     }
 
     isValidPassword(password:string, hash:string){
-            return compareSync(password, hash)
-        }
+        return compareSync(password, hash)
+    }
 }

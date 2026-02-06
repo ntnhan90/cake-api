@@ -76,7 +76,7 @@ export class OrderEntity extends AbstractEntity {
     shipping_amount:string
 
     @Column({ type: 'text' , nullable:true})
-    description: string;
+    note: string;
     
     @Column({nullable:true})
     coupon_code:string
@@ -104,7 +104,7 @@ export class OrderEntity extends AbstractEntity {
     payment_status:PAYMENT_STATUS
 
     @Column({nullable:true})
-    payment_id: number
+    payment_method: string
 
     @OneToMany(() => OrderProductEntity, products => products.order)
     products: OrderProductEntity[];
