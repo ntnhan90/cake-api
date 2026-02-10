@@ -27,8 +27,9 @@ import { OrdersModule } from './orders/orders.module';
 import { DiscountModule } from './discount/discount.module';
 import { PermissionSyncService } from './permission/sync.permission';
 import { ALL_PERMISSIONS } from '@/constants/permission.constants';
-import { MaterialsModule } from './materials/materials.module';
 import { ReportsModule } from './reports/reports.module';
+import { ProductMaterialsModule } from './product-materials/product-materials.module';
+import { ProductRecipesModule } from './product-recipes/product-recipes.module';
 
 @Module({
   	imports: [
@@ -57,7 +58,10 @@ import { ReportsModule } from './reports/reports.module';
 		PermissionModule, 
 		TagsModule,
 		TaxModule, 
-		UserModule, MaterialsModule, ReportsModule,
+		UserModule, 
+		ReportsModule, 
+		ProductMaterialsModule, 
+		ProductRecipesModule,
 	],
 })
 export class ApiModule implements OnModuleInit {

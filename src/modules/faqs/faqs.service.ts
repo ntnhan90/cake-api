@@ -3,16 +3,21 @@ import { CreateFaqsDto } from './dto/create-faq.dto';
 import { UpdateFaqsDto } from './dto/update-faq.dto';
 import { FaqsResDto } from './dto/faq.res.dto';
 import { ListFaqsReqDto } from './dto/list-faqs.req.dto';
-import { FaqsRepository } from './repo/faq.repo';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { FaqsEntity } from './entities/faq.entity';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FaqsService {
-    constructor(private readonly faqsRepo : FaqsRepository) {}
+    constructor(
+        @InjectRepository(FaqsEntity)
+        private readonly faqsRepo: Repository<FaqsEntity>,
+    ) {}
+    
     async create(dto: CreateFaqsDto): Promise<FaqsResDto> {
         const newFaqs = this.faqsRepo.create(dto);
         return await this.faqsRepo.save(newFaqs);

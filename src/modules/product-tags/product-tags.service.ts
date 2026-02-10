@@ -10,14 +10,12 @@ import { ProductTagEntity } from './entities/product-tag.entity';
 import assert from 'assert';
 import slugify from 'slugify';
 import { BadRequestException } from '@nestjs/common';
-import { Not } from 'typeorm';
-import { Repository } from 'typeorm';
+import { Repository ,Not} from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from '@/constants/app.constant';
+
 @Injectable()
 export class ProductTagsService {
-    //constructor(private readonly proTagsRepo : ProductTagsRepository){};
-
     constructor(
         @InjectRepository(ProductTagEntity)
         private readonly proTagsRepo: Repository<ProductTagEntity>,

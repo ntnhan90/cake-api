@@ -39,19 +39,6 @@ export class CreateProductDto {
   @IsNumber()
   price: number
 
-  @IsNumber()
-  sale_price: number
-
-  @IsOptional()
-  @Type(() => Date)
-  @DateField()
-  start_date?: Date | null
-
-  @IsOptional()
-  @Type(() => Date)
-  @DateField()
-  end_date?: Date | null
-
   @IsOptional()
   @IsNumber()
   views: number

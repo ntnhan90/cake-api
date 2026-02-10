@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { CategoryRepository } from './repo/category.repo';
 import { CategoryResDto } from './dto/category.res.dto';
 import { ListCategoryReqDto } from './dto/list-cate.req.dto';
 import { CategoryEntity } from './entities/category.entity';
@@ -10,10 +9,16 @@ import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 import { CategoryWithCount } from 'src/types/category.type';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CategoriesService {
-    constructor(private readonly cateRepo : CategoryRepository){};
+    constructor(
+        @InjectRepository(CategoryEntity)
+        private readonly cateRepo: Repository<CategoryEntity>,
+    ){};
+
     async create(dto: CreateCategoryDto)  :Promise<CategoryResDto>{
         const newCate = this.cateRepo.create(dto);
         return await this.cateRepo.save(newCate)

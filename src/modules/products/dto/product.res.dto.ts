@@ -50,19 +50,6 @@ export class ProductResDto {
 
     @NumberField()
     @Expose()
-    sale_price:number
-
-    @DateField()
-    @Expose()
-    start_date: Date
-
-    @DateField()
-    @Expose()
-    end_date: Date;
-
-
-    @NumberField()
-    @Expose()
     views:number
 
     @Expose()

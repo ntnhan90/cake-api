@@ -1,9 +1,10 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany,JoinTable} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany,JoinTable} from "typeorm";
 import { ProductCategoryEntity } from 'src/modules/product-categories/entities/product-category.entity';
 import { ProductTagEntity } from 'src/modules/product-tags/entities/product-tag.entity';
 import { ProductColectionEntity } from 'src/modules/product-collections/entities/product-collection.entity';
 import { ProductLabelsEntity } from 'src/modules/product-labels/entities/product-label.entity';
+import { ProductRecipeEntity } from 'src/modules/product-recipes/entities/product-recipe.entity';
 
 export enum STATUS {
     PUBLISHED = "published",
@@ -57,21 +58,6 @@ export class ProductEntity extends AbstractEntity {
 
     @Column('decimal', { precision: 6, scale: 2,nullable:true, default:0},)
     price:number 
-
-    @Column('decimal', { precision: 6, scale: 2,nullable:true,},)
-    sale_price:number
-
-    @CreateDateColumn({
-        type: 'timestamp',
-        nullable: true
-    })
-    start_date: Date;
-
-    @CreateDateColumn({
-        type: 'timestamp',
-        nullable: true
-    })
-    end_date: Date;
 
     @Column({default:0})
     views:number
@@ -142,4 +128,8 @@ export class ProductEntity extends AbstractEntity {
     })
     collections: ProductColectionEntity[]
 
+
+    // 1–1 với Recipe (inverse side)
+    @OneToOne(() => ProductRecipeEntity, recipe => recipe.product)
+    recipe: ProductRecipeEntity;
 }

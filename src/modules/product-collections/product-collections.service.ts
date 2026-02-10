@@ -4,7 +4,6 @@ import { UpdateProductCollectionDto } from './dto/update-product-collection.dto'
 import { ListCollectionReqDto } from './dto/list-collection.req.dto';
 import { CollectionResDto } from './dto/collection.res.dto';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
-import { ProductColectionRepository } from './repo/proCollection.repo';
 import { ProductColectionEntity } from './entities/product-collection.entity';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
@@ -12,7 +11,6 @@ import assert from 'assert';
 import {Order} from '@/constants/app.constant';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-
 
 @Injectable()
 export class ProductCollectionsService {

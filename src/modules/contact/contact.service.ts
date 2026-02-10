@@ -3,17 +3,23 @@ import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { ContactResDto } from './dto/contact.res.dto';
 import { ListContactReqDto } from './dto/list-contact.req.dto';
-import { ContactRepository } from './repo/contact.repo';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { ContactEntity } from './entities/contact.entity';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 import { Order } from '@/constants/app.constant';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ContactService {
-    constructor(private readonly contactRepo : ContactRepository) {}
+    constructor(
+
+        @InjectRepository(ContactEntity)
+        private readonly contactRepo: Repository<ContactEntity>,
+    ) {}
+    
     async create(dto: CreateContactDto):Promise<ContactResDto> {
         const newContact = this.contactRepo.create(dto);
         return await this.contactRepo.save(newContact);

@@ -3,17 +3,21 @@ import { CreateFaqCateDto } from './dto/create-faq-cate.dto';
 import { UpdateFaqCateDto } from './dto/update-faq-cate.dto';
 import { faqCateResDto } from './dto/faqCate.res.dto';
 import { ListFaqCateReqDto } from './dto/list-faqCate.req.dto';
-import { FaqCateRepository } from './repo/faqCate.repo';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { FaqCateEntity } from './entities/faq-cate.entity';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FaqCateService {
-    constructor(private readonly faqCateRepo : FaqCateRepository) {}
+    constructor(
+        @InjectRepository(FaqCateEntity)
+        private readonly faqCateRepo: Repository<FaqCateEntity>,
+    ) {}
+    
     async create(dto: CreateFaqCateDto) :Promise<faqCateResDto> {
         const newFaqCate = this.faqCateRepo.create(dto);
         return await this.faqCateRepo.save(newFaqCate);

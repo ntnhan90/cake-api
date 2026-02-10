@@ -14,7 +14,6 @@ import {Order} from '@/constants/app.constant';
 
 @Injectable()
 export class TaxService {
-    //private readonly logger = new Logger(UserService.name);
     constructor(
         @InjectRepository(TaxEntity)
         private readonly taxRepo: Repository<TaxEntity>,

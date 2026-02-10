@@ -29,12 +29,12 @@ export class PostsController {
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() dto: UpdatePostDto) {
+    update(@Param('id') id: number, @Body() dto: UpdatePostDto) {
         return this.postsService.update(+id, dto);
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
+    remove(@Param('id') id: number) {
         return this.postsService.remove(+id);
     }
 }
