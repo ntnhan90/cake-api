@@ -48,7 +48,7 @@ export class ProductMaterialEntity extends AbstractEntity{
     })    
     category:string
 
-    @Column()   
+    @Column('decimal', { precision: 6, scale: 2,nullable:true, default:0},)
     cost_price:string
 
     @Column({

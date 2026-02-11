@@ -5,6 +5,7 @@ export class CreateProductMaterialDto {
     @IsString()
     name: string;
 
+    @IsOptional()
     @IsString()
     sku: string;
 

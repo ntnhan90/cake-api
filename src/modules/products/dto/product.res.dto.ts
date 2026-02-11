@@ -44,9 +44,9 @@ export class ProductResDto {
     @Expose()
     is_featured:number	
 
-    @NumberField()
+    @StringField()
     @Expose()
-    price:number
+    price:string
 
     @NumberField()
     @Expose()

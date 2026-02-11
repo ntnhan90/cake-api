@@ -57,7 +57,7 @@ export class ProductEntity extends AbstractEntity {
     is_featured:number
 
     @Column('decimal', { precision: 6, scale: 2,nullable:true, default:0},)
-    price:number 
+    price: string
 
     @Column({default:0})
     views:number

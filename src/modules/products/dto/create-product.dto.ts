@@ -36,8 +36,8 @@ export class CreateProductDto {
   @IsNumber()
   is_featured: number	
 
-  @IsNumber()
-  price: number
+  @IsString()
+  price: string
 
   @IsOptional()
   @IsNumber()
