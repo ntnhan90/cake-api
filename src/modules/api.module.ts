@@ -30,6 +30,7 @@ import { ALL_PERMISSIONS } from '@/constants/permission.constants';
 import { ReportsModule } from './reports/reports.module';
 import { ProductMaterialsModule } from './product-materials/product-materials.module';
 import { ProductRecipesModule } from './product-recipes/product-recipes.module';
+import { FranchiseModule } from './franchise/franchise.module';
 
 @Module({
   	imports: [
@@ -61,7 +62,7 @@ import { ProductRecipesModule } from './product-recipes/product-recipes.module';
 		UserModule, 
 		ReportsModule, 
 		ProductMaterialsModule, 
-		ProductRecipesModule,
+		ProductRecipesModule, FranchiseModule,
 	],
 })
 export class ApiModule implements OnModuleInit {
