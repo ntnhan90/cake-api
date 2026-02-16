@@ -1,6 +1,7 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
 import { Entity, PrimaryGeneratedColumn, Column,OneToOne, JoinColumn} from "typeorm";
-import { FranchiseEntity } from './franchise.entity';
+import { FranchiseEntity } from 'src/modules/franchise/entities/franchise.entity';
+
 export enum STATUS {
     ACTIVE ="active",
     EXPIRED = "expired",
