@@ -16,6 +16,7 @@ export class FranchiseController {
         return this.franchiseService.create(dto);
     }
 
+    @Public()
     @Get()
     findAll(@Query() reqDto: ListFranchiseReqDto)  :Promise<OffsetPaginatedDto<FranchiseResDto>> {
         return this.franchiseService.findAll(reqDto);

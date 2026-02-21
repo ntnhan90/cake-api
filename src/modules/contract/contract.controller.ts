@@ -16,6 +16,7 @@ export class ContractController {
         return this.contractService.create(dto);
     }
 
+    @Public()
     @Get()
     findAll(@Query() reqDto:ListContractReqDto) : Promise<OffsetPaginatedDto<ContractResDto>> {
         return this.contractService.findAll(reqDto);

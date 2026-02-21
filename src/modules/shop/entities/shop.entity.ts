@@ -8,6 +8,7 @@ export enum STATUS {
     CLOSE = "close"
 }
 
+@Entity('shop')
 export class ShopEntity extends AbstractEntity {
     constructor(data?: Partial<ShopEntity>){
         super();
