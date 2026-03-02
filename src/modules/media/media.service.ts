@@ -17,7 +17,6 @@ export class MediaService {
         @InjectRepository(MediaFolderEntity)   private folderRepo: Repository<MediaFolderEntity>,
     ){}
 
-
     async uploadFile(
         file: Express.Multer.File,
         folderId: number,
@@ -46,21 +45,20 @@ export class MediaService {
 
         // move file từ tmp → folder thật
         fs.renameSync(file.path, finalPath);
-
-        /*
+        
         const entity = this.fileRepo.create({
             user_id: userId,
-            name: file.filename,
-            alt: file.filename,
+            name: file.originalname,
+            alt: file.originalname,
             folder_id: folderId,
             mime_type: file.mimetype,
             size: file.size,
-            url: file.path.replace(/\\/g, '/'), // fix cho Windows
+            //url: file.path.replace(/\\/g, '/'), // fix cho Windows
+            url: finalPath.replace(process.cwd(), '').replace(/\\/g, '/'),
         });
 
-        return this.fileRepo.save(entity);
-        */
-        return file.path;
+        await this.fileRepo.save(entity);
+        return entity;
     }
 
     async uploadFolder(user_id, name , parent_id){
@@ -173,5 +171,4 @@ export class MediaService {
 
         return tree;
     }
-
 }
