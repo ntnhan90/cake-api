@@ -33,6 +33,8 @@ import { ProductRecipesModule } from './product-recipes/product-recipes.module';
 import { FranchiseModule } from './franchise/franchise.module';
 import { ContractModule } from './contract/contract.module';
 import { ShopModule } from './shop/shop.module';
+import { WarehousesModule } from './warehouses/warehouses.module';
+import { SupplyOrdersModule } from './supply-orders/supply-orders.module';
 
 @Module({
   	imports: [
@@ -64,7 +66,8 @@ import { ShopModule } from './shop/shop.module';
 		UserModule, 
 		ReportsModule, 
 		ProductMaterialsModule, 
-		ProductRecipesModule, FranchiseModule, ContractModule, ShopModule,
+		ProductRecipesModule, FranchiseModule, ContractModule, ShopModule, WarehousesModule, 
+		SupplyOrdersModule,
 	],
 })
 export class ApiModule implements OnModuleInit {

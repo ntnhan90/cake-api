@@ -3,7 +3,7 @@ import {IsEnum,} from 'class-validator';
 import { Exclude, Expose } from 'class-transformer';
 import { FranchiseEntity } from 'src/modules/franchise/entities/franchise.entity';
 
-export enum STATUS {
+export enum PAYMENT_STATUS {
     ACTIVE ="active",
     EXPIRED = "expired",
     TERMINATED = "terminated",
@@ -36,8 +36,8 @@ export class ContractResDto {
 	@Expose()
 	marketing_fee_percent:string
 
-	@IsEnum(STATUS)
-    payment_status?: STATUS;
+	@IsEnum(PAYMENT_STATUS)
+    payment_status?: string;
 
     @StringField()
 	@Expose()

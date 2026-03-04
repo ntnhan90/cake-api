@@ -15,7 +15,6 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class ContactService {
     constructor(
-
         @InjectRepository(ContactEntity)
         private readonly contactRepo: Repository<ContactEntity>,
     ) {}

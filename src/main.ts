@@ -49,20 +49,24 @@ async function bootstrap() {
     ];
 
     app.enableCors({
+        /*
         origin: (origin, callback) => {
-            // Cho phép swagger, postman, curl (origin = undefined)
             if (!origin) return callback(null, true);
 
             if (allowedOrigins.includes(origin)) {
                 return callback(null, true);
             }
-
             return callback(new Error(`CORS blocked origin: ${origin}`), false);
-        },
+        },*/
+        origin: allowedOrigins,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       //  allowedHeaders: 'Content-Type, Accept',
         allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Api-Key'],
         credentials: true,
+    });
+    app.use('/uploads', (req, res, next) => {
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+        next();
     });
     console.info('CORS Origin:', corsOrigin);
 
