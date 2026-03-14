@@ -1,5 +1,5 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column,DeleteDateColumn} from "typeorm";
 
 export enum STATUS {
     PUBLISHED = "published",
@@ -28,5 +28,8 @@ export class TaxEntity extends AbstractEntity  {
         enum: STATUS,
         default: STATUS.PUBLISHED,
     })
-    status:string	
+    status:string
+
+    @DeleteDateColumn()
+    deleted_at?: Date;
 }

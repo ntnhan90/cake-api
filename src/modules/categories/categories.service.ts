@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryResDto } from './dto/category.res.dto';
@@ -21,14 +21,14 @@ export class CategoriesService {
 
     async create(dto: CreateCategoryDto)  :Promise<CategoryResDto>{
         const newCate = this.cateRepo.create(dto);
-        return await this.cateRepo.save(newCate)
+        const saved = await this.cateRepo.save(newCate);
+        return plainToInstance(CategoryResDto, saved);
     }
 
     async findAll(reqDto: ListCategoryReqDto)  :Promise<OffsetPaginatedDto<CategoryResDto>> {
-       const query = this.cateRepo.createQueryBuilder('categories').orderBy(
-            'categories.createdAt',
-            'DESC'
-        )
+        const query = this.cateRepo.createQueryBuilder('categories')
+            .where('categories.deleted_at IS NULL')
+            .orderBy('categories.createdAt','DESC')
 
         const [cates, metaDto] = await paginate<CategoryEntity>(query, reqDto, {
             skipCount: false,
@@ -40,8 +40,10 @@ export class CategoriesService {
 
     async findOne(id: number) :Promise<CategoryResDto>{
         assert(id, 'id is required');
-        const cate = await this.cateRepo.findOneByOrFail({id});
-        
+        //const cate = await this.cateRepo.findOneByOrFail({id});
+        const cate = await this.cateRepo.findOneOrFail({
+            where: { id, deleted_at: null },
+        });
         return cate.toDto(CategoryResDto);
     }
 
@@ -56,41 +58,64 @@ export class CategoriesService {
         cate.image = dto.image;
         cate.is_featured = dto.is_featured;
         cate.is_default = dto.is_default;
-        return this.cateRepo.save(cate);
+        const saved = await this.cateRepo.save(cate);
+
+        return plainToInstance(CategoryResDto, saved);
     }
 
     async remove(id: number) {
-        await this.cateRepo.findOneByOrFail({id});
+        const category = await this.cateRepo.findOne({
+            where: { id },
+        });
+
+        if (!category) {
+            throw new NotFoundException('Category not found');
+        }
+      
         await this.cateRepo.softDelete(id);
+
+        return {
+            message: 'Category deleted successfully',
+        };
     }
 
+    /**
+     * 
+     * @param id 
+     * this.cateRepo.find({
+        withDeleted: true
+        });
+     */
+    async restore(id: number) {
+        await this.cateRepo.restore(id);
+    }
 
     async getCategoryWithPostCount(): Promise<CategoryWithCount[]> {
         const rows = await this.cateRepo
             .createQueryBuilder('c')
             .leftJoin('c.posts', 'p')
-            .select([
-                'c.id AS id',
-                'c.name AS name',
-                'c.parent_id AS parent_id',
-                'c.is_featured AS is_featured',
-                'c.is_default AS is_default',
-                'COUNT(p.id) AS count',
-            ])
+            .where('c.deleted_at IS NULL')
+            .select('c.id', 'id')
+            .addSelect('c.name', 'name')
+            .addSelect('c.parent_id', 'parent_id')
+            .addSelect('c.is_featured', 'is_featured')
+            .addSelect('c.is_default', 'is_default')
+            .addSelect('c.image', 'image')
+            .addSelect('COUNT(p.id)', 'count')
             .groupBy('c.id')
-            .addGroupBy('c.name')
             .addGroupBy('c.parent_id')
             .orderBy('c.parent_id', 'ASC')
             .addOrderBy('c.id', 'ASC')
             .getRawMany();
-        
-        return rows.map(row =>({
-            id: Number(row.id),
+
+        return rows.map(row => ({
+            id: +row.id,
             name: row.name,
-            parent_id: Number(row.parent_id),
-            is_featured: Number(row.is_featured),
-            is_default: Number(row.is_default),
-            count: Number(row.count),
+            parent_id: +row.parent_id,
+            is_featured: +row.is_featured,
+            is_default: +row.is_default,
+            image: row.image ?? "",
+            count: +row.count,
         }));
     }
 

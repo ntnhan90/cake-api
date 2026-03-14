@@ -15,6 +15,7 @@ export class ProductsController {
         return this.productsService.create(dto);
     }
 
+    @Public()
     @Get()
     findAll(@Query() reqDto: ListProductReqDto):Promise<OffsetPaginatedDto<ProductResDto>>  {
         return this.productsService.findAll(reqDto);

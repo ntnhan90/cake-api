@@ -4,24 +4,25 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { ErrorCode } from '@/constants/error-code.constant';
-import { ValidationException } from '@/exceptions/validation.exception';
 import { plainToInstance } from 'class-transformer';
 import { ListUserReqDto } from './dto/list-user.req.dto';
 import { UserResDto } from './dto/user.res.dto';
 import { paginate } from '@/utils/offset-pagination';
 import assert from 'assert';
-import { UserRepository } from './repo/user.repo';
 import { UserAlreadyExistsException } from './user.error';
 import { compareSync } from 'bcrypt';
-import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
-import * as bcrypt from 'bcrypt';
-import { hashPassword as hashPass } from '@/utils/password.util';
+import { hashPassword } from '@/utils/password.util';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
 	private readonly logger = new Logger(UserService.name);
 
-	constructor(private readonly userRepository: UserRepository) {}
+	constructor(
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>,
+    ){};
 	
 	async create(dto: CreateUserDto) :Promise<UserResDto> {
 		const { username, email, password, first_name, last_name } = dto;
@@ -68,16 +69,32 @@ export class UserService {
     	return user.toDto(UserResDto);
  	}
 
-  	async update(id: number, updateUserDto: UpdateUserDto) {
+  	async update(id: number, dto: UpdateUserDto) {
 		const user = await this.userRepository.findOneByOrFail({ id });
-		user.password = updateUserDto.password;
-		user.first_name = updateUserDto.first_name;
-		user.last_name = updateUserDto.last_name;
-		user.refresh_token = updateUserDto.refresh_token;
-    	await this.userRepository.save(user);;
+		if (dto.password) {
+			user.password  = await hashPassword(dto.password);
+		}
+		if (dto.first_name !== undefined) {
+			user.first_name = dto.first_name;
+		}
+
+		if (dto.last_name !== undefined) {
+			user.last_name = dto.last_name;
+		}
+
+		if (dto.avatar !== undefined) {
+			user.avatar = dto.avatar;
+		}
+
+		if (dto.phone !== undefined) {
+			user.phone = dto.phone;
+		}
+		await this.userRepository.save(user);
+
+		return user;
   	}
 
-	async updatePassword( userId: number, dto: UpdateUserPasswordDto,) {
+	async updatePassword( userId: number, newPassword: string) {
 		const user = await this.userRepository.findOne({
 			where: { id: userId },
 			select: ['id', 'password'],
@@ -86,18 +103,8 @@ export class UserService {
 		if (!user) {
 			throw new NotFoundException('Customer not found');
 		}
-	
-		const isMatch = await bcrypt.compare(
-			dto.oldPassword,
-			user.password,
-		);
-	
-		if (!isMatch) {
-			throw new BadRequestException('Old password is incorrect');
-		}
-		  //  this.password = await hashPass(this.password)
-		  //  const hashedPassword = await bcrypt.hash(dto.newPassword, 10);
-		const hashedPassword = await hashPass(dto.newPassword);
+
+		const hashedPassword = await hashPassword(newPassword);
 	
 		await this.userRepository.update(userId, {
 			password: hashedPassword,

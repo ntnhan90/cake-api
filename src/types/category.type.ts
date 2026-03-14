@@ -5,4 +5,5 @@ export interface CategoryWithCount {
     count: number;
     is_featured:number;
     is_default:number;
+    image?:string;
 }

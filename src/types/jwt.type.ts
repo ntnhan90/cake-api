@@ -6,7 +6,7 @@ export type JwtPayloadType = {
 
 export interface AccessTokenPayloadCreate {
   userId: number
-  deviceId: number
+  //deviceId: number
   roleId: number
   roleName: string
 }

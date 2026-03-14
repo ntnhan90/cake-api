@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,NotFoundException } from '@nestjs/common';
 import { CreateTaxDto } from './dto/create-tax.req.dto';
 import { UpdateTaxDto } from './dto/update-tax.req.dto';
 import { ListTaxReqDto } from './dto/list-tax.req.dto';
@@ -54,9 +54,11 @@ export class TaxService {
     }
 
     async remove(id: number) {
-        await this.taxRepo.findOneByOrFail({id});
+        const tax = await this.taxRepo.findOneBy({ id });
+
+        if (!tax) {
+            throw new NotFoundException("Tax not found");
+        }
 		await this.taxRepo.softDelete(id);
     }
-
- 
 }

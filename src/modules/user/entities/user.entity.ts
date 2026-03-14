@@ -1,7 +1,6 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
 import { hashPassword as hashPass } from '@/utils/password.util';
 import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany,ManyToMany, BeforeInsert, BeforeUpdate,DeleteDateColumn,JoinTable} from "typeorm";
-import { DeviceEntity } from './device.entity';
 import { RoleEntity } from 'src/modules/roles/entities/role.entity';
 
 @Entity('users')
@@ -37,13 +36,10 @@ export class UserEntity extends AbstractEntity {
     isActive:number	
     
     @Column({nullable:true})
-    avatar_id:string	
+    avatar:string	
     
     @Column({nullable:true})
     refresh_token: string
-
-    @OneToMany(() => DeviceEntity, (device) => device.userId)
-    device?: DeviceEntity[];
 
     @DeleteDateColumn({
         name: 'deleted_at',
@@ -68,7 +64,7 @@ export class UserEntity extends AbstractEntity {
         },
     })
     roles: RoleEntity[]
-
+/*
     @BeforeInsert()
     @BeforeUpdate()
     async hashPassword(){
@@ -76,4 +72,5 @@ export class UserEntity extends AbstractEntity {
             this.password = await hashPass(this.password)
         }
     }
+        */
 }

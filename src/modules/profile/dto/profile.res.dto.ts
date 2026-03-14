@@ -22,6 +22,6 @@ export class ProfileResDto {
 
     @StringFieldOptional()
     @Expose()
-    avatar_id?: string;
+    avatar?: string;
 }
 

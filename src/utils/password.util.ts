@@ -1,8 +1,9 @@
 import { compare, hash } from 'bcrypt';
-const saltRounds = 10
-export const hashPassword =  (password: string) => {
+const saltRounds = Number(process.env.BCRYPT_ROUNDS) || 10
+
+export const hashPassword = async (password: string) => {
     try {
-        return  hash(password, saltRounds);
+        return await hash(password, saltRounds);
     } catch (err) {
         console.error(err);
         throw new Error('Can not hash password.');

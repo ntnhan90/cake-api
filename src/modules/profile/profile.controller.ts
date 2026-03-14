@@ -10,9 +10,6 @@ import { ProfileResDto } from './dto/profile.res.dto';
 export class ProfileController {
     constructor(private readonly profileService: ProfileService) {}
 
-    @ApiPublic({
-        summary: 'Sign in',
-    })
     @Get()
     async getProfile(@ActiveUser('userId') userId: number): Promise<ProfileResDto>  {
         return await this.profileService.getProfile(userId);

@@ -17,5 +17,5 @@ export class AccountResDto {
     
     @StringField()
     @Expose()
-    avatar_id: string;
+    avatar: string;
 }

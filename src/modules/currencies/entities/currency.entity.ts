@@ -23,6 +23,6 @@ export class CurrencyEntity extends AbstractEntity {
     @Column({default:0})
     default:number
 
-    @Column({default:1})
+    @Column({ type: "decimal", precision: 10, scale: 4 ,default:0, nullable:true})
     exchange_rate:number
 }

@@ -28,8 +28,6 @@ export class CreateUserDto {
     last_name?: string;
 
     @StringFieldOptional()
-    avatar_id?: string;
+    avatar?: string;
 
-    @StringFieldOptional()
-    refresh_token?: string;
 }

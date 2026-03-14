@@ -6,10 +6,14 @@ import { LoginReqDto } from './dto/login.req.dto';
 import { RefreshReqDto } from './dto/refresh.req.dto';
 import { RefreshResDto } from './dto/refresh.res.dto';
 import { Public } from '@/decorators/public.decorators';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('admin')
 export class AdminController {
-    constructor(private readonly adminService: AdminService) {}
+    constructor(
+        private readonly adminService: AdminService
+    ) {}
 
     @ApiPublic({
         type: LoginResDto,
@@ -37,5 +41,15 @@ export class AdminController {
     @Post('logout')
     async logout() {
         return "logout"
+    }
+
+    @Post('forgot-password')
+    async forgotPassword(@Body() dto: ForgotPasswordDto) {
+        return this.adminService.forgotPassword(dto.email);
+    }
+
+    @Post('reset-password')
+    async resetPassword(@Body() dto: ResetPasswordDto) {
+        return this.adminService.resetPassword(dto.id, dto.password);
     }
 }

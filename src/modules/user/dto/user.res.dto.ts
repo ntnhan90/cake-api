@@ -14,14 +14,18 @@ export class UserResDto {
 	@StringField()
 	@Expose()
 	username: string;
-/*
+
 	@StringField()
 	@Expose()
 	password: string;
-*/	
+
 	@StringField()
 	@Expose()
-	avatar_id: string;
+	phone: string;
+
+	@StringField()
+	@Expose()
+	avatar: string;
 	
 	@StringField()
 	@Expose()

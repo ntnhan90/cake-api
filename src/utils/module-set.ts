@@ -92,7 +92,8 @@ function generateModulesSet() {
 				BackgroundModule,
 				dbModule,
 				//i18nModule,
-				loggerModule
+				loggerModule,
+				MailModule
 			];
 			break;
 		case 'api':
@@ -101,7 +102,8 @@ function generateModulesSet() {
 				BackgroundModule,
 				dbModule,
 			//	i18nModule,
-				loggerModule
+				loggerModule,
+				MailModule
 			];
       		break;
     	case 'background':

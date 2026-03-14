@@ -34,7 +34,6 @@ export class AuthGuard implements CanActivate{
             throw new UnauthorizedException();
         }
         request['user'] = await this.authService.verifyAccessToken(accessToken);
-        console.log("guard")
         return true;
     }
 
