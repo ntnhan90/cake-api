@@ -54,10 +54,9 @@ export class AdminService {
         }
         
         const isPasswordMatch = await compare(body.password, user.password);
-        /*
         if(!isPasswordMatch){
             throw new UnauthorizedException('Password incorrect');
-        }*/
+        }
         const payload :AccessTokenPayloadCreate= {
             userId: user.id,
             roleId: 1,

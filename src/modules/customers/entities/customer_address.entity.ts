@@ -6,10 +6,11 @@ import {
   ManyToOne,
   JoinColumn,
   Index,
-} from "typeorm";
+} from 'typeorm';
 import { CustomerEntity } from './customer.entity';
 
 @Entity('customer_addresses')
+@Index(['customer_id'])
 export class CustomerAddressEntity extends AbstractEntity {
   constructor(data?: Partial<CustomerAddressEntity>) {
     super();
@@ -19,36 +20,33 @@ export class CustomerAddressEntity extends AbstractEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 120 })
   name: string;
 
-  @Column()
+  @Column({ length: 20 })
   phone: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 100 })
   country: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 100 })
   state: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 100 })
   city: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 255 })
   address: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 20 })
   zip_code: string;
 
-  @Column({ default: 0 })
+  @Column({ type: 'tinyint', default: 0 })
   is_default: number;
 
-  // FK column
-  @Index()
   @Column()
   customer_id: number;
 
-  // Relation
   @ManyToOne(() => CustomerEntity, (customer) => customer.addresses, {
     onDelete: 'CASCADE',
   })
