@@ -211,9 +211,6 @@ export class AdminService {
         }
         user.password = await hashPassword(password);
 
-      //  user.resetPasswordToken = null;
-      //  user.resetPasswordExpire = null;
-
         await this.userRepository.save(user);
 
         return { message: "Password updated" };

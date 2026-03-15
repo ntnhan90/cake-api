@@ -1,5 +1,5 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { Entity, PrimaryGeneratedColumn, Column,ManyToMany} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column,ManyToMany,DeleteDateColumn} from "typeorm";
 import { ProductEntity } from 'src/modules/products/entities/product.entity';
 
 export enum STATUS {
@@ -51,4 +51,7 @@ export class ProductCategoryEntity extends AbstractEntity {
 
     @ManyToMany(() => ProductEntity, (products) => products.categories)
     products: ProductEntity[];
+
+    @DeleteDateColumn()
+    deleted_at?: Date;
 }

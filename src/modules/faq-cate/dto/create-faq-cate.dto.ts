@@ -2,6 +2,7 @@ import {
   StringField,
   NumberField,
 } from '@/decorators/field.decorators';
+import { IsString, IsOptional } from 'class-validator';
 export class CreateFaqCateDto {
     @StringField()
     name:string
@@ -9,7 +10,8 @@ export class CreateFaqCateDto {
     @NumberField()
     order:number
     
-    @StringField()
+    @IsOptional()
+    @IsString()
     description:string
 
     @StringField()

@@ -24,16 +24,16 @@ export class FaqsService {
     }
 
     async findAll(reqDto: ListFaqsReqDto) :Promise<OffsetPaginatedDto<FaqsResDto>> {
-        const query = this.faqsRepo.createQueryBuilder('faqs')
-            .leftJoin('faqs.category', 'category')
-            .addSelect(['category.id', 'category.name'])
-            .orderBy('faqs.createdAt','DESC')
+        const query = this.faqsRepo
+            .createQueryBuilder('faqs')
+            .leftJoinAndSelect('faqs.category', 'category')
+            .orderBy('faqs.createdAt', 'DESC');
 
         const [faqs,metaDto] = await paginate<FaqsEntity>(query, reqDto,{
             skipCount:false,
             takeAll: false
         });
-
+        console.log(faqs)
         return new OffsetPaginatedDto(plainToInstance(FaqsResDto, faqs),metaDto)
     }
 

@@ -1,6 +1,5 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
 import { Entity, PrimaryGeneratedColumn, Column,DeleteDateColumn,ManyToMany} from "typeorm";
-//import { PostCategoryEntity } from 'src/modules/posts/entities/post_categories.entity';
 import { PostEntity } from 'src/modules/posts/entities/post.entity';
 export enum STATUS {
     PUBLISHED = "published",

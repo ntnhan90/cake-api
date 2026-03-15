@@ -1,19 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable ,NotFoundException} from '@nestjs/common';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
 import { UpdateProductCategoryDto } from './dto/update-product-category.dto';
 import { ListProductCateReqDto } from './dto/list-product-cate.req.dto';
 import { ProductCateResDto } from './dto/product-cate.res.dto';
-import { ProductCategoryRepository } from './repo/product-category.repo';
 import { ProductCategoryEntity } from './entities/product-category.entity';
 import { OffsetPaginatedDto } from '@/common/dto/offset-pagination/paginated.dto';
 import { paginate } from '@/utils/offset-pagination';
 import { plainToInstance } from 'class-transformer';
 import assert from 'assert';
 import { CategoryWithCount } from 'src/types/category.type';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProductCategoriesService {
-    constructor(private readonly proCateRepo : ProductCategoryRepository){}
+    constructor(
+        @InjectRepository(ProductCategoryEntity)
+        private readonly proCateRepo: Repository<ProductCategoryEntity>,
+    ){};
+
     async create(dto: CreateProductCategoryDto):Promise<ProductCateResDto> {
         const newCate = this.proCateRepo.create(dto);
         return await this.proCateRepo.save(newCate);
@@ -54,8 +59,19 @@ export class ProductCategoriesService {
     }
 
     async remove(id: number) {
-        await this.proCateRepo.findOneByOrFail({id});
-		await this.proCateRepo.softDelete(id);
+        const category = await this.proCateRepo.findOne({
+            where: { id },
+        });
+        
+        if (!category) {
+            throw new NotFoundException('Category not found');
+        }
+              
+        await this.proCateRepo.softDelete(id);
+        
+        return {
+            message: 'Category deleted successfully',
+        };
     }
 
     async getCategoryWithPostCount(): Promise<CategoryWithCount[]> {
