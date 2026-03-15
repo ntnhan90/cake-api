@@ -1,6 +1,5 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-import { hashPassword as hashPass } from '@/utils/password.util';
-import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany,ManyToMany, BeforeInsert, BeforeUpdate,DeleteDateColumn,JoinTable} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Index,ManyToMany,DeleteDateColumn,JoinTable} from "typeorm";
 import { RoleEntity } from 'src/modules/roles/entities/role.entity';
 
 @Entity('users')

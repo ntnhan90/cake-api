@@ -1,5 +1,4 @@
 import { AbstractEntity } from '@/database/entities/abstract.entity';
-//import { hashPassword as hashPass } from '@/utils/password.util';
 import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany,} from "typeorm";
 import { CustomerAddressEntity } from './customer_address.entity';
 import { Expose } from 'class-transformer';
